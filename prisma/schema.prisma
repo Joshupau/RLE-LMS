@@ -1,0 +1,176 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  schoolId       Int     @unique
+  firstName      String
+  middleName     String?
+  lastName       String
+  email          String  @unique
+  hashedPassword String
+  age            Int
+
+  status Boolean
+  role   UserRole @default(Student)
+
+  // Student Additional Fields
+  yearLevel Int?
+  section   String?
+  group     String?
+
+  resourceGroupIds String[] @db.ObjectId
+  resourceGroup ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
+  
+  scheduleIds String[] @db.ObjectId
+  schedules Scheduling[] @relation(fields: [scheduleIds], references: [id])
+}
+
+enum UserRole {
+  SystemAdmin
+  Dean
+  ClinicalInstructor
+  Student
+}
+
+model Scheduling {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  groupId              String
+  clinicalHours        String
+  area                 String
+  week                 String
+  yearLevel            Int
+  dateFrom             DateTime[]
+  dateTo               DateTime[]
+  
+  userIds               String[]     @db.ObjectId
+  user User[] @relation(fields: [userIds], references: [id])
+
+  resources                Resource[]
+  submissionOfPatientCases SubmissionOfPatientCases[]
+
+  resourceGroupId String?   @db.ObjectId
+  resourceGroup   ResourceGroup?
+ 
+ }
+
+model ResourceGroup {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  scheduleId  String       @db.ObjectId @unique
+  schedule    Scheduling   @relation(fields: [scheduleId], references: [id])
+  userIds     String[]     @db.ObjectId
+  users       User[]       @relation(fields: [userIds], references: [id])
+  resources   Resource[]
+}
+
+
+model Resource {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  details String
+  files   String[]
+  tags    String[]
+
+  resourceGroupId String @db.ObjectId
+  resourceGroup ResourceGroup @relation(fields: [resourceGroupId], references: [id])
+
+  schedulingId String     @db.ObjectId
+  scheduling   Scheduling @relation(fields: [schedulingId], references: [id])
+}
+
+model SubmissionOfPatientCases {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  schedulingId  String @db.ObjectId
+  patientCaseId String
+  caseNumber    Int
+  caseType      String
+
+  scheduling Scheduling @relation(fields: [schedulingId], references: [id])
+
+  drCordCase       DrCordCase[]
+  drMACase         DrMACase[]
+  medicalCase      MedicalCase[]
+  orMajorMinorCase ORMajorMinorCase[]
+  chnCase          CHNCase[]
+}
+
+model DrCordCase {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  babyName   String
+  sex        String
+  apgarScore Int
+  motherName String
+  motherAge  Int
+  staff      String
+  birthplace String
+
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCasesId String                   @db.ObjectId
+}
+
+model DrMACase {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientName      String
+  age              Int
+  medicalDiagnosis String
+  dateOfDelivery   DateTime
+  timeOfDelivery   DateTime
+  typeOfDelivery   String
+  birthplace       String
+
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCasesId String                   @db.ObjectId
+}
+
+model MedicalCase {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientName        String
+  age                Int
+  maritalStatus      String
+  sex                String
+  attendingPhysician String
+  medicalDiagnosis   String
+  dateAdmitted       DateTime
+  dateDischarge      DateTime
+
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCasesId String                   @db.ObjectId
+}
+
+model ORMajorMinorCase {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientName      String
+  age              Int
+  sex              String
+  medicalDiagnosis String
+  operation        String
+  surgeon          String[]
+  typeOfAnesthesia String
+  anesthesiologist String
+  scrub            String
+
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCasesId String                   @db.ObjectId
+}
+
+model CHNCase {
+  id                    String     @id @default(auto()) @map("_id") @db.ObjectId
+  date                  DateTime
+  nameOfFamilyMembers   String[]
+  relationToHead        String[]
+  Birthday              DateTime[]
+  sex                   String[]
+  maritalStatus         String[]
+  educationalAttainment String[]
+  occupation            String[]
+
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCasesId String                   @db.ObjectId
+}

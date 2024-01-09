@@ -17,18 +17,6 @@ export function Toolbar({ editor }) {
         return null
     }
 
-    const fileInputRef = useRef(null);
-
-    const handleImageUpload = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        editor.chain().focus().setImage({ src: imageUrl }).run();
-      }
-      // Clear the file input for future use
-      fileInputRef.current.value = null;
-    };
-
     return (
         <div className="border border-input bg-transparent rounded-md">
             <Toggle
@@ -85,20 +73,7 @@ export function Toolbar({ editor }) {
             >
                 <ListOrdered className="h-4 w-4" />
             </Toggle>
-            <button
-                className="p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-                onClick={() => fileInputRef.current.click()}
-                title="Upload Image"
-            >
-                <ImagePlus className="h-4 w-4" />
-            </button>
-            <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={handleImageUpload}
-            />
+
         </div>
     )
 }

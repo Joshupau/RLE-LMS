@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import Newtiptap from './newtiptap';
@@ -11,9 +11,9 @@ const ExpandableTextarea = () => {
   const [expanded, setExpanded] = useState(false);
   const [text, setText] = useState('');
   const [description, setDescription] = useState('');
-  const [uploadedContent, setUploadedContent] = useState('');
-  const [uploadedType, setUploadedType] = useState('');
-  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [uploadedContent, setUploadedContent] = useState([]);
+  const [uploadedType, setUploadedType] = useState([]);
+  const [uploadedFileNames, setUploadedFileNames] = useState([]);
 
   const handleExpand = () => {
     setExpanded(true);
@@ -28,15 +28,16 @@ const ExpandableTextarea = () => {
     setDescription(htmlContent);
   };
 
-  const handleImageUpload = (imageUrl) => {
-    setUploadedContent(imageUrl);
-    setUploadedType('image');
+  const handleImageUpload = (imageUrl, fileName) => {
+    setUploadedContent([...uploadedContent, imageUrl]);
+    setUploadedType([...uploadedType, 'image']);
+    setUploadedFileNames([...uploadedFileNames, fileName]);
   };
 
   const handleFileUpload = (fileContent, fileName) => {
-    setUploadedContent(fileContent);
-    setUploadedType('file');
-    setUploadedFileName(fileName);
+    setUploadedContent([...uploadedContent, fileContent]);
+    setUploadedType([...uploadedType, 'file']);
+    setUploadedFileNames([...uploadedFileNames, fileName]);
   };
 
   const isTextareaEmpty = description.trim() === '';
@@ -46,7 +47,9 @@ const ExpandableTextarea = () => {
       {expanded ? (
         <div>
           <Newtiptap description={description} onChange={handleDescriptionChange} />
-          <DisplayFile content={uploadedContent} type={uploadedType} fileName={uploadedFileName} />
+          {uploadedContent.map((content, index) => (
+            <DisplayFile key={index} content={content} type={uploadedType[index]} fileName={uploadedFileNames[index]} />
+          ))}
           <div className="flex justify-between mt-4">
             <Upload onImageUpload={handleImageUpload} onFileUpload={handleFileUpload} />
             <div>
@@ -84,6 +87,7 @@ const ExpandableTextarea = () => {
 };
 
 export default ExpandableTextarea;
+
 
 {/* <Button onClick={handleExpand}>Post Something</Button>
 <Button onClick={handleCancel} variant="destructive">Cancel</Button> */}

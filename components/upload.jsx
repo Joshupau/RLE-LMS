@@ -7,12 +7,20 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
 
   const handleImageUpload = (event) => {
     if (!isImageUploading) {
+      const files = event.target.files;
       setIsImageUploading(true);
-      const file = event.target.files[0];
-      if (file) {
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         const imageUrl = URL.createObjectURL(file);
-        onImageUpload(`${imageUrl}`);
+        
+        // Pass each image to the onImageUpload callback
+        onImageUpload({
+          imageUrl: imageUrl,
+          name: file.name,
+        });
       }
+
       event.target.value = null;
       setTimeout(() => setIsImageUploading(false), 1000); // Allow another click after 1 second
     }
@@ -20,15 +28,19 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
 
   const handleFileUpload = (event) => {
     if (!isFileUploading) {
+      const files = event.target.files;
       setIsFileUploading(true);
-      const file = event.target.files[0];
-      if (file) {
-        // Pass the file name and content to the onFileUpload callback
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Pass each file to the onFileUpload callback
         onFileUpload({
           name: file.name,
           content: file,
         });
       }
+
       event.target.value = null;
       setTimeout(() => setIsFileUploading(false), 1000); // Allow another click after 1 second
     }
@@ -43,6 +55,7 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
           accept="image/*"
           style={{ display: 'none' }}
           onChange={handleImageUpload}
+          multiple
         />
         <ImagePlus className="h-6 w-6" />
       </label>
@@ -53,6 +66,7 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
           type="file"
           style={{ display: 'none' }}
           onChange={handleFileUpload}
+          multiple
         />
         <FilePlus2 className="h-6 w-6" />
       </label>

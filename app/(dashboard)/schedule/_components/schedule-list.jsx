@@ -3,6 +3,7 @@ import { ScheduleItem } from "./schedule-item";
 
 const ScheduleList = () => {
   const [schedules, setSchedules] = useState([]);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -22,10 +23,11 @@ const ScheduleList = () => {
       }
     };
 
-    fetchSchedules();
-  }, []);
+      fetchSchedules();
+    }, [schedules]);
 
   if (!schedules.length) return <p>Loading...</p>;
+
 
   return (
     <>
@@ -40,11 +42,13 @@ const ScheduleList = () => {
             <th className="py-2 px-4 font-semibold">Year Level</th>
             <th className="py-2 px-4 font-semibold">Hours</th>
             <th className="py-2 px-4 font-semibold">View Schedule</th>
+            <th className="py-2 px-4 font-semibold">Delete Schedule</th>
+
           </tr>
         </thead>
         <tbody>
           {schedules.map((schedule) => (
-            <ScheduleItem key={schedule.id} {...schedule} />
+            <ScheduleItem key={schedule.id} {...schedule}  />
           ))}
         </tbody>
       </table>

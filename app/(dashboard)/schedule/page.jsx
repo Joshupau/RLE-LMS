@@ -34,6 +34,7 @@ function SchedulePage() {
               </button>
               </Link>
             </div>
+            
           </div>
           </>
       )}

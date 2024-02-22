@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { StudentList } from "./_components/student-list"
+import { StudentList } from "./_components/student-list";
 import { ClinicalInstructorSelect } from "./_components/clinical-instructor";
 import { DatePickerWithRange } from "./_components/date-picker";
 import { Button } from "@/components/ui/button";

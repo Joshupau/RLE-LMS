@@ -53,7 +53,7 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
         <input
           type="file"
           accept="image/*"
-          style={{ display: 'none' }}
+          className="hidden"
           onChange={handleImageUpload}
           multiple
         />
@@ -64,7 +64,7 @@ const Upload = ({ onImageUpload, onFileUpload }) => {
       <label className={`upload-icon-container circle-icon bg-green-500 text-white p-2 rounded-full cursor-pointer ${isFileUploading ? 'opacity-50' : ''}`}>
         <input
           type="file"
-          style={{ display: 'none' }}
+          className="hidden"
           onChange={handleFileUpload}
           multiple
         />

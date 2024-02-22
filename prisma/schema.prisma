@@ -25,6 +25,8 @@ model User {
   section   String?
   group     String?
 
+  resources Resource[]
+
   resourceGroupIds String[] @db.ObjectId
   resourceGroup ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
   
@@ -73,16 +75,18 @@ model ResourceGroup {
 
 model Resource {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  title   String
-  details String
-  files   String[]
-  tags    String[]
+  description String
+  uploadLinks String[]
 
+  
   resourceGroupId String @db.ObjectId
   resourceGroup ResourceGroup @relation(fields: [resourceGroupId], references: [id])
 
   schedulingId String     @db.ObjectId
   scheduling   Scheduling @relation(fields: [schedulingId], references: [id])
+
+  author       User     @relation(fields: [userId], references: [id])
+  userId       String   @db.ObjectId
 }
 
 model SubmissionOfPatientCases {

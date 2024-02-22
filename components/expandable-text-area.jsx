@@ -2,18 +2,75 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import Newtiptap from './newtiptap';
-import Upload from './upload';
 import DisplayFile from './display-file';
+import { useEdgeStore } from '../lib/edgestore';
+import { ImagePlus, FilePlus2 } from 'lucide-react';
+import MoonLoader from 'react-spinners/MoonLoader';
 
 import { cn } from '@/lib/utils';
 
-const ExpandableTextarea = () => {
+const ExpandableTextarea = ({ id, userId }) => {
+  const { edgestore } = useEdgeStore();
+  
   const [expanded, setExpanded] = useState(false);
-  const [text, setText] = useState('');
+  
+  const [isTextareaEmpty, setIsTextAreaEmpty] = useState(true);
   const [description, setDescription] = useState('');
-  const [uploadedContent, setUploadedContent] = useState([]);
-  const [uploadedType, setUploadedType] = useState([]);
-  const [uploadedFileNames, setUploadedFileNames] = useState([]);
+  const [pendingImages, setPendingImages] = useState([]);
+  const [pendingFiles, setPendingFiles] = useState([]);
+  const [pendingUploads, setPendingUploads] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const resourceGroupId = id;
+
+
+
+
+const removeFile = (fileType, content) => {
+  console.log( content);
+  if (fileType === 'image') {
+    window.URL.revokeObjectURL(content.imageUrl);
+    setPendingImages((prevImages) =>
+      prevImages.filter((image) => image.key !== content.key)
+    );
+  } else if (fileType === 'file') {
+    // Implement file deletion logic (using file path or other info)
+    setPendingFiles((prevFiles) =>
+      prevFiles.filter((file) => file.key !== content.key)
+    );
+  }
+};
+
+  
+  
+  const handleImageUpload = (e) => {
+    const uploadedImages = Array.from(e.target.files);
+    const now = Date.now();
+    setPendingImages((prevImages) => [
+      ...prevImages,
+      ...uploadedImages.map((file) => ({
+        key: `${now}-${Math.random() * 1000000}`,
+        file,
+        type: "image",
+      })),
+    ]);
+  };
+  
+  const handleFileUpload = (e) => {
+    const uploadedFiles = Array.from(e.target.files);
+    const now = Date.now();
+    setPendingFiles((prevFiles) => [
+      ...prevFiles,
+      ...uploadedFiles.map((file) => ({
+        key: `${now}-${Math.random() * 1000000}`,
+        file,
+        type: "file",
+      })),
+    ]);
+  };
+  
+  
 
   const handleExpand = () => {
     setExpanded(true);
@@ -21,37 +78,168 @@ const ExpandableTextarea = () => {
 
   const handleCancel = () => {
     setExpanded(false);
-    setText('');
+    setDescription('');
   };
 
+ 
   const handleDescriptionChange = (htmlContent) => {
-    setDescription(htmlContent);
+    const trimmedDescription = htmlContent.trim();
+    console.log(htmlContent);
+    setDescription(trimmedDescription);
+    if (htmlContent === '<p></p>'){
+      setIsTextAreaEmpty(true);
+    } else {
+      setIsTextAreaEmpty(false);
+    }
+  };
+  
+
+  const uploadToEdgeStore = async (fileObject) => {
+    try {
+
+
+      const uploadPromise = await edgestore.publicFiles.upload({
+        file: fileObject.file,
+        onProgressChange: (progress) => {
+          // Update the fileObject's progress in state
+          setPendingUploads((prevUploads) => {
+            const updatedUploads = prevUploads.map((upload) => {
+              if (upload.key === fileObject.key) {
+                return { ...upload, progress };
+              }
+              return upload;
+            });
+            return updatedUploads;
+          });
+          console.log(progress);
+        },
+      });
+      
+      // Wait for successful upload
+      const url = uploadPromise.url;
+      return url;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      // Handle the error as needed
+      return null;
+    }
   };
 
-  const handleImageUpload = (imageUrl, fileName) => {
-    setUploadedContent([...uploadedContent, imageUrl]);
-    setUploadedType([...uploadedType, 'image']);
-    setUploadedFileNames([...uploadedFileNames, fileName]);
-  };
+  const handleDataSubmission = async (fileUrls, description, resourceGroupId, userId) => {
+    try {
 
-  const handleFileUpload = (fileContent, fileName) => {
-    setUploadedContent([...uploadedContent, fileContent]);
-    setUploadedType([...uploadedType, 'file']);
-    setUploadedFileNames([...uploadedFileNames, fileName]);
+      const response = await fetch("/api/resource", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fileUrls,
+          description,
+          resourceGroupId,
+          userId
+        }),
+      });
+ 
+      if (!response.ok) {
+        throw new Error("Failed to submit data to MongoDB");
+      }
+    
+      
+    } catch (error) {
+      console.log(error);
+    }
+    // Handle successful submission (e.g., display success message)
   };
+  
+  
 
-  const isTextareaEmpty = description.trim() === '';
+  const handleSubmission = async () => {
+    setIsLoading(true);
+
+    const allPendingUploads = [
+      ...pendingImages.filter((image) => !image.removed),
+      ...pendingFiles.filter((file) => !file.removed),
+    ];
+  
+    const uploadPromises = allPendingUploads.map(fileObject => {
+      // Return a promise for each upload
+      return uploadToEdgeStore(fileObject);
+    });
+  
+    try {
+      // Wait for all uploads to finish using Promise.all
+      const fileUrls = await Promise.all(uploadPromises);
+  
+      console.log("All uploads successful:", fileUrls);
+  
+      // Call handleDataSubmission after all uploads are complete
+      await handleDataSubmission(fileUrls, description, resourceGroupId, userId);
+    } catch (error) {
+      console.error("Error during uploads or data submission:", error);
+      // Handle errors appropriately
+    } finally {
+      // Clear pending uploads regardless of success
+      setPendingImages([]);
+      setPendingFiles([]);
+      setExpanded(false);
+      setIsLoading(false);
+    }
+  };
+  
+
+  
+  
+  
 
   return (
     <div>
       {expanded ? (
         <div>
           <Newtiptap description={description} onChange={handleDescriptionChange} />
-          {uploadedContent.map((content, index) => (
-            <DisplayFile key={index} content={content} type={uploadedType[index]} fileName={uploadedFileNames[index]} />
-          ))}
+            {/* Display uploaded images */}
+            {pendingImages.map((image) => (
+            <DisplayFile
+              key={`image-${image.key}`}
+              content={{ imageUrl: URL.createObjectURL(image.file), name: image.file.name, key: image.key }}
+              type="image"
+              removeFile={removeFile}
+            />
+            ))}
+            {pendingFiles.map((file) => (
+            <DisplayFile
+              key={`file-${file.key}`}
+              content={{ fileUrl: URL.createObjectURL(file.file), name: file.file.name, key: file.key }}
+              type="file"
+              removeFile={removeFile}
+            />
+            ))}
+
           <div className="flex justify-between mt-4">
-            <Upload onImageUpload={handleImageUpload} onFileUpload={handleFileUpload} />
+          <div className="flex gap-x-5">
+            {/* Image Upload */}
+            <label className="upload-icon-container circle-icon bg-blue-500 text-white p-2 rounded-full cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+                multiple
+              />
+              <ImagePlus className="h-6 w-6" />
+            </label>
+
+            {/* File Upload */}
+            <label className="upload-icon-container circle-icon bg-green-500 text-white p-2 rounded-full cursor-pointer">
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleFileUpload}
+                multiple
+              />
+              <FilePlus2 className="h-6 w-6" />
+            </label>
+          </div>
             <div>
               <Button
                 onClick={handleCancel}
@@ -60,6 +248,7 @@ const ExpandableTextarea = () => {
               >
                 Cancel
               </Button>
+              
               <Button
                 disabled={isTextareaEmpty}
                 className={cn(
@@ -68,8 +257,13 @@ const ExpandableTextarea = () => {
                   'rounded-md',
                   'transition-colors'
                 )}
+                onClick={handleSubmission}
               >
-                Post
+              {isLoading ? (
+                <MoonLoader className='mx-2' size={10} color="#000000" loading={true} />
+              ) : (
+                'Post'
+              )}
               </Button>
             </div>
           </div>
@@ -79,7 +273,7 @@ const ExpandableTextarea = () => {
           onClick={handleExpand}
           className="border border-gray-300 p-2 cursor-pointer text-slate-400 hover:text-blue-400 w-full"
         >
-          {text ? text : "What's on your mind?"}
+     What's on your mind?
         </p>
       )}
     </div>

@@ -1,19 +1,22 @@
-import Tiptap from "@/components/tiptap"
 import { EditorCard } from "./_components/editor-card"
+import { PostList } from "./_components/post-list";
 
 
-export default async function ResourceIdPage() {
+
+export default async function ResourceIdPage({searchParams}) {
+  const resourceGroupId = searchParams.id;
+
   return (
     <div>
         <div className="flex flex-col items-center justify-center mt-20">
             <div>
               Banner
             </div>
-            <div className="mt-10 w-full">
-               <EditorCard />
+            <div className="mt-8 my-5 w-full">
+               <EditorCard id={resourceGroupId}/>
             </div>
-            <div>
-              {/* TODO: Post Group */}
+            <div className="my-5">
+               <PostList id={resourceGroupId}/>
             </div>
 
         </div>

@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
-
     const {
+      scheduleId,
       clinicalInstructor,
       clinicalHours,
       dateFrom,
@@ -27,12 +27,12 @@ export async function POST(request) {
       !group ||
       !yearLevel ||
       !students ||
-      !week
+      !week 
     ) {
       return NextResponse.json({ error: "Missing Fields" }, { status: 400 });
     }
 
-    const combinedUsers = [...students, clinicalInstructor, userId];
+    const combinedUsers = [...students, clinicalInstructor[0], userId];
 
     const existingUsers = await prisma.user.findMany({
       where: { id: { in: combinedUsers } },
@@ -45,7 +45,10 @@ export async function POST(request) {
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
 
-    const schedules = await prisma.scheduling.create({
+    const schedules = await prisma.scheduling.update({
+        where:{
+            id: scheduleId,
+        },
       data: {
         clinicalHours,
         dateFrom: dateFromArray,
@@ -63,51 +66,20 @@ export async function POST(request) {
       }
     });
 
-    const resourceGroup = await prisma.resourceGroup.create({
-      data: {
-        name: schedules.week,
-        users: {
-          connect: schedules.user.map((user) => ({ id: user.id })),
-        },
-        schedule: {
-          connect: { id: schedules.id },
-        },
-      },
-    });
-
-    for (const studentId of students) {
-      try {
-        await prisma.userScheduling.create({
-          data: {
-            userId: studentId,
-            schedulingId: schedules.id,
-            resourceGroup: resourceGroup.id,
-            // Add other fields as needed
-          },
-        });
-      } catch (error) {
-        // Log the error and continue to the next student
-        console.error(`Error creating UserScheduling for student ${studentId}:`, error);
-      }
-    }
-    
-
     const sanitizedSchedules = {
-      id: schedules.id,
-      clinicalHours: schedules.clinicalHours,
-      dateFrom: schedules.dateFrom,
-      dateTo: schedules.dateTo,
-      groupId: schedules.groupId,
-      yearLevel: schedules.yearLevel,
-      area: schedules.area,
-      users: schedules.users, // Include the associated users in the response
-    };
-    return NextResponse.json(sanitizedSchedules, resourceGroup);
+        id: schedules.id,
+        clinicalHours: schedules.clinicalHours,
+        dateFrom: schedules.dateFrom,
+        dateTo: schedules.dateTo,
+        groupId: schedules.groupId,
+        yearLevel: schedules.yearLevel,
+        area: schedules.area,
+        users: schedules.user, // Include the associated users in the response
+      };
+
+    return NextResponse.json(sanitizedSchedules);
   } catch (error) {
     console.error("Error creating schedule:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" },{ status: 500 });
   }
 }

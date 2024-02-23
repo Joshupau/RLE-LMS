@@ -21,7 +21,6 @@ const ScheduleIdPage = async ({ params }) => {
           Return
         </Button></Link>
     </div>
-    <div/>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
             <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300">

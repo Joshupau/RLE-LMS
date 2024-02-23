@@ -21,6 +21,9 @@ export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, g
     const handleViewSchedule = (value) => {
         router.push(`/schedule/${id}`, value);
     };
+    const handleEditSchedule = (value) => {
+      router.push(`/schedule/edit/${id}`, value);
+  };
 
     const handleDeleteSchedule = async (id) => {
       try {
@@ -99,8 +102,8 @@ export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, g
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your account
-                and remove your data from our servers.
+                This action cannot be undone. This will permanently delete the schedule
+                and remove the schedule data from our servers.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -113,7 +116,9 @@ export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, g
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-
+        </td>
+        <td className="py-2 px-4 text-center">
+            <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleEditSchedule}>Edit Schedule</Button>
         </td>
       </tr>
         

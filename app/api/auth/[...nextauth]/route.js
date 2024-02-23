@@ -21,7 +21,8 @@ export const authOptions = ({
           email: { label: "Email", type: "email"}
         },
         async authorize(credentials){
-          try {        
+          try {
+            
             if(!credentials.schoolId || !credentials.password){
               return null;
             }
@@ -35,7 +36,6 @@ export const authOptions = ({
             if(!user) {
               return null;
             }
-
 
             const passwordsMatch = await bcrypt.compare(credentials.password, user.hashedPassword);
   
@@ -62,7 +62,12 @@ export const authOptions = ({
     async onError(error, session, query) {
       console.error('NextAuth.js error:', error);
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+
+      if(trigger === "update"){
+       return{ ...token, ...session.user} 
+      }
+
       if (user) {
         return {
           ...token,
@@ -72,6 +77,7 @@ export const authOptions = ({
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          age: user.age,
         };
       }
       return token;
@@ -82,8 +88,10 @@ export const authOptions = ({
           id: token.id,
           email: token.email,
           firstName: token.firstName,
+          middleName: token.middleName,
           lastName: token.lastName,
           role: token.role,
+          age: token.age,
           // Include any other relevant user properties
         };
       }

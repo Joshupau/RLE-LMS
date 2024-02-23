@@ -43,7 +43,7 @@ const ScheduleList = () => {
             <th className="py-2 px-4 font-semibold">Hours</th>
             <th className="py-2 px-4 font-semibold">View Schedule</th>
             <th className="py-2 px-4 font-semibold">Delete Schedule</th>
-
+            <th className="py-2 px-4 font-semibold">Edit Schedule</th>
           </tr>
         </thead>
         <tbody>

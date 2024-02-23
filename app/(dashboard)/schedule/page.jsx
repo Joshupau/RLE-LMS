@@ -6,6 +6,7 @@ import Link from "next/link"
 import ScheduleList from "./_components/schedule-list"
 import { StudentScheduleList } from "./_components/student-schedule-list";
 import { CIScheduleList } from "./_components/ci-schedule-list";
+import { Button } from "@/components/ui/button";
 
 function SchedulePage() {
 
@@ -26,12 +27,11 @@ function SchedulePage() {
           </div>
           <div>
             <ScheduleList/>
-            <div>
+            <div className="mt-4">
               <Link href={'/schedule/create'}>
-              <button 
-              className="p-4 bg-blue-500 text-white rounded-full">
+                <Button>
                 Create Schedule
-              </button>
+                </Button>
               </Link>
             </div>
             

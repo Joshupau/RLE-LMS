@@ -13,6 +13,7 @@ export const getScheduleId = async (scheduleId) => {
               firstName: true,
               lastName: true,
               role: true,
+              id: true,
             }
           }
         }

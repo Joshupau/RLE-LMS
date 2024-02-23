@@ -36,7 +36,6 @@ export const Loginform = () => {
             console.error("Authentication error:", error);
             setError("Authentication failed");
           }
-        
 
     };
     

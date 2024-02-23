@@ -18,6 +18,16 @@ export async function DELETE(req, res) {
     if (!deletedSchedule) {
         return new NextResponse.json("Schedule not found", { status: 404 });
     }
+    const userSchedulings = await prisma.userScheduling.findMany({
+      where: { schedulingId: id },
+    });
+
+    for (const userScheduling of userSchedulings) {
+      await prisma.userScheduling.delete({
+        where: { id: userScheduling.id },
+      });
+    }
+    
 
     return NextResponse.json(deletedSchedule);
 } catch (error) {

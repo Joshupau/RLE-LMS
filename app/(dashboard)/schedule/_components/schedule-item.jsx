@@ -88,37 +88,39 @@ export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, g
             Number(clinicalHours) === 2 ? "PM Shift" :
               Number(clinicalHours) === 3 ? "Graveyard Shift" : null}
         </td>
-        <td className="py-2 px-4 text-center">
+        <td className="py-2 px-4 ">
+          <div className="my-2">
             <Button onClick={handleViewSchedule}>View Schedule</Button>
-        </td>
-        <td className="py-2 px-4 text-center">
-          <AlertDialog>
-          <AlertDialogTrigger>
-            <Button variant="destructive">
-              Delete
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the schedule
-                and remove the schedule data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-              onClick={() => handleDeleteSchedule(id)}
-              >
-                Continue
-                </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        </td>
-        <td className="py-2 px-4 text-center">
+          </div>
+          <div className="my-2">           
+              <AlertDialog>
+              <AlertDialogTrigger>
+                <Button variant="destructive">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the schedule
+                    and remove the schedule data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                  onClick={() => handleDeleteSchedule(id)}
+                  >
+                    Continue
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            </div>
+            <div className="my-2">
             <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleEditSchedule}>Edit Schedule</Button>
+            </div>
         </td>
       </tr>
         

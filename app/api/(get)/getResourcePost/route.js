@@ -13,8 +13,18 @@ export async function GET(request){
         const resourcePost = await prisma.resource.findMany({
             where: {
                 resourceGroupId: resourceGroupId,
+            },
+            include: {
+                author: {
+                    select: {
+                        firstName: true,
+                        middleName: true,
+                        lastName: true,
+                    }
+                }
             }
         });
+
 
         return NextResponse.json(resourcePost);
     } catch (error) {

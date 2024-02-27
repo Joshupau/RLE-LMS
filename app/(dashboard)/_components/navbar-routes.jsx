@@ -40,6 +40,7 @@ export const NavbarRoutes = () => {
                     <User
                     size={30}     
                     className="border-2 border-black hover:border-slate-700 hover:bg-slate-200 rounded-full m-2" />
+                    
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>

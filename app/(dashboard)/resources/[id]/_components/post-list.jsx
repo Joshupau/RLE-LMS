@@ -1,39 +1,59 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { PostCard } from "./post-card"
+import React, { Suspense, useEffect, useState } from "react";
+import { PostCard } from "./post-card";
+import Loading from "../loading";
+import { Skeleton } from "@/components/ui/skeleton"
 
 
-export const PostList = ({id}) => {
+export const PostList = ({ id }) => {
+  const [resourcePost, setResourcePost] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Track loading state
 
-    const [resourcePost, setResourcePost] = useState([]);
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const response = await fetch(`/api/getResourcePost?resourceGroupId=${id}`);
 
-    useEffect(()=>{
-        const fetchResources = async () => {
-            const response = await fetch(`/api/getResourcePost?resourceGroupId=${id}`);
-    
-            if (!response.ok) {
-                console.error('Failed to fetch Resources');
-                return;
-              }  
-              const posts = await response.json();
-              
-              setResourcePost(posts);
-            }
+        if (!response.ok) {
+          throw new Error("Failed to fetch Resources");
+        }
 
-        fetchResources();
-    }, [id]);
+        const posts = await response.json();
+        setResourcePost(posts);
+      } catch (error) {
+        console.error("Error fetching resources:", error);
+      } finally {
+        setIsLoading(false); // Mark loading as complete even on errors
+      }
+    };
 
-    return (
-        <div>
-            {resourcePost.map((post)=>(
-                <PostCard
-                key={post.id}
-                description={post.description}
-                uploadLinks={post.uploadLinks}
-                author={post.author}
-                />
-            ))}
+    fetchResources();
+  }, [id]);
+
+  return (
+    <div>
+      <Suspense fallback={<Loading />}>
+        {isLoading ? (
+            <div className="flex flex-col space-y-3">
+            <div className="space-y-2">
+            <Skeleton className="h-4 w-[500px]" />
+            <Skeleton className="h-4 w-[600px]" />
+            </div>
+            <Skeleton className="h-[450px] w-[650px] rounded-xl" />
         </div>
-    )
-}
+        ) : (
+          resourcePost.map((post) => (
+            <PostCard
+              key={post.id}
+              id={post.id}
+              content={post.description}
+              uploadLinks={post.uploadLinks}
+              author={post.author}
+            />
+          ))
+        )}
+      </Suspense>
+    </div>
+  );
+};

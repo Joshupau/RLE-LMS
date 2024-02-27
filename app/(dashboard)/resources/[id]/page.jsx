@@ -1,6 +1,6 @@
 import { EditorCard } from "./_components/editor-card"
 import { PostList } from "./_components/post-list";
-
+import { Suspense } from "react";
 
 
 export default async function ResourceIdPage({searchParams}) {

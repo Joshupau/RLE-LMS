@@ -1,7 +1,8 @@
 import { getScheduleId } from "@/actions/get-schedule-id";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-const ScheduleIdPage = async ({ params }) => {
+
+export default async function ScheduleIdPage ({ params }) {
 
     const scheduleId = params.id;
 
@@ -10,7 +11,6 @@ const ScheduleIdPage = async ({ params }) => {
     const clinicalInstructor = schedules.user.find((user) => user.role === 'ClinicalInstructor');
 
 
-    console.log( { schedules } );
   return (
     <div className="p-6">
     <div className="flex items-center justify-between">
@@ -120,6 +120,4 @@ const formatDateTimeRange = (dateFromArray, dateToArray) => {
       return "Invalid Date Range";
     }
   };
-  
 
-export default ScheduleIdPage

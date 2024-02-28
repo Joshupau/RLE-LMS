@@ -1,13 +1,14 @@
-import { CISchedule } from "@/actions/get-ci-schedule";
+import { getScheduleId } from "@/actions/get-schedule-id";
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
+export async function GET(req, res) {
     try {
-        const queryParams = req.nextUrl.searchParams;
-        const clinicalInstructorId = queryParams.get('clinicalInstructorId');
+        const url = new URL(req.url);
+        const searchparams = new URLSearchParams(url.searchParams);
+        const id = searchparams.get('id');
 
 
-        const schedule = await CISchedule(clinicalInstructorId);
+        const schedule = await getScheduleId(id);
 
         return NextResponse.json(schedule);
     } catch (error) {

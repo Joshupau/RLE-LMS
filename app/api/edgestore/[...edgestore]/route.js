@@ -16,5 +16,3 @@ const handler = createEdgeStoreNextHandler({
 });
 
 export { handler as GET, handler as POST };
-
-

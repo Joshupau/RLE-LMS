@@ -28,7 +28,6 @@ export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, g
     const handleDeleteSchedule = async (id) => {
       try {
 
-        console.log("ID when trying to delete", id);
         const response = await fetch(`/api/schedule/${id}?id=${id}`, {
           method: 'DELETE', // Ensure DELETE method
         });

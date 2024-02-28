@@ -1,13 +1,7 @@
-import { NextResponse } from "next/server";
 import { PrismaClient, UserRole } from "@prisma/client";
 
-export async function GET(req) {
+export const getResourceGroup = async (userId) => {
     try {
-        const queryParams = req.nextUrl.searchParams;
-        const userId = queryParams.get('userId');
-
-        console.log(userId);
-
         const prisma = new PrismaClient();
 
         const resources = await prisma.user.findUnique({
@@ -33,11 +27,13 @@ export async function GET(req) {
                 }
             }
         });
-        
-        return NextResponse.json(resources);
-        
+
+        console.log(resources);
+
+        return resources;
+
     } catch (error) {
-        console.log("Failed to fetch Resources", error);
-        return new NextResponse.json("Internal Error", { status: 500 });
+        console.error("Error in Prisma query:", error);
+
     }
 }

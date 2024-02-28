@@ -1,23 +1,23 @@
-'use client'
 
 
-import { useSession } from "next-auth/react"
 import Link from "next/link"
 import ScheduleList from "./_components/schedule-list"
-import { StudentScheduleList } from "./_components/student-schedule-list";
+import { StudentScheduleList} from "./_components/student-schedule-list";
 import { CIScheduleList } from "./_components/ci-schedule-list";
 import { Button } from "@/components/ui/button";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-function SchedulePage() {
+export default async function SchedulePage() {
 
-  const {data: session } = useSession(); 
-  
-  const userRole = session?.token.role;
-  const userId = session?.token.id;
+  const data = await getServerSession(authOptions);
+
+  const userRole = data?.token.role;
+  const userId = data?.token.id;
 
   return (
     <div className="p-6">
-        
+        s
         {userRole === 'Dean' && (
           <>
             <div className="flex items-center justify-between">
@@ -66,4 +66,3 @@ function SchedulePage() {
   )
 }
 
-export default SchedulePage

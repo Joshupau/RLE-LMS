@@ -1,21 +1,10 @@
+'use client'
+
 
 import { useEffect, useState } from "react"
 import { StudentScheduleItem } from "./student-schedule-item";
 
-const fetchSchedules = async (studentId) => {
-    const params = new URLSearchParams();
-    params.append('studentId', studentId);
-  
-    const url = `/api/getStudentSchedule?${params.toString()}`;
-    const response = await fetch(url);
-  
-    if (!response.ok) {
-      throw new Error(`Failed to fetch schedules. Status: ${response.status}`);
-    }
-  
-    const schedules = await response.json();
-    return schedules;
-  };
+
 export const StudentScheduleList =  ({userId}) => {
     const [schedules, setSchedules] = useState([]);
     
@@ -24,9 +13,14 @@ export const StudentScheduleList =  ({userId}) => {
     useEffect(() => {
         const getSchedule = async () => {
           try {
-            const schedules = await fetchSchedules(studentId);
-            console.log(schedules);
-    
+            const response = await fetch(`/api/getStudentSchedule?studentId=${studentId}`, {
+              method: "GET",
+            });  
+            if (!response.ok) {
+              throw new Error(`Failed to fetch schedules. Status: ${response.status}`);
+            }
+            const schedules = await response.json();    
+          
             if (!schedules) {
               console.warn("Schedules are empty");
             } else {
@@ -38,13 +32,12 @@ export const StudentScheduleList =  ({userId}) => {
         };
     
         getSchedule();
-      }, [studentId]);
+      }, []);
 
       
     
       const studentSchedule = schedules.schedules || [];
 
-      console.log("This is the student schedule", studentSchedule);
     
     return (
         <>

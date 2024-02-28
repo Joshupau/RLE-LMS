@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from "react";
 import { ScheduleItem } from "./schedule-item";
 
@@ -11,7 +13,6 @@ const ScheduleList = () => {
         const response = await fetch("/api/getSchedule");
         const schedules = await response.json();
 
-        console.log(schedules);
 
         if (!schedules) {
           console.warn("Schedules are empty");

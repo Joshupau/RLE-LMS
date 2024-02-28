@@ -7,8 +7,9 @@ export async function DELETE(req, res) {
   const prisma = new PrismaClient();
 
   try {
-    const queryParams = req.nextUrl.searchParams;
-    const id = queryParams.get('id');
+    const url = new URL(req.url);
+    const searchparams = new URLSearchParams(url.searchParams);
+    const id = searchparams.get('id');
 
 
     const deletedSchedule = await prisma.scheduling.delete({

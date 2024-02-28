@@ -1,3 +1,4 @@
+'use client'
 
 import { useEffect, useState } from "react"
 import { CIScheduleItem } from "./ci-schedule-item";
@@ -25,7 +26,6 @@ export const CIScheduleList =  ({userId}) => {
         const getSchedule = async () => {
           try {
             const schedules = await fetchSchedules(clinicalInstructorId);
-            console.log(schedules);
     
             if (!schedules) {
               console.warn("Schedules are empty");
@@ -44,7 +44,6 @@ export const CIScheduleList =  ({userId}) => {
     
       const clinicalInstructorSchedule = schedules.schedules || [];
 
-      console.log("This is the clinical instructor schedule", clinicalInstructorSchedule);
     
     return (
         <>

@@ -17,7 +17,7 @@ export default async function SchedulePage() {
 
   return (
     <div className="p-6">
-        s
+        
         {userRole === 'Dean' && (
           <>
             <div className="flex items-center justify-between">

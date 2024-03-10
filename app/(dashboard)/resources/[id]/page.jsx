@@ -1,10 +1,13 @@
+import { getServerSession } from "next-auth";
 import { EditorCard } from "./_components/editor-card"
 import { PostList } from "./_components/post-list";
-import { Suspense } from "react";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 
 export default async function ResourceIdPage({searchParams}) {
   const resourceGroupId = searchParams.id;
+
+  const data = await getServerSession(authOptions);
 
   return (
     <div>
@@ -16,7 +19,7 @@ export default async function ResourceIdPage({searchParams}) {
                <EditorCard id={resourceGroupId}/>
             </div>
             <div className="my-5">
-               <PostList id={resourceGroupId}/>
+               <PostList id={resourceGroupId} user={data.token.id}/>
             </div>
 
         </div>

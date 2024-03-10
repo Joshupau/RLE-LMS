@@ -16,11 +16,10 @@ async function getResourcePost(id) {
   }
 };
 
-export const PostList = async ({ id }) => {
+export const PostList = async ({ id, user }) => {
 
   const resourcePost = await getResourcePost(id);
-
- console.log("Resource post in page",resourcePost);
+  const resourceGroupId = id;
   return (
     <div>
       <Suspense fallback={<Loading />}>
@@ -32,9 +31,13 @@ export const PostList = async ({ id }) => {
              <PostCard
                key={post.id}
                id={post.id}
+               resourceGroupId={resourceGroupId}
                content={post.description}
                uploadLinks={post.uploadLinks}
                author={post.author}
+               user={user}
+               createdAt={post.createdAt}
+               updatedAt={post.updatedAt}
              />
            )) 
           ):(

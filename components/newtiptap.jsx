@@ -7,6 +7,7 @@ import { Toolbar } from "./toolbar"
 export default function Newtiptap({
     description,
     onChange,
+    postedDescription,
 }) {
     const editor = useEditor({
         extensions: [StarterKit.configure({
@@ -28,7 +29,7 @@ export default function Newtiptap({
                 }
             }
         })],
-        content: description,
+        content: postedDescription || description,
         editorProps: {
             attributes: {
                 class: "rounded-md border min-h-[150px] border-input bg-background ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"

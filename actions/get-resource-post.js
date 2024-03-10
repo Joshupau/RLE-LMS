@@ -16,9 +16,13 @@ export const getResourcePosts = async (id) => {
                   firstName: true,
                   middleName: true,
                   lastName: true,
+                  id:true,
                 },
               },
             },
+            orderBy: {
+              createdAt: "desc",
+            }
           });
         
         return resourcePost;

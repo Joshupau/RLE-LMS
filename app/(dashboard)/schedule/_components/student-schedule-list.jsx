@@ -43,7 +43,7 @@ export const StudentScheduleList =  ({userId}) => {
         <>
             <div>
             </div>
-            <table className="table-auto  w-full shadow-xl rounded-md text-sm">
+            <table className="table-auto  overflow-x-scroll w-full shadow-xl rounded-md text-sm">
         <thead>
           <tr className="bg-gray-200 items-center">
             <th className="py-2 px-4 font-semibold">Date/s</th>

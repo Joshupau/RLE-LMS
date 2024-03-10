@@ -1,40 +1,50 @@
 'use client';
-import { useState } from 'react';
-import { Button } from './ui/button';
-import Newtiptap from './newtiptap';
-import DisplayFile from './display-file';
-import { useEdgeStore } from '../lib/edgestore';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import Newtiptap from '@/components/newtiptap';
+import DisplayFile from '@/components/display-file';
+import { useEdgeStore } from '@/lib/edgestore';
 import { ImagePlus, FilePlus2 } from 'lucide-react';
 import MoonLoader from 'react-spinners/MoonLoader';
 
 import { cn } from '@/lib/utils';
 
-const ExpandableTextarea = ({ id, userId }) => {
+const EditPost = ({ resourceGroupID, id, userId, descriptions, uploadLinks }) => {
   const { edgestore } = useEdgeStore();
-  
-  const [expanded, setExpanded] = useState(false);
-  
-  const [isTextareaEmpty, setIsTextAreaEmpty] = useState(true);
-  const [description, setDescription] = useState('');
+  const router = useRouter();
+
+  const [isTextareaEmpty, setIsTextAreaEmpty] = useState(false);
+  const [description, setDescription] = useState(descriptions);
   const [pendingImages, setPendingImages] = useState([]);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [pendingUploads, setPendingUploads] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [urlToDelete, setUrlToDelete] = useState([]);
+  const [uploadUrl, setUploadUrl] = useState(uploadLinks);
+  const resourceGroupId = resourceGroupID;
 
-
-  const resourceGroupId = id;
-
-
-
+  const removePostedFile = (type, content) => {
+    if(type ==='file'){
+      const filteredUploadLinks = uploadUrl.filter((link) => link !== content.fileUrl);
+      setUploadUrl(filteredUploadLinks);
+      setUrlToDelete((prevUrls) => [...prevUrls, content.fileUrl]);
+    }else if (type='image'){
+      const filteredUploadLinks = uploadUrl.filter((link) => link !== content.imageUrl);
+      setUploadUrl(filteredUploadLinks);
+      setUrlToDelete((prevUrls) => [...prevUrls, content.imageUrl]);
+    }
+  };
+  
 
 const removeFile = (fileType, content) => {
+  console.log(content);
   if (fileType === 'image') {
     window.URL.revokeObjectURL(content.imageUrl);
     setPendingImages((prevImages) =>
       prevImages.filter((image) => image.key !== content.key)
     );
   } else if (fileType === 'file') {
-    // Implement file deletion logic (using file path or other info)
     setPendingFiles((prevFiles) =>
       prevFiles.filter((file) => file.key !== content.key)
     );
@@ -70,20 +80,10 @@ const removeFile = (fileType, content) => {
   };
   
   
-
-  const handleExpand = () => {
-    setExpanded(true);
-  };
-
-  const handleCancel = () => {
-    setExpanded(false);
-    setDescription('');
-  };
-
  
   const handleDescriptionChange = (htmlContent) => {
     const trimmedDescription = htmlContent.trim();
-    console.log(htmlContent);
+    console.log(resourceGroupId);
     setDescription(trimmedDescription);
     if (htmlContent === '<p></p>'){
       setIsTextAreaEmpty(true);
@@ -95,8 +95,6 @@ const removeFile = (fileType, content) => {
 
   const uploadToEdgeStore = async (fileObject) => {
     try {
-
-
       const uploadPromise = await edgestore.publicFiles.upload({
         file: fileObject.file,
         options: {
@@ -127,10 +125,10 @@ const removeFile = (fileType, content) => {
     }
   };
 
-  const handleDataSubmission = async (fileUrls, description, resourceGroupId, userId) => {
+  const handleDataSubmission = async (fileUrls, description, resourceGroupId, userId, urlToDelete, id, uploadUrl) => {
     try {
 
-      const response = await fetch("/api/resource", {
+      const response = await fetch(`/api/resource/${id}/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,23 +136,34 @@ const removeFile = (fileType, content) => {
         body: JSON.stringify({
           fileUrls,
           description,
-          resourceGroupId,
-          userId
+          userId,
+          id,
+          uploadUrl,
         }),
       });
  
       if (!response.ok) {
         throw new Error("Failed to submit data to MongoDB");
       }
-      if(response.ok){
-        router.push(`${resourceGroupId}?id=${resourceGroupId}`);
+      if (response.ok) {
+        if(urlToDelete){
+          const deleteURL = await urlToDelete.map((links)=>{
+               edgestore.publicFiles.delete({
+                   url: links,
+               });
+           });
+           if(deleteURL){
+              console.log("Successfully deleted files in edgestore");
+              router.push(`${resourceGroupId}?id=${resourceGroupId}`);
+            } else {
+              console.log("Failed to delete files in edgestore");
+           };
+        };
       }
-    
       
     } catch (error) {
       console.log(error);
     }
-    // Handle successful submission (e.g., display success message)
   };
   
   
@@ -179,7 +188,7 @@ const removeFile = (fileType, content) => {
       console.log("All uploads successful:", fileUrls);
   
       // Call handleDataSubmission after all uploads are complete
-      await handleDataSubmission(fileUrls, description, resourceGroupId, userId);
+      await handleDataSubmission(fileUrls, description, resourceGroupId, userId, urlToDelete, id, uploadUrl);
     } catch (error) {
       console.error("Error during uploads or data submission:", error);
       // Handle errors appropriately
@@ -187,21 +196,34 @@ const removeFile = (fileType, content) => {
       // Clear pending uploads regardless of success
       setPendingImages([]);
       setPendingFiles([]);
-      setExpanded(false);
       setIsLoading(false);
     }
   };
-  
 
+  const isImage = (url) => {
+    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif"];
+    return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+  };
+  const extractFilename = (url) => {
+    const segments = url.split('/');
   
+    let filename = segments.pop();
+  
+    const hasExtension = filename.includes('.');
+  
+    if (!hasExtension && segments.length > 0) {
+      filename = segments.pop();
+    }
+  
+    return filename || "";
+  };
   
   
 
   return (
     <div>
-      {expanded ? (
         <div>
-          <Newtiptap description={description} onChange={handleDescriptionChange} />
+          <Newtiptap description={description} postedDescription={descriptions} onChange={handleDescriptionChange} />
             {/* Display uploaded images */}
             {pendingImages.map((image) => (
             <DisplayFile
@@ -209,6 +231,7 @@ const removeFile = (fileType, content) => {
               content={{ imageUrl: URL.createObjectURL(image.file), name: image.file.name, key: image.key }}
               type="image"
               removeFile={removeFile}
+              editing={false}
             />
             ))}
             {pendingFiles.map((file) => (
@@ -217,8 +240,30 @@ const removeFile = (fileType, content) => {
               content={{ fileUrl: URL.createObjectURL(file.file), name: file.file.name, key: file.key }}
               type="file"
               removeFile={removeFile}
+              editing={false}
             />
             ))}
+           {uploadUrl.map((link, index) => (
+            <div key={index}>
+              {isImage(link) ? (
+                <DisplayFile
+                  key={`image-${index}`}
+                  content={{ imageUrl: link, name: extractFilename(link), key: index }} // Use link.url consistently
+                  type="image"
+                  editing={true} // Enable editing only for pending
+                  removePostedFile={removePostedFile} // Pass entire link object
+                />
+              ) : (
+                <DisplayFile
+                  key={`file-${index}`}
+                  content={{ fileUrl: link, name: extractFilename(link), key: index }} // Use link.url consistently
+                  type="file"
+                  editing={true} // Enable editing only for pending
+                  removePostedFile={removePostedFile} // Pass entire link object
+                />
+              )}
+            </div>
+          ))}
 
           <div className="flex justify-between mt-4">
           <div className="flex gap-x-5">
@@ -246,14 +291,7 @@ const removeFile = (fileType, content) => {
             </label>
           </div>
             <div>
-              <Button
-                onClick={handleCancel}
-                className="mr-2"
-                variant="destructive"
-              >
-                Cancel
-              </Button>
-              
+           
               <Button
                 disabled={isTextareaEmpty}
                 className={cn(
@@ -267,26 +305,14 @@ const removeFile = (fileType, content) => {
               {isLoading ? (
                 <MoonLoader className='mx-2' size={10} color="#000000" loading={true} />
               ) : (
-                'Post'
+                'Save'
               )}
               </Button>
             </div>
           </div>
         </div>
-      ) : (
-        <p
-          onClick={handleExpand}
-          className="border border-gray-300 p-2 cursor-pointer text-slate-400 hover:text-blue-400 w-full"
-        >
-     What's on your mind?
-        </p>
-      )}
     </div>
   );
 };
 
-export default ExpandableTextarea;
-
-
-{/* <Button onClick={handleExpand}>Post Something</Button>
-<Button onClick={handleCancel} variant="destructive">Cancel</Button> */}
+export default EditPost;

@@ -7,10 +7,18 @@ import DisplayFile from '@/components/display-file';
 import { useEdgeStore } from '@/lib/edgestore';
 import { ImagePlus, FilePlus2 } from 'lucide-react';
 import MoonLoader from 'react-spinners/MoonLoader';
+import { DialogFooter } from '@/components/ui/dialog';
 
 import { cn } from '@/lib/utils';
 
-const EditPost = ({ resourceGroupID, id, userId, descriptions, uploadLinks }) => {
+const EditPost = ({ 
+  resourceGroupID, 
+  id, 
+  userId, 
+  descriptions, 
+  uploadLinks,
+  onClose
+}) => {
   const { edgestore } = useEdgeStore();
   const router = useRouter();
 
@@ -154,11 +162,11 @@ const removeFile = (fileType, content) => {
            });
            if(deleteURL){
               console.log("Successfully deleted files in edgestore");
-              router.push(`${resourceGroupId}?id=${resourceGroupId}`);
             } else {
               console.log("Failed to delete files in edgestore");
            };
         };
+        onClose();
       }
       
     } catch (error) {
@@ -291,7 +299,6 @@ const removeFile = (fileType, content) => {
             </label>
           </div>
             <div>
-           
               <Button
                 disabled={isTextareaEmpty}
                 className={cn(
@@ -299,14 +306,15 @@ const removeFile = (fileType, content) => {
                   'p-2',
                   'rounded-md',
                   'transition-colors'
-                )}
-                onClick={handleSubmission}
-              >
+                  )}
+                  onClick={handleSubmission}
+                  type="submit"
+                  >
               {isLoading ? (
                 <MoonLoader className='mx-2' size={10} color="#000000" loading={true} />
-              ) : (
-                'Save'
-              )}
+                ) : (
+                  'Save'
+                  )}
               </Button>
             </div>
           </div>

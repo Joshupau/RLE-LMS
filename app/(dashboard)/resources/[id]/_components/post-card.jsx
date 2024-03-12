@@ -29,9 +29,12 @@ import { useEdgeStore } from "@/lib/edgestore";
 import EditPost from "./edit-post";
 import { useRouter } from "next/navigation";
 
+import { useState } from "react";
+
 
 export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, user, createdAt, updatedAt }) => {
   const { edgestore } = useEdgeStore();
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
@@ -70,7 +73,9 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
     const updatedAtString = new Date(updatedAt).toISOString();
   return createdAtString === updatedAtString;
   }
-  
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
   return (
     <div className="m-4 md:w-[40rem] shadow-md border rounded border-gray-300 p-2 mx-auto flex flex-col items-start h-auto">
       <div className="flex justify-between p-2 cursor-pointer w-full"> 
@@ -88,7 +93,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
         </div>   
         {author.id === user &&(
 
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
           <DropdownMenu>
           <DropdownMenuTrigger>
             <MoreVertical className="hover:opacity-70 rounded-full w-10 p-2 h-10  hover:bg-slate-200"/>
@@ -121,7 +126,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
                   Make changes to your post here. Click save when you're done.
                 </DialogDescription>
            </DialogHeader>
-                <EditPost resourceGroupID={resourceGroupId} uploadLinks={uploadLinks} descriptions={content} id={id} userId={user}/>              
+                <EditPost onClose={handleCloseDialog} resourceGroupID={resourceGroupId} uploadLinks={uploadLinks} descriptions={content} id={id} userId={user}/>              
             </DialogContent>
       </Dialog>
         

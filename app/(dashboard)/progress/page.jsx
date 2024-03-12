@@ -10,7 +10,11 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+  import {
+    Popover,
+  } from "@/components/ui/popover"
 import { PatientCaseSubmission } from "./_components/patient-case-submission";
+
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
@@ -30,6 +34,7 @@ export default async function ProgressPage(){
                         This side is the list of pending and submitted cases
                         <div>
                         <Dialog>
+                        <Popover>
                             <DialogTrigger asChild>
                             <Button>
                                 Submit Patient Case
@@ -44,6 +49,7 @@ export default async function ProgressPage(){
                                 </DialogHeader>
                                 <PatientCaseSubmission />
                             </DialogContent>
+                        </Popover>
                             </Dialog>
                         </div>
                     </div>

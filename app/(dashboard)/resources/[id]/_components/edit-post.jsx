@@ -91,7 +91,6 @@ const removeFile = (fileType, content) => {
  
   const handleDescriptionChange = (htmlContent) => {
     const trimmedDescription = htmlContent.trim();
-    console.log(resourceGroupId);
     setDescription(trimmedDescription);
     if (htmlContent === '<p></p>'){
       setIsTextAreaEmpty(true);
@@ -167,6 +166,7 @@ const removeFile = (fileType, content) => {
            };
         };
         onClose();
+        router.refresh();
       }
       
     } catch (error) {

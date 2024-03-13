@@ -6,6 +6,7 @@ import DisplayFile from './display-file';
 import { useEdgeStore } from '../lib/edgestore';
 import { ImagePlus, FilePlus2 } from 'lucide-react';
 import MoonLoader from 'react-spinners/MoonLoader';
+import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 
@@ -21,6 +22,7 @@ const ExpandableTextarea = ({ id, userId }) => {
   const [pendingUploads, setPendingUploads] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+const router = useRouter();
 
   const resourceGroupId = id;
 
@@ -83,7 +85,6 @@ const removeFile = (fileType, content) => {
  
   const handleDescriptionChange = (htmlContent) => {
     const trimmedDescription = htmlContent.trim();
-    console.log(htmlContent);
     setDescription(trimmedDescription);
     if (htmlContent === '<p></p>'){
       setIsTextAreaEmpty(true);
@@ -147,14 +148,11 @@ const removeFile = (fileType, content) => {
         throw new Error("Failed to submit data to MongoDB");
       }
       if(response.ok){
-        router.push(`${resourceGroupId}?id=${resourceGroupId}`);
-      }
-    
-      
+        router.refresh();
+      }     
     } catch (error) {
       console.log(error);
     }
-    // Handle successful submission (e.g., display success message)
   };
   
   
@@ -175,9 +173,7 @@ const removeFile = (fileType, content) => {
     try {
       // Wait for all uploads to finish using Promise.all
       const fileUrls = await Promise.all(uploadPromises);
-  
-      console.log("All uploads successful:", fileUrls);
-  
+    
       // Call handleDataSubmission after all uploads are complete
       await handleDataSubmission(fileUrls, description, resourceGroupId, userId);
     } catch (error) {

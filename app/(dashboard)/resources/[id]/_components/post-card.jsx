@@ -40,8 +40,6 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
 
   const onDelete = async (id, uploadLinks, resourceGroupId) => {
     try {
-      console.log(id, uploadLinks, "TRYING TO DELETE");
-
       const response = await fetch(`/api/resource/${id}?id=${id}`, {
         method: 'DELETE'
       });
@@ -55,11 +53,9 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
               url: links,
             });
           });
-          router.push(`${resourceGroupId}?id=${resourceGroupId}`);
+          router.refresh();
         }
       }
-
-      console.log("SUCCESFULLY DELETED RESOURCE");
     } catch (error) {
       console.error('Error deleting resource:', error);     
     }

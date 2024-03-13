@@ -19,6 +19,7 @@ export const studentSchedule = async (studentId) => {
                         yearLevel: true,
                         dateFrom: true,
                         dateTo: true,
+                        week: true,
                         user: {
                             where:{
                                 role: UserRole.ClinicalInstructor,

@@ -113,9 +113,11 @@ model Resource {
 model SubmissionOfPatientCases {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   schedulingId  String @db.ObjectId
-  patientCaseId String
   caseNumber    Int
   caseType      String
+  level         String
+  date          DateTime
+  status        Boolean @default(false)
 
   scheduling Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
 
@@ -187,7 +189,6 @@ model ORMajorMinorCase {
 
 model CHNCase {
   id                    String     @id @default(auto()) @map("_id") @db.ObjectId
-  date                  DateTime
   nameOfFamilyMembers   String[]
   relationToHead        String[]
   Birthday              DateTime[]

@@ -14,12 +14,14 @@ import {
     Popover,
   } from "@/components/ui/popover"
 import { PatientCaseSubmission } from "./_components/patient-case-submission";
+import { studentSchedule } from "@/actions/get-student-schedule";
 
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
 
-    console.log(data.token.id);
+    const schedules = await studentSchedule(data.token.id);
+
     return(
         <>
             <div className="p-6">    
@@ -33,7 +35,9 @@ export default async function ProgressPage(){
                     <div className="overflow-x-auto gap-y-2">
                         This side is the list of pending and submitted cases
                         <div>
-                        <Dialog>
+                            {data.token.role === 'Student' &&(
+
+                                <Dialog>
                         <Popover>
                             <DialogTrigger asChild>
                             <Button>
@@ -47,10 +51,11 @@ export default async function ProgressPage(){
                                     Type the information of your Case.
                                 </DialogDescription>
                                 </DialogHeader>
-                                <PatientCaseSubmission />
+                                <PatientCaseSubmission yearLevel={schedules.yearLevel} schedules={schedules.schedules} />
                             </DialogContent>
                         </Popover>
                             </Dialog>
+                        )}
                         </div>
                     </div>
                     <div className="overflow-x-auto gap-y-2">

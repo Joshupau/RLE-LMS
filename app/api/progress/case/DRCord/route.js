@@ -20,9 +20,10 @@ export async function POST(req, res){
             staff,
             birthplace,
             date,
+            userId,
           } = body
 
-          if(!scheduleId|| !caseType|| !caseNumber|| !level|| 
+          if(!userId||!scheduleId|| !caseType|| !caseNumber|| !level|| 
             !babyName||
             !sex||
             !apgarScore||
@@ -40,6 +41,7 @@ export async function POST(req, res){
                 caseType: caseType,
                 level: level,
                 date: date,
+                userId: userId,
             }
           });
 

@@ -26,12 +26,14 @@ model User {
   group     String?
 
   resources Resource[]
+  submissionOfPatientCases SubmissionOfPatientCases[]
 
   resourceGroupIds String[] @db.ObjectId
   resourceGroup ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
   
   scheduleIds String[] @db.ObjectId
   schedules Scheduling[] @relation(fields: [scheduleIds], references: [id])
+  
 }
 
 enum UserRole {
@@ -113,13 +115,15 @@ model Resource {
 model SubmissionOfPatientCases {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   schedulingId  String @db.ObjectId
+  userId        String @db.ObjectId
   caseNumber    Int
   caseType      String
   level         String
   date          DateTime
   status        Boolean @default(false)
 
-  scheduling Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduling    Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
 
   drCordCase       DrCordCase[]
   drMACase         DrMACase[]
@@ -191,7 +195,7 @@ model CHNCase {
   id                    String     @id @default(auto()) @map("_id") @db.ObjectId
   nameOfFamilyMembers   String[]
   relationToHead        String[]
-  Birthday              DateTime[]
+  birthday              DateTime[]
   sex                   String[]
   maritalStatus         String[]
   educationalAttainment String[]

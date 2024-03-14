@@ -131,7 +131,7 @@ const ORM = new Set([
 ]);
 
 
-export const PatientCaseSubmission = ({schedules, yearLevel}) => {
+export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState();
   const [dateAdmitted, setDateAdmitted] = useState();
@@ -182,11 +182,11 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
     Sex: "",
     Diagnosis: "",
     Operation: "",
-    Surgeon: [],
     typeOfAnesthesia: "",
     Anesthesiologist: "",
     Scrub: "",
   })
+  const [ORSurgeon, setORSurgeon] = useState([]);
   const [DRCordCare, setDRCordCare] = useState({
     BabyName: "",
     Sex: "",
@@ -208,10 +208,11 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
     setPatientInfos({...patientInfos, sexes: updatedSexes}); 
   };
   const removeSurgeon = (indexToRemove) => {
-    const updatedSurgeons = [...ORCaseInfo.Surgeon];
+    const updatedSurgeons = [...ORSurgeon];
     updatedSurgeons.splice(indexToRemove, 1);
     setSurgeonCount(surgeonCount - 1);
-    setORCaseInfo({ ...ORCaseInfo, Surgeon: updatedSurgeons });
+    setORSurgeon(updatedSurgeons);
+    console.log(ORSurgeon);
   };
   
   
@@ -234,6 +235,7 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
           medicalDiagnosis: medicalCaseInfo.Diagnosis,
           dateAdmitted: dateAdmitted,
           dateDischarged: dateDischarged,
+          userId,
         }
   
         const response = await fetch('/api/progress/case/medical', {
@@ -275,6 +277,7 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
           staff: DRCordCare.Staff,
           birthplace: DRCordCare.Agency,
           date: date,
+          userId,
         }
           
         const response = await fetch('/api/progress/case/DRCord', {
@@ -314,6 +317,7 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
           timeOfDelivery: DRMACaseInfo.DeliveryTime,
           typeOfDelivery: DRMACaseInfo.DeliveryType,
           birthplace: DRMACaseInfo.Agency,
+          userId,
         }
 
         const response = await fetch('/api/progress/case/DRMA', {
@@ -347,16 +351,43 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
           caseNumber: parseInt(commonInfo.caseNumber),
           level: commonInfo.level,
           patientName: ORCaseInfo.PatientName,
-          age: ORCaseInfo.Age,
+          age: parseInt(ORCaseInfo.Age),
           sex: ORCaseInfo.Sex,
           medicalDiagnosis: ORCaseInfo.Diagnosis,
           operation: ORCaseInfo.Operation,
-          surgeon: ORCaseInfo.Surgeon,
+          surgeon: ORSurgeon,
           typeOfAnesthesia: ORCaseInfo.typeOfAnesthesia,
           anesthesiologist: ORCaseInfo.Anesthesiologist,
           scrub: ORCaseInfo.Scrub,
+          date: date,
+          userId,
+        }
+        const response = await fetch('/api/progress/case/OR', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(ORCase),
+        });
+    
+        if (response.ok) {
+          console.log('Successfully Submitted OR Major/Minor Case!');
+          toast({
+            title: "Success",
+            description: `${value} case submitted successfully`,
+            status: "success",
+          });
+        } else {
+          console.error(`Failed to Submit ${value} Case :<`);
+          toast({
+            title: "Failed",
+            description: "Failed to submit case successfully",
+            variant: "destructive"
+          });
         }
       } else if(value === 'CHN'){
+        const dates = patientInfos.birthdays.map(birthday => new Date(birthday));
+
         const CHNCase = {
           scheduleId: commonInfo.scheduleId,
           caseType: value,
@@ -364,11 +395,36 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
           level: commonInfo.level,
           nameOfFamilyMembers: patientInfos.names,
           relationToHead: patientInfos.relationToHeads,
-          birthday: patientInfos.birthdays,
+          birthday: dates,
           sex: patientInfos.sexes,
           maritalStatus: patientInfos.maritalStatuses,
           educationalAttainment: patientInfos.educations,
-          occupation: patientInfos.occupations, 
+          occupation: patientInfos.occupations,
+          date: date, 
+          userId,
+        }
+        const response = await fetch('/api/progress/case/CHN', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(CHNCase),
+        });
+    
+        if (response.ok) {
+          console.log('Successfully Submitted CHN Case!');
+          toast({
+            title: "Success",
+            description: `${value} case submitted successfully`,
+            status: "success",
+          });
+        } else {
+          console.error(`Failed to Submit ${value} Case :<`);
+          toast({
+            title: "Failed",
+            description: "Failed to submit case successfully",
+            variant: "destructive"
+          });
         }
       }else {
         console.log("Invalid Case Type");
@@ -782,7 +838,7 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
               />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
-          <Select defaultValue={ORCaseInfo.Sex} onValueChange={(value)=>setORCaseInfo({...medicalCaseInfo, Sex: value})} required>
+          <Select defaultValue={ORCaseInfo.Sex} onValueChange={(value)=>setORCaseInfo({...ORCaseInfo, Sex: value})} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Sex" />
             </SelectTrigger>
@@ -813,19 +869,26 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
               required
               />
           </div>
+          
           {Array(surgeonCount).fill(null).map((_, index) => (
             <>
              <div key={index} className="relative flex items-center">
             <Input
               type="text"
               placeholder="Surgeon/Assistant Surgeon"
-              value={ORCaseInfo.Surgeon || ''}
+              value={ORSurgeon[index] || ''}
               onChange={(e)=> {
-                const updatedSurgeon = [...ORCaseInfo.Surgeon]; // Create a copy of the array
-                updatedSurgeon[index] = e.target.value; // Update the value at index 1
-                setORCaseInfo({...ORCaseInfo, Surgeon: updatedSurgeon});
+                const updatedORSurgeon = [...ORSurgeon]; 
+                updatedORSurgeon[index] = e.target.value; 
+                setORSurgeon(updatedORSurgeon);
               }}               
               required/>
+                                {/* value={patientInfos.names[index] || ''}
+                  onChange={(e)=> {
+                    const updatedNames = [...patientInfos.names]; // Create a copy of the array
+                    updatedNames[index] = e.target.value; // Update the value at index 1
+                    setPatientInfos({...patientInfos, names: updatedNames});
+                  }}  */}
             {(index === 0) && ( // Render the Add button only if index is 0 (first div)
               <Button variant="ghost" type="button" onClick={() => setSurgeonCount(surgeonCount + 1)}>
                 +
@@ -844,8 +907,8 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
             <Input
               type="text"
               placeholder="Type of Anesthesia"
-              value={ORCaseInfo.Anesthesiologist}
-              onChange={(e)=>setORCaseInfo({...ORCaseInfo, Anesthesiologist: e.target.value})}
+              value={ORCaseInfo.typeOfAnesthesia}
+              onChange={(e)=>setORCaseInfo({...ORCaseInfo, typeOfAnesthesia: e.target.value})}
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
@@ -972,7 +1035,9 @@ export const PatientCaseSubmission = ({schedules, yearLevel}) => {
             </>
             )}  
             <div className="flex m-1 justify-end">
+              <DialogClose>
           <Button disabled={isSubmitting} type="submit" onClick={handleSubmit}>Submit your Patient Case</Button>
+              </DialogClose>
         </div>
     </div>
     </Popover>     

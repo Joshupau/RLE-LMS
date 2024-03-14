@@ -21,9 +21,10 @@ export async function POST(req, res){
             dateAdmitted,
             dateDischarged,
             date,
+            userId,
           } = body
 
-          if(!scheduleId|| !caseType|| !caseNumber|| !level|| !patientName|| !age|| !maritalStatus|| !sex|| !attendingPhysician|| !medicalDiagnosis|| !dateAdmitted|| !dateDischarged || !date){
+          if(!userId|| !scheduleId|| !caseType|| !caseNumber|| !level|| !patientName|| !age|| !maritalStatus|| !sex|| !attendingPhysician|| !medicalDiagnosis|| !dateAdmitted|| !dateDischarged || !date){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 
           }
 
@@ -34,6 +35,7 @@ export async function POST(req, res){
                 caseType: caseType,
                 level: level,
                 date: date,
+                userId: userId,
             }
           });
 

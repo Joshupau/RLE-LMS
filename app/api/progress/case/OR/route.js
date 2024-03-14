@@ -14,16 +14,18 @@ export async function POST(req, res){
             level,
             patientName,
             age,
+            sex,
             medicalDiagnosis,
-            dateOfDelivery,
-            timeOfDelivery,
-            typeOfDelivery,
-            birthplace,
+            operation,
+            surgeon,
+            typeOfAnesthesia,
+            anesthesiologist,
+            scrub,
             date,
             userId,
           } = body
 
-          if(!userId || !scheduleId|| !caseType|| !caseNumber|| !level||!patientName|| !age|| !medicalDiagnosis|| !dateOfDelivery|| !timeOfDelivery||!typeOfDelivery|| !birthplace || !date){
+          if(!userId || !scheduleId|| !caseType|| !caseNumber|| !date ||!level||!patientName|| !age|| !medicalDiagnosis|| !sex|| !operation||!surgeon|| !typeOfAnesthesia || !anesthesiologist || !scrub){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 
           }
 
@@ -38,19 +40,17 @@ export async function POST(req, res){
             }
           });
 
-          const dateParts = dateOfDelivery.split('T')[0];
-          const combinedString = `${dateParts}T${timeOfDelivery}:00.000Z`; 
-          
-          const datetime = new Date(combinedString);
-          const MedicalInfo = await prisma.drMACase.create({
+          const MedicalInfo = await prisma.oRMajorMinorCase.create({
             data:{
                 patientName: patientName,
                 age: age,
+                sex: sex,
                 medicalDiagnosis: medicalDiagnosis,
-                dateOfDelivery: dateOfDelivery,
-                timeOfDelivery: datetime,
-                typeOfDelivery: typeOfDelivery,
-                birthplace: birthplace,
+                operation: operation,
+                surgeon: surgeon,
+                typeOfAnesthesia: typeOfAnesthesia,
+                anesthesiologist: anesthesiologist,
+                scrub: scrub,
                 submissionOfPatientCases: {
                     connect:{
                         id:CommonInfo.id,
@@ -66,7 +66,7 @@ export async function POST(req, res){
           return NextResponse.json(responseData);
 
     } catch (error) {
-        console.error("[DRCordCare_Case]", error)
+        console.error("[ORMajorMinor_Case]", error)
         return NextResponse.json({ status: 500 }, "Internal server error");
 
     }

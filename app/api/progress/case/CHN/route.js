@@ -12,18 +12,18 @@ export async function POST(req, res){
             caseType,
             caseNumber,
             level,
-            patientName,
-            age,
-            medicalDiagnosis,
-            dateOfDelivery,
-            timeOfDelivery,
-            typeOfDelivery,
-            birthplace,
             date,
+            sex,
+            nameOfFamilyMembers,
+            relationToHead,
+            birthday,
+            maritalStatus,
+            educationalAttainment,
+            occupation,
             userId,
           } = body
 
-          if(!userId || !scheduleId|| !caseType|| !caseNumber|| !level||!patientName|| !age|| !medicalDiagnosis|| !dateOfDelivery|| !timeOfDelivery||!typeOfDelivery|| !birthplace || !date){
+          if(!userId || !scheduleId|| !caseType|| !caseNumber|| !date ||!level||!nameOfFamilyMembers|| !relationToHead|| !birthday|| !sex|| !maritalStatus||!educationalAttainment|| !occupation){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 
           }
 
@@ -38,19 +38,15 @@ export async function POST(req, res){
             }
           });
 
-          const dateParts = dateOfDelivery.split('T')[0];
-          const combinedString = `${dateParts}T${timeOfDelivery}:00.000Z`; 
-          
-          const datetime = new Date(combinedString);
-          const MedicalInfo = await prisma.drMACase.create({
+          const MedicalInfo = await prisma.cHNCase.create({
             data:{
-                patientName: patientName,
-                age: age,
-                medicalDiagnosis: medicalDiagnosis,
-                dateOfDelivery: dateOfDelivery,
-                timeOfDelivery: datetime,
-                typeOfDelivery: typeOfDelivery,
-                birthplace: birthplace,
+                sex: sex,
+                nameOfFamilyMembers: nameOfFamilyMembers,
+                relationToHead: relationToHead,
+                birthday: birthday,
+                maritalStatus: maritalStatus,
+                educationalAttainment: educationalAttainment,
+                occupation: occupation,
                 submissionOfPatientCases: {
                     connect:{
                         id:CommonInfo.id,
@@ -66,7 +62,7 @@ export async function POST(req, res){
           return NextResponse.json(responseData);
 
     } catch (error) {
-        console.error("[DRCordCare_Case]", error)
+        console.error("[ORMajorMinor_Case]", error)
         return NextResponse.json({ status: 500 }, "Internal server error");
 
     }

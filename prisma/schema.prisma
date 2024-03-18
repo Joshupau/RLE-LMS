@@ -47,18 +47,14 @@ model UserScheduling {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
   schedulingId String @db.ObjectId
-  defaultAttendanceStatus AttendanceStatus @default(NotAttended)
-  attendanceStatuses AttendanceStatus[]
+  timeIn DateTime[]
+  timeOut DateTime[]
+  dates DateTime[]
   notes String?
 }
 
 
-enum AttendanceStatus {
-  NotAttended
-  Attended
-  Excused
-  Late
-}
+
 
 
 model Scheduling {

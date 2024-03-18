@@ -20,7 +20,12 @@ export const CasesAssigned = async (clinicalInstructorId) => {
                 firstName: true,
                 lastName: true,
             }
-        }
+        },
+        drCordCase: true,
+        drMACase: true,
+        orMajorMinorCase: true,
+        medicalCase: true,
+        chnCase: true,
     }
    });
 

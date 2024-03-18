@@ -81,8 +81,6 @@ export async function POST(request) {
           data: {
             userId: studentId,
             schedulingId: schedules.id,
-            resourceGroup: resourceGroup.id,
-            // Add other fields as needed
           },
         });
       } catch (error) {

@@ -1,5 +1,4 @@
 'use client'
-
 import {
     Table,
     TableHead,
@@ -7,8 +6,9 @@ import {
     TableRow,
     TableBody,
     TableCell
-  } from "@/components/ui/table";
-  import { Button } from "@/components/ui/button";
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
 useReactTable,
 getPaginationRowModel,
@@ -57,7 +57,7 @@ const DataTable = ({ data }) => {
                 <TableCell className="text-center">{Case.caseType}</TableCell>
                 <TableCell className="text-center">{Case.level}</TableCell>
                 <TableCell className="text-center">{new Date(Case.date).toLocaleDateString()}</TableCell>
-                <TableCell className="text-center">{Case.status ? 'Approved' : 'Pending'}</TableCell>
+                <TableCell className="text-center">{Case.status ? <Badge variant="outline" className="bg-cyan-200 text-blue-500">Approved</Badge> : <Badge variant="outline" className="bg-red-200 text-red-500">Pending</Badge>}</TableCell>
               </TableRow>
             ))}
           </TableBody>

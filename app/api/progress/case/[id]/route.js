@@ -7,13 +7,18 @@ const prisma = new PrismaClient();
 export async function POST(req,res) {
     try {
         const body = await req.json();
+
+        const {
+            id,
+            status
+        } = body;
         
         const approve = await prisma.submissionOfPatientCases.update({
             where: {
-                id: body,
+                id: id,
             },
             data: {
-                status: true,
+                status: status,
             }
         });
 

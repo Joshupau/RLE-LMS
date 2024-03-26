@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -63,8 +63,47 @@ export async function POST(req, res){
             commonInfo: CommonInfo,
           };
       
-          return NextResponse.json(responseData);
+          const ClinicalInstructorId = await prisma.scheduling.findUnique({
+            where: {
+              id: scheduleId,
+            },
+            select: {
+              user: {
+                where: {
+                  role: UserRole.ClinicalInstructor,           
+                },
+                select: {
+                  id: true,
+                }
+              }
+            }
+          });
+          
+          if (!ClinicalInstructorId || !ClinicalInstructorId.user || ClinicalInstructorId.user.length === 0) {
+            console.error('Error: Clinical instructor not found.');
+            return; 
+          }
+          
+          const recipientId = ClinicalInstructorId.user[0].id;
+          
+          const userName = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { firstName: true, lastName: true }
+          });
+          
+          const notification = await prisma.notification.create({
+            data: {
+              title: "Case Submission Notification",
+              message: `${caseType} case submitted by ${userName.firstName} ${userName.lastName}`,
+              recipientId: recipientId, 
+              type: "general", 
+              link: `/progress`,
+              expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
+            },
+          });
 
+      
+          return NextResponse.json(responseData, notification);
     } catch (error) {
         console.error("[DRCordCare_Case]", error)
         return NextResponse.json({ status: 500 }, "Internal server error");

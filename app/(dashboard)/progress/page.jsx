@@ -22,16 +22,27 @@ import {
   import { AttendanceProgress } from "./_components/attendance-progress";
   import { StudentCaseProgress } from "./_components/student-case-progress";
   import { PatientCaseSubmission } from "./_components/patient-case-submission";
-import { CISchedule } from "@/actions/get-ci-schedule";
+import { getAttendance } from "@/actions/get-attendance";
 
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
 
-    const cischedules = await CISchedule(data.token.id);
-    const schedules = await studentSchedule(data.token.id);
-    const cases = await studentCases(data.token.id);
-    const casesAssigned = await CasesAssigned(data.token.id);
+// Assuming data.token.role contains the user's role
+const userRole = data.token.role;
+
+// Define boolean variables to indicate whether to fetch data based on the user's role
+const fetchAttendance = ['ClinicalInstructor', 'Dean'].includes(userRole);
+const fetchSchedules = ['Student'].includes(userRole);
+const fetchCases = ['Student'].includes(userRole);
+const fetchCasesAssigned = ['ClinicalInstructor', 'Dean'].includes(userRole);
+
+const attendancePromise = fetchAttendance ? getAttendance(data.token.id) : Promise.resolve([]);
+const schedulesPromise = fetchSchedules ? studentSchedule(data.token.id) : Promise.resolve([]);
+const casesPromise = fetchCases ? studentCases(data.token.id) : Promise.resolve([]);
+const casesAssignedPromise = fetchCasesAssigned ? CasesAssigned(data.token.id) : Promise.resolve([]);
+
+const [attendance, schedules, cases, casesAssigned] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise]);
 
     return(
         <>
@@ -46,9 +57,13 @@ export default async function ProgressPage(){
                         {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
                             <>
                             <div>
-                                {!cases && <span>Fetching Data</span>}
+                                {!casesAssigned && <span>Fetching Data</span>}
                                 <h1 className="text-xl font-medium">Student Cases</h1>
-                                {cases && <CIDataTable data={casesAssigned}/>}
+                                {casesAssigned.length > 0 ? (
+                                <CIDataTable data={casesAssigned}/>
+                                ) : (
+                                <span>No cases submitted</span>
+                                )}                            
                             </div>
                             </>
                         )}
@@ -89,10 +104,16 @@ export default async function ProgressPage(){
                             {cases && <StudentCaseProgress data={cases}/>}
                         </div>
                         )}
-                        <div>
-                          <h1 className="text-xl font-medium">Attendance Monitoring</h1>
-                            <AttendanceProgress schedules={cischedules.schedules} />
-                        </div>
+                        {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
+                            <div>
+                                <h1 className="text-xl font-medium">Attendance Monitoring</h1>
+                                {attendance.length > 0 ? (
+                                    <AttendanceProgress attendance={attendance} />
+                                ) : (
+                                    <span>Not yet Scheduled!</span>
+                                )}
+                            </div>
+                        )}
                     </div>
                     
              </div>

@@ -73,14 +73,14 @@ const CIDataTable = ({ data }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id, status: !status }), 
+            body: JSON.stringify({ id, status: status }), 
         });
           if(response.ok) {
-            toast({
-                title: "Success",
-                description: status ? "Case Disapproved!" : "Case Approved!",
-                status: "success",
-              });
+              toast({
+                  title: "Success",
+                  description: status ? "Case Disapproved!" : "Case Approved!",
+                  status: "success",
+                });
           }else {
             toast({
                 title: "Uh oh...",
@@ -98,9 +98,6 @@ const CIDataTable = ({ data }) => {
         }
     };
 
-    const handleViewDetailsRedirect = (id) => {
-        router.push(`/progress/case/${id}`, id);
-    }
     return (
       <div className="overflow-x-auto rounded-md border">
         <Table>

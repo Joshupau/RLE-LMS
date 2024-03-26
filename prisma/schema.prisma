@@ -23,10 +23,12 @@ model User {
   // Student Additional Fields
   yearLevel Int?
   section   String?
+  gender    String?
   group     String?
 
   resources Resource[]
   submissionOfPatientCases SubmissionOfPatientCases[]
+  userScheduling UserScheduling[]
 
   resourceGroupIds String[] @db.ObjectId
   resourceGroup ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
@@ -34,6 +36,7 @@ model User {
   scheduleIds String[] @db.ObjectId
   schedules Scheduling[] @relation(fields: [scheduleIds], references: [id])
   
+  notification Notification[]
 }
 
 enum UserRole {
@@ -47,15 +50,17 @@ model UserScheduling {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
   schedulingId String @db.ObjectId
-  timeIn DateTime[]
-  timeOut DateTime[]
-  dates DateTime[]
+  week String
+  timeIn DateTime?
+  timeOut DateTime?
+  date DateTime
   notes String?
+
+
+  scheduling Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
 }
-
-
-
-
 
 model Scheduling {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
@@ -70,12 +75,10 @@ model Scheduling {
   userIds               String[]     @db.ObjectId
   user User[] @relation(fields: [userIds], references: [id])
 
+  resourceGroup   ResourceGroup?
   resources                Resource[]
   submissionOfPatientCases SubmissionOfPatientCases[]
-
-  resourceGroupId String?   @db.ObjectId
-  resourceGroup   ResourceGroup?
- 
+  userScheduling        UserScheduling[]
  }
 
 model ResourceGroup {
@@ -85,7 +88,7 @@ model ResourceGroup {
   schedule    Scheduling   @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   userIds     String[]     @db.ObjectId
   users       User[]       @relation(fields: [userIds], references: [id])
-  resources   Resource[]
+  resources   Resource[]   
 }
 
 
@@ -138,7 +141,7 @@ model DrCordCase {
   staff      String
   birthplace String
 
-  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId
 }
 
@@ -152,7 +155,7 @@ model DrMACase {
   typeOfDelivery   String
   birthplace       String
 
-  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId
 }
 
@@ -167,7 +170,7 @@ model MedicalCase {
   dateAdmitted       DateTime
   dateDischarge      DateTime
 
-  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId
 }
 
@@ -183,7 +186,7 @@ model ORMajorMinorCase {
   anesthesiologist String
   scrub            String
 
-  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId
 }
 
@@ -197,6 +200,19 @@ model CHNCase {
   educationalAttainment String[]
   occupation            String[]
 
-  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id])
+  submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId
+}
+
+model Notification {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  message       String
+  createdAt     DateTime  @default(now())
+  recipient      User    @relation(fields: [recipientId], references: [id])
+  recipientId   String   @db.ObjectId
+  isRead        Boolean   @default(false)
+  type          String?   // Optional: To specify the type of notification
+  link          String?   // Optional: To store a link associated with the notification
+  expiresAt     DateTime? // Optional: To specify an expiration time for the notification
 }

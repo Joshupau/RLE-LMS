@@ -7,6 +7,8 @@ export const Logo = () => {
         width={100}
         alt="logo"
         src="/logo.png"
+        priority={true} 
+        className="w-auto h-auto"
         />
      );
 }

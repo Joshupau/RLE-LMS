@@ -1,9 +1,10 @@
 "use client";
 
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Bell } from "lucide-react";
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,34 +13,90 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-  
+  import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover"
 
-export const NavbarRoutes = () => {
-    const { data: session, status } = useSession();
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+
+export const NavbarRoutes = ({firstName, lastName, notifications}) => {
     const router = useRouter();
 
-    if (status === "loading") {
-        return <p>Loading...</p>;
-      }
-    if(!session){
-        router.push("/");
-        router.refresh();
-    }
+    const [notification, setNotification] = useState(notifications);
+    const [unreadCount, setUnreadCount] = useState(0);
+
 
     const handleSignOut = async () => {
         await signOut({ redirect: false });
         router.push("/");
     };
 
+
+    useEffect(() => {
+      // Calculate the number of unread notifications
+      const unread = notification.filter(notification => !notification.isRead).length;
+      setUnreadCount(unread);
+    }, [notifications]);
+
+    const handleReadTrue = async (notification) => {
+        try {
+
+            const response = await fetch(`/api/notification`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ notification, status: true }), 
+            });
+
+            if(!response.ok){
+                console.warn("Failed to make notifications read");
+            }
+            setUnreadCount(0);
+
+        } catch (error) {
+            console.warn("Failed to make notifications read", error);
+        }
+    }
+
     return (
         <div className="flex items-center gap-x-2 ml-auto">
-            {session && (
-                <>
+                <Popover>
+                <PopoverTrigger onClick={()=>handleReadTrue(notification)}>
+                    <div className="relative">
+                    <Bell size={30} className="w-6 h-6 ml-4" />
+                    {unreadCount > 0 && (
+                        <Badge 
+                        variant="outline"
+                        className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs bg-red-500"
+                        >
+                        {unreadCount}
+                        </Badge>
+                    )}
+                    </div>
+                </PopoverTrigger>
+                <PopoverContent>
+                    <div className="flex flex-col space-y-2">
+                    {notification.map(notification => (
+                        <a href={notification.link} key={notification.id} className="block hover:bg-gray-100 p-2 rounded-md">
+                        <h3 className="text-lg font-semibold">{notification.title}</h3>
+                        <p className="text-sm">{notification.message}</p>
+                        <p className="text-xs text-gray-500">Received at: {new Date(notification.createdAt).toLocaleString()}</p>
+                        <Separator className="mt-5"/>
+                        </a>
+                    ))}
+                    {notification.length === 0 && <p>No notifications</p>}
+                    </div>
+                </PopoverContent>
+                </Popover>
                     <DropdownMenu>
                     <DropdownMenuTrigger>
                     <User
                     size={30}     
-                    className="border-2 border-black hover:border-slate-700 hover:bg-slate-200 rounded-full m-2" />
+                    className="m-2" />
                     
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
@@ -58,11 +115,8 @@ export const NavbarRoutes = () => {
                     </DropdownMenuContent>
                     </DropdownMenu>
                 <p className="mr-4">
-                    Welcome back {session.token.firstName.toUpperCase()} {session.token.lastName.toUpperCase()}
+                    Welcome back {firstName.toUpperCase()} {lastName.toUpperCase()}
                 </p>
-                </>
-            )}
-            
             <button onClick={handleSignOut} className="flex hover:bg-slate-200 transition  p-2 rounded-full">
             <LogOut className="h-6 w-6 mr-2"/>
                 Signout

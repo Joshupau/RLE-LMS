@@ -18,6 +18,7 @@ export async function POST(request) {
       yearLevel,
       students,
       week,
+      dates,
     } = body;
 
     if (
@@ -75,16 +76,36 @@ export async function POST(request) {
       },
     });
 
+        const recipientIds = [...students, clinicalInstructor];
+
+        for (const userId of recipientIds) {
+             await prisma.notification.create({
+              data: {
+                  title: "Schedule Notification",
+                  message: `RLE schedule for Week/s ${week}.`,
+                  recipientId: userId, // Store the ID of each recipient
+                  type: "general", 
+                  link: `/schedule/${schedules.id}`,
+                  expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
+                },
+          });
+        }
+
+
     for (const studentId of students) {
       try {
-        await prisma.userScheduling.create({
-          data: {
-            userId: studentId,
-            schedulingId: schedules.id,
-          },
-        });
+        // Iterate over each date in the dates array
+        for (const date of dates) {
+          await prisma.userScheduling.create({
+            data: {
+              userId: studentId,
+              schedulingId: schedules.id,
+              date: date, 
+              week: week, 
+            },
+          });
+        }
       } catch (error) {
-        // Log the error and continue to the next student
         console.error(`Error creating UserScheduling for student ${studentId}:`, error);
       }
     }
@@ -100,6 +121,8 @@ export async function POST(request) {
       area: schedules.area,
       users: schedules.users, // Include the associated users in the response
     };
+
+
     return NextResponse.json(sanitizedSchedules, resourceGroup);
   } catch (error) {
     console.error("Error creating schedule:", error);

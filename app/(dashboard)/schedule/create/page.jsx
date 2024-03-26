@@ -38,6 +38,24 @@ function CreateSchedule() {
   const handleWeekChange = (event) => {
     setSelectedWeek(event.target.value);
   };
+
+  function getDatesInRanges(startDates, endDates) {
+    const dates = [];
+  
+    // Iterate over each pair of start and end dates
+    for (let i = 0; i < startDates.length; i++) {
+      let startDate = new Date(startDates[i]); // Convert string to Date object
+      let endDate = new Date(endDates[i]); // Convert string to Date object
+  
+      // Loop through dates from start date to end date for each pair
+      while (startDate <= endDate) {
+        dates.push(new Date(startDate)); // Add current date to the array
+        startDate.setDate(startDate.getDate() + 1); // Move to the next day
+      }
+    }
+  
+    return dates;
+  }
   
 
 
@@ -69,6 +87,11 @@ function CreateSchedule() {
         from: new Date(from),
         to: new Date(to),
       }));
+
+      const DatesofDuty = getDatesInRanges(
+        formattedDates.map((date) => date.from),
+        formattedDates.map((date) => date.to)
+      );
   
       const data = {
         clinicalInstructor: selectedInstructor.id,
@@ -81,6 +104,7 @@ function CreateSchedule() {
         yearLevel: selectedYearLevel,
         students: selectedStudents,
         week: week,
+        dates: DatesofDuty,
       };
   
       console.log('Data to be sent:', data);

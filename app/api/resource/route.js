@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -38,7 +38,53 @@ export async function POST(request) {
       },
     });
 
-    // Respond with success message
+    const userIds = await prisma.resourceGroup.findUnique({
+      where: { id: resourceGroupId },
+      select: { 
+        users: {
+          where: {
+            role: { in: [UserRole.Student, UserRole.ClinicalInstructor] }
+          },
+          select: {
+            id: true,
+          }
+        }
+      }
+    });
+    
+
+    const author = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        firstName: true,
+        lastName: true,
+      }
+    })
+
+    for (const userRecord of userIds.users){
+      try {
+        const studentId = userRecord.id;
+
+        if (studentId === userId) {
+          console.warn(`Skipping author ${studentId}`);
+          continue; 
+        }
+
+        await prisma.notification.create({
+          data: {
+              title: "Resource Notification",
+              message: `New Resource Post uploaded by ${author.firstName} ${author.lastName}.`,
+              recipientId: studentId, 
+              type: "general", 
+              link: `/resources/${resourceGroupId}`,
+              expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
+            },
+      });
+        
+      } catch (error) {
+        console.error(`Error creating UserScheduling for student ${userRecord.id}:`, error);
+      }
+    }
 
     return NextResponse.json({ status: 201 }, newResource);
   } catch (error) {

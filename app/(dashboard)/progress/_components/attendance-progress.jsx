@@ -19,52 +19,78 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 
-import { useState } from "react"
+  import { useState, useEffect } from "react";
+  import { Label } from "@/components/ui/label";
+
+  import StudentDataTable from "../StudentDataTable";
+
+
+
   
-export const AttendanceProgress = ({schedules}) =>{
+  export const AttendanceProgress = ({ attendance }) => {
     const [selectedWeek, setSelectedWeek] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
-  
-// Function to convert a date range to an array of individual dates
-const getDatesInRange = (startDate, endDate) => {
-    const dates = [];
-    let currentDate = new Date(startDate);
-    const finalDate = new Date(endDate);
-    while (currentDate <= finalDate) {
-      dates.push(currentDate.toISOString().split('T')[0]);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dates;
-  };
-  
-  // Function to convert date ranges into an array of individual dates
-  const flattenDateRanges = (dateFrom, dateTo) => {
-    let allDates = [];
-    dateFrom.forEach((startDate, index) => {
-      const datesInRange = getDatesInRange(startDate, dateTo[index]);
-      allDates = allDates.concat(datesInRange);
+    const [selectedDateData, setSelectedDateData] = useState([]);
+    const [selectedWeekData, setSelectedWeekData] = useState(null);
+
+    const [key, setKey] = useState(0); // Key variable to force remount
+
+    const handleWeekSelect = (week) => {
+      setSelectedWeek(week);
+      setSelectedDate('');
+    };
+    
+    const handleDateSelect = (date) => {
+      setSelectedDate(date);
+    };
+
+    const groupedByWeek = {};
+    attendance.forEach(({ week, userScheduling }) => {
+      if (!groupedByWeek[week]) {
+        groupedByWeek[week] = {};
+      }
+      // Group the userScheduling data by date within each week
+      userScheduling.forEach(({ date, ...rest }) => {
+        const formattedDate = new Date(date).toLocaleDateString("en-US");
+        if (!groupedByWeek[week][formattedDate]) {
+          groupedByWeek[week][formattedDate] = [];
+        }
+        groupedByWeek[week][formattedDate].push({ date, ...rest });
+      });
     });
-    return allDates;
-  };
-  const filteredSchedules = schedules.filter(schedule => schedule.week === selectedWeek);
 
-  // Get all dates for the selected week using the sample data
-  const allDatesForWeek = flattenDateRanges(filteredSchedules.map(schedule => schedule.dateFrom), filteredSchedules.map(schedule => schedule.dateTo));
-
+    useEffect(() => {
+      if (selectedWeek) {
+        const selectedWeekData = attendance.find((item) => item.week === selectedWeek)?.userScheduling;
+        setSelectedWeekData(selectedWeekData);
+      }
+    }, [selectedWeek, key]); // Include key in the dependencies
+  
+    // Set data for the selected date when both week and date are selected
+    useEffect(() => {
+      if (selectedWeek && selectedDate && groupedByWeek[selectedWeek] && groupedByWeek[selectedWeek][selectedDate]) {
+        setSelectedDateData(groupedByWeek[selectedWeek][selectedDate]);
+      }
+    }, [selectedWeek, selectedDate]);
+    
+    console.log(groupedByWeek);
     
     return (
       <Card>
         <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
           <div className="flex my-2 flex-col space-y-2 justify-end">
-            <Select onValueChange={(e) => setSelectedWeek(e)} required>
+            <Label htmlFor="">Week</Label>
+            <Select onValueChange={(e) => handleWeekSelect(e)} required>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Week" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {schedules.map((schedule, index) => (
-                    <SelectItem key={index} value={schedule.week}>
-                      {schedule.week}
+                  {attendance.map(({ week }, index) => (
+                    <SelectItem key={index} value={week}>
+                      Week {week}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -72,31 +98,32 @@ const getDatesInRange = (startDate, endDate) => {
             </Select>
           </div>
           {selectedWeek && (
-            <>
-              <div className="flex my-2 flex-col space-y-2 justify-end">
-                <Select onValueChange={(e) => setSelectedDate(e)} required>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {/* Render dates for the selected week */}
-                      {allDatesForWeek.map((date, index) => (
-                        <SelectItem key={index} value={date}>
-                          {date}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              {/* Render student list */}
-              <div>
-                List of students
-              </div>
-            </>
+            <div className="flex my-2 flex-col space-y-2 justify-end">
+              <Label>Date</Label>
+              <Select onValueChange={(e, index) => handleDateSelect(e, index)} required>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {Object.keys(groupedByWeek[selectedWeek]).map((date, index) => (
+                      <SelectItem key={index} value={date}>
+                        {date}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           )}
+            </div>
+            {selectedWeek && selectedDate && (
+              <div className="flex my-2 flex-col space-y-2 justify-end">
+                <Label>Student List for week {selectedWeek} on {selectedDate}</Label>
+                <StudentDataTable data={selectedDateData} date={selectedDate} />
+              </div>
+            )}
         </CardContent>
       </Card>
     );
-}
+  };

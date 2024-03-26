@@ -123,7 +123,10 @@ model SubmissionOfPatientCases {
 
   user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduling    Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
-
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
   drCordCase       DrCordCase[]
   drMACase         DrMACase[]
   medicalCase      MedicalCase[]

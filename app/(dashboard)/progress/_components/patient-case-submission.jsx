@@ -37,6 +37,7 @@ import { useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label"
 
 const Cases = [
   {
@@ -455,6 +456,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
   <Popover>
     <div>
         <div className="flex my-2 flex-col space-y-2 justify-end">
+        <Label>Week</Label>
         <Select onValueChange={(e)=>setCommonInfo({...commonInfo, scheduleId: e})} required>
         <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Week" />
@@ -472,6 +474,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Case Type</Label>
             <PopoverTrigger className="min-w-full" asChild>
               <Button
                 variant="outline"
@@ -515,6 +518,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
             </PopoverContent>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Case Number</Label>
             <Input
               type="number"
               placeholder="Case Number"
@@ -523,6 +527,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Date Acquired</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -547,6 +552,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Popover>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Year Level</Label>
           <Select defaultValue={commonInfo.level} disabled >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Level" />
@@ -565,6 +571,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           {allowedValues.has(value) && (
           <>
         <div className="flex flex-col space-y-2 justify-end">
+           <Label>Patient Name</Label>
             <Input
               type="text"
               placeholder="Name of Patient"
@@ -573,6 +580,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Patient Age</Label>
             <Input
               type="number"
               placeholder="Age"
@@ -581,6 +589,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Marital Status</Label>
           <Select defaultValue={medicalCaseInfo.MaritalStatus} onValueChange={(value)=>setMedicalCaseInfo({...medicalCaseInfo, MaritalStatus: value})} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Marital Status" />
@@ -596,6 +605,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Select>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Sex</Label>
           <Select defaultValue={medicalCaseInfo.Sex} onValueChange={(value)=>setMedicalCaseInfo({...medicalCaseInfo, Sex: value})} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Sex" />
@@ -610,6 +620,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Select>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Attending Physician</Label>
             <Input
               type="text"
               placeholder="Attending Physician"
@@ -618,6 +629,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Medical Diagnosis</Label>
             <Input
               type="text"
               placeholder="Medical Diagnosis"
@@ -626,6 +638,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Date Admitted</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -650,6 +663,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Popover>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Date Discharge</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -678,6 +692,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           {DRMAValues.has(value) && (
             <>
         <div className="flex flex-col space-y-2 justify-end">
+            <Label>Patient Name</Label>
             <Input
               type="text"
               placeholder="Name of Patient"
@@ -686,6 +701,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Patient Age</Label>
             <Input
               type="number"
               placeholder="Age"
@@ -694,6 +710,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Medical Diagnosis</Label>
             <Input
               type="text"
               placeholder="Medical Diagnosis"
@@ -702,6 +719,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Date of Delivery</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -726,6 +744,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Popover>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Time of Delivery</Label>
             <Input
               type="time"
               placeholder="Time of Delivery"
@@ -734,6 +753,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Type of Delivery</Label>
             <Input
               type="text"
               placeholder="Type of Delivery"
@@ -742,6 +762,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>            
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Hospital/Agency</Label>
             <Input
               type="text"
               placeholder="Name of Hospital/Agency"
@@ -754,6 +775,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           {value === 'DR Cord Care' && (
             <>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Baby Name</Label>
             <Input
               type="text"
               placeholder="Name of Baby"
@@ -762,6 +784,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Sex(Baby)</Label>
           <Select defaultValue={DRCordCare.Sex} onValueChange={(e)=>setDRCordCare({...DRCordCare, Sex: e})} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Sex" />
@@ -776,6 +799,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Select>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>APGAR Score</Label>
             <Input
               type="number"
               placeholder="APGAR Score"
@@ -784,6 +808,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Mother Name</Label>
             <Input
               type="text"
               placeholder="Name of Mother"
@@ -792,6 +817,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required />
           </div> 
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Mother Age</Label>
             <Input
               type="number"
               placeholder="Age"
@@ -800,6 +826,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required />
           </div> 
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Staff</Label>
             <Input
               type="text"
               placeholder="Staff on Duty"
@@ -808,6 +835,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               />
           </div> 
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Hospital/Agency</Label>
             <Input
               type="text"
               placeholder="Name of Hospital/Agency"
@@ -820,6 +848,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         {ORM.has(value) && (
           <>
             <div className="flex flex-col space-y-2 justify-end">
+            <Label>Patient Name</Label>
             <Input
               type="text"
               placeholder="Name of Patient"
@@ -829,6 +858,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Patient Age</Label>
             <Input
               type="number"
               placeholder="Age"
@@ -838,6 +868,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Sex</Label>
           <Select defaultValue={ORCaseInfo.Sex} onValueChange={(value)=>setORCaseInfo({...ORCaseInfo, Sex: value})} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Sex" />
@@ -861,6 +892,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               />
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Operation</Label>
             <Input
               type="text"
               placeholder="Operation"
@@ -872,7 +904,9 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           
           {Array(surgeonCount).fill(null).map((_, index) => (
             <>
-             <div key={index} className="relative flex items-center">
+          <div key={index} className="flex flex-col space-y-2 justify-end">
+           <Label>Surgeon/Assistant Surgeon</Label>
+             <div className="relative flex items-center">
             <Input
               type="text"
               placeholder="Surgeon/Assistant Surgeon"
@@ -900,10 +934,12 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               </Button>
             )}          
             </div>
+            </div>
 
              </>
           ))}
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Type of Anesthesia</Label>
             <Input
               type="text"
               placeholder="Type of Anesthesia"
@@ -912,6 +948,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Anesthesiologist</Label>
             <Input
               type="text"
               placeholder="Anesthesiologist"
@@ -920,6 +957,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               required/>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+            <Label>Scrub/Circulating Nurse</Label>
             <Input
               type="text"
               placeholder="Scrub/Circulating Nurse"
@@ -937,7 +975,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
             <Tabs className="pt-2" defaultValue="1">
               <TabsList>
             {Array(patientCount).fill(null).map((_, index) => (
-              <TabsTrigger key={index} value={index}>Patient{index + 1}</TabsTrigger>
+              <TabsTrigger key={index} value={index}>Patient {index + 1}</TabsTrigger>
               ))}
               </TabsList>
               <Button variant="ghost" type="button" onClick={() => setPatientCount(patientCount + 1)}>Add Patient</Button>
@@ -947,7 +985,8 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                     <h1 className="text-2xl font-medium">Patient {index + 1} Information</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col space-y-2 justify-end">
-                  <Input type="text" name="name" placeholder="Name e.g J.D.C" 
+                <Label>Name</Label>
+                  <Input type="text" name="name" placeholder="Name" 
                   value={patientInfos.names[index] || ''}
                   onChange={(e)=> {
                     const updatedNames = [...patientInfos.names]; // Create a copy of the array
@@ -957,6 +996,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                   required/>
                 </div>
                 <div className="flex flex-col space-y-2 justify-end">
+                <Label>Relation to Head</Label>
                 <Input 
                   type="text" 
                   name="relationToHead" 
@@ -970,6 +1010,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                   required/>
                 </div>
                 <div className="flex flex-col space-y-2 justify-end">
+                 <Label>Occupation/Workplace</Label>
                   <Input type="date" name="occupation" placeholder="Occupation/Workplace" 
                     value={patientInfos.birthdays[index] || ''}
                     onChange={(e)=> {
@@ -979,6 +1020,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                     }} required/>
                   </div>
               <div className="flex flex-col space-y-2 justify-end">
+              <Label>Marital Status</Label>
               <Select defaultValue={patientInfos.maritalStatuses[index]}  onValueChange={(value)=>handleMaritalStatusChange(value, index)} required>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Marital Status" />
@@ -994,6 +1036,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               </Select>
               </div>
               <div className="flex flex-col space-y-2 justify-end">
+              <Label>Sex</Label>
               <Select defaultValue={patientInfos.sexes[index]} onValueChange={(value) => handleSexChange(value, index)} required>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Sex" />
@@ -1008,6 +1051,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
               </Select>
                 </div>
             <div className="flex flex-col space-y-2 justify-end">
+            <Label>Highest Educational Attainment</Label>
               <Input type="text" name="education" placeholder="Highest Educational Attainment"
                   value={patientInfos.educations[index] || ''}
                   onChange={(e)=> {
@@ -1018,6 +1062,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                   required/>
             </div>
             <div className="flex flex-col space-y-2 justify-end">
+            <Label>Occupation/Workplace</Label>
               <Input type="text" name="occupation" placeholder="Occupation/Workplace" 
                   value={patientInfos.occupations[index] || ''}
                   onChange={(e)=> {

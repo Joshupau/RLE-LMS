@@ -7,12 +7,15 @@ import  SchedulingCalendar  from "./_components/calendar";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { CISchedule } from "@/actions/get-ci-schedule";
+import DataTable from "./DataTable";
+import { approvedCases } from "@/actions/get-approved-cases";
 
 
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
-  const scheduledata = await CISchedule(data.token.id)
+  const scheduledata = await CISchedule(data.token.id);
+  const ApprovedCases = await approvedCases(data.token.id);
 
   return (
     <>
@@ -23,19 +26,22 @@ export const Dashboard = async () => {
               <div>
                   <Card>
                     <CardContent>
-                      Here is the Calendar
+                      What to add here?
                     </CardContent>
                   </Card>
               </div>
-              <div>
+                { data.token.role === 'Student' && (
+                <div>
+                  <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
-                    <CardContent>
-                      Here is the List of Approved Cases
-                    </CardContent>
+                    <DataTable data={ApprovedCases}/>
                   </Card>
               </div>
+                )}
               <div className="col-span-2 row-span-2">
-              <SchedulingCalendar scheduledata={scheduledata.schedules}/>
+                
+                  <SchedulingCalendar scheduledata={scheduledata.schedules}/>
+                
               </div>
         </div>
     </>

@@ -26,7 +26,7 @@ export const approvedCases = async (studentId) => {
                 }
             },
             orderBy: {
-                createdAt: true,
+                createdAt: "desc",
             }
           });
           

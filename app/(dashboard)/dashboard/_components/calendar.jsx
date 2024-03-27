@@ -104,7 +104,7 @@ const SchedulingCalendar = ({ scheduledata }) => {
   };
 
   return (
-    <div className='h-[600px] w-full my-4 mb-15'>
+    <div className='h-[600px] bg-white w-full my-4 mb-15'>
 
       <Calendar
         localizer={localizer}

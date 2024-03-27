@@ -6,19 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getResourcePosts } from "@/actions/get-resource-post";
 
 
-async function getResourcePost(id) {
-  try {
-    const response = await getResourcePosts(id);
-
-    return response;
-  } catch (error) {
-    console.error('Error fetching resources:', error);
-  }
-};
 
 export const PostList = async ({ id, user }) => {
 
-  const resourcePost = await getResourcePost(id);
+  const resourcePost = await getResourcePosts(id);
   const resourceGroupId = id;
   return (
     <div>

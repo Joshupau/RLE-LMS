@@ -1,5 +1,7 @@
 import { PrismaClient, UserRole } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
@@ -7,7 +9,16 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    const { description, resourceGroupId, fileUrls, userId } = body;
+    const session = await getServerSession(authOptions);
+
+    if(!session){
+      return NextResponse.json({ status: 401 }, "Unauthorized Error");
+
+    }
+    const userId = session.token.id;
+
+
+    const { description, resourceGroupId, fileUrls } = body;
 
 
     const schedulingId = await prisma.resourceGroup.findUnique({

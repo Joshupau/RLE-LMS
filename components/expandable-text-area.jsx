@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 
-const ExpandableTextarea = ({ id, userId }) => {
+const ExpandableTextarea = ({ id }) => {
   const { edgestore } = useEdgeStore();
   
   const [expanded, setExpanded] = useState(false);
@@ -22,7 +22,7 @@ const ExpandableTextarea = ({ id, userId }) => {
   const [pendingUploads, setPendingUploads] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-const router = useRouter();
+  const router = useRouter();
 
   const resourceGroupId = id;
 
@@ -36,7 +36,6 @@ const removeFile = (fileType, content) => {
       prevImages.filter((image) => image.key !== content.key)
     );
   } else if (fileType === 'file') {
-    // Implement file deletion logic (using file path or other info)
     setPendingFiles((prevFiles) =>
       prevFiles.filter((file) => file.key !== content.key)
     );
@@ -104,7 +103,6 @@ const removeFile = (fileType, content) => {
           manualFileName:  Math.floor(Math.random() * 1000)+"/"+fileObject.file.name,
         },
         onProgressChange: (progress) => {
-          // Update the fileObject's progress in state
           setPendingUploads((prevUploads) => {
             const updatedUploads = prevUploads.map((upload) => {
               if (upload.key === fileObject.key) {
@@ -118,17 +116,15 @@ const removeFile = (fileType, content) => {
         },
       });
       
-      // Wait for successful upload
       const url = uploadPromise.url;
       return url;
     } catch (error) {
       console.error('Error uploading file:', error);
-      // Handle the error as needed
       return null;
     }
   };
 
-  const handleDataSubmission = async (fileUrls, description, resourceGroupId, userId) => {
+  const handleDataSubmission = async (fileUrls, description, resourceGroupId) => {
     try {
 
       const response = await fetch("/api/resource", {
@@ -140,7 +136,6 @@ const removeFile = (fileType, content) => {
           fileUrls,
           description,
           resourceGroupId,
-          userId
         }),
       });
  
@@ -166,21 +161,16 @@ const removeFile = (fileType, content) => {
     ];
   
     const uploadPromises = allPendingUploads.map(fileObject => {
-      // Return a promise for each upload
       return uploadToEdgeStore(fileObject);
     });
   
     try {
-      // Wait for all uploads to finish using Promise.all
       const fileUrls = await Promise.all(uploadPromises);
     
-      // Call handleDataSubmission after all uploads are complete
-      await handleDataSubmission(fileUrls, description, resourceGroupId, userId);
+      await handleDataSubmission(fileUrls, description, resourceGroupId);
     } catch (error) {
       console.error("Error during uploads or data submission:", error);
-      // Handle errors appropriately
     } finally {
-      // Clear pending uploads regardless of success
       setPendingImages([]);
       setPendingFiles([]);
       setExpanded(false);

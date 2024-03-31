@@ -1,129 +1,135 @@
 import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { TableCell, TableRow } from "@/components/ui/table"; // Import TableCell and TableRow
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Pencil, Trash2, ScanSearch, MoreVertical } from "lucide-react";
+
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
+const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
+  const router = useRouter();
 
-export const ScheduleItem = ({id, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel}) => {
-    const router = useRouter();
-    const clinicalInstructor = user.find((user) => user.role === 'ClinicalInstructor');
+  const clinicalInstructor = user.find((user) => user.role === 'ClinicalInstructor');
 
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-    const handleViewSchedule = (value) => {
-        router.push(`/schedule/${id}`, value);
-    };
-    const handleEditSchedule = (value) => {
-      router.push(`/schedule/edit/${id}`, value);
+  const handleViewSchedule = () => {
+    router.push(`/schedule/${id}`);
   };
 
-    const handleDeleteSchedule = async (id) => {
-      try {
+  const handleEditSchedule = () => {
+    router.push(`/schedule/edit/${id}`);
+  };
 
-        const response = await fetch(`/api/schedule/${id}?id=${id}`, {
-          method: 'DELETE', // Ensure DELETE method
-        });
-        if (!response.ok) {
-          throw new Error('Failed to delete schedule');
-        }
-          } catch (error) {
-        console.error('Error deleting schedule:', error);
+  const handleDeleteSchedule = async () => {
+    try {
+      const response = await fetch(`/api/schedule/${id}?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete schedule');
       }
-    };
-    
+    } catch (error) {
+      console.error('Error deleting schedule:', error);
+    }
+  };
 
-    const formatDate = (dateString) => {
-      try {
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-      } catch (error) {
-        console.error("Error formatting date:", error);
-        return "Invalid Date";
+  const formatDate = (dateString) => {
+    try {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
+    }
+  };
+
+  const formatDateTimeRange = (dateFromArray, dateToArray) => {
+    try {
+      if (dateFromArray.length === 1 && !dateToArray.length === 1) {
+        const formattedDate = formatDate(dateFromArray[0]);
+        return [formattedDate];
       }
-    };
-    
-    const formatDateTimeRange = (dateFromArray, dateToArray) => {
-      try {
-        if (dateFromArray.length === 1 && !dateToArray.length === 1) {
-          const formattedDate = formatDate(dateFromArray[0]);
-          return [formattedDate]; // Return an array with the single formatted date
-        }
-        const combinedDates = dateFromArray
-          .map((dateFrom, index) => {
-            const formattedDateTo = formatDate(dateToArray[index]);
-            return `${formatDate(dateFrom)} - ${formattedDateTo}`;
-          })
-          .filter(Boolean); // Remove undefined values if dates are of different lengths
-    
-        return combinedDates;
-      } catch (error) {
-        console.error("Error formatting date range:", error);
-        return "Invalid Date Range";
-      }
-    };
-    
-    
-    return(
-        <tr className="border-b border-gray-300">
-        <td className="py-2 px-4 text-center">      
+      const combinedDates = dateFromArray.map((dateFrom, index) => {
+        const formattedDateTo = formatDate(dateToArray[index]);
+        return `${formatDate(dateFrom)} - ${formattedDateTo}`;
+      }).filter(Boolean);
+
+      return combinedDates;
+    } catch (error) {
+      console.error("Error formatting date range:", error);
+      return "Invalid Date Range";
+    }
+  };
+
+  return (
+    <TableRow>
+      <TableCell className="py-2 px-4 text-center">
         {formatDateTimeRange(dateFrom, dateTo).map((dateRange, index) => (
-                  <span key={index}>{dateRange}<br/></span>
-                ))}
-        </td>
-          <td className="py-2 px-4 text-center">{`${clinicalInstructor.firstName} ${clinicalInstructor.lastName}`}</td>
-        <td className="py-2 px-4 text-center">{area}</td>
-        <td className="py-2 px-4 text-center">{groupId}</td>
-        <td className="py-2 px-4 text-center">{yearLevel}</td>
-        <td className="py-2 px-4 text-center">
-          {Number(clinicalHours) === 1 ? "AM Shift" :
-            Number(clinicalHours) === 2 ? "PM Shift" :
-              Number(clinicalHours) === 3 ? "Graveyard Shift" : null}
-        </td>
-        <td className="py-2 px-4 ">
-          <div className="my-2">
-            <Button onClick={handleViewSchedule}>View Schedule</Button>
-          </div>
-          <div className="my-2">           
-              <AlertDialog>
-              <AlertDialogTrigger>
-                <Button variant="destructive">
-                  Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the schedule
-                    and remove the schedule data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                  onClick={() => handleDeleteSchedule(id)}
-                  >
-                    Continue
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            </div>
-            <div className="my-2">
-            <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleEditSchedule}>Edit Schedule</Button>
-            </div>
-        </td>
-      </tr>
-        
-        );
-}
+          <span key={index}>{dateRange}<br /></span>
+        ))}
+      </TableCell>
+      <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor.firstName} ${clinicalInstructor.lastName}`}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{area}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>
+      <TableCell className="py-2 px-4 text-center">
+        {Number(clinicalHours) === 1 ? "AM Shift" :
+          Number(clinicalHours) === 2 ? "PM Shift" :
+            Number(clinicalHours) === 3 ? "Graveyard Shift" : null}
+      </TableCell>
+      <TableCell className="py-2 px-4 text-center">
+          <AlertDialog>
+        <DropdownMenu>
+        <DropdownMenuTrigger>
+              <MoreVertical className="hover:opacity-70 rounded-full w-10 p-2 h-10  hover:bg-slate-200"/>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+                 <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={handleViewSchedule}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      <span>View Schedule Details</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                     <AlertDialogTrigger className="flex">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span >Delete Schedule</span>
+                    </AlertDialogTrigger>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleEditSchedule}>
+                        <ScanSearch className="mr-2 h-4 w-4" />
+                        <span >Edit Schedule</span>
+                    </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                  </DropdownMenuContent>           
+             </DropdownMenu>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the schedule
+                  and remove the schedule data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteSchedule}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+      </TableCell>
+    </TableRow>
+  );
+};
 
-
+export default ScheduleItem;

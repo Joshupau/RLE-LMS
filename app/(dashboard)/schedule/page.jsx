@@ -1,12 +1,19 @@
 
 
 import Link from "next/link"
-import ScheduleList from "./_components/schedule-list"
 import { StudentScheduleList} from "./_components/student-schedule-list";
-import { CIScheduleList } from "./_components/ci-schedule-list";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+
+import DeanDataTable from "./DeanDataTable";
+import CIDataTable from "./CIDataTable";
+import StudentDataTable from "./StudentDataTable";
+
+import { getScheduleWithUsers } from "@/actions/get-schedule";
+import { CISchedule } from "@/actions/get-ci-schedule";
+import { studentSchedule } from "@/actions/get-student-schedule";
 
 export default async function SchedulePage() {
 
@@ -14,6 +21,10 @@ export default async function SchedulePage() {
 
   const userRole = data?.token.role;
   const userId = data?.token.id;
+
+  const DeanSchedules = await getScheduleWithUsers();
+  const CISchedules = await CISchedule(data.token.id);
+  const StudentSchedules = await studentSchedule(data.token.id);
 
   return (
     <div className="p-6">
@@ -26,7 +37,7 @@ export default async function SchedulePage() {
             </div>
           </div>
           <div>
-            <ScheduleList/>
+            <DeanDataTable data={DeanSchedules}/>
             <div className="mt-4">
               <Link href={'/schedule/create'}>
                 <Button>
@@ -46,7 +57,7 @@ export default async function SchedulePage() {
               <h1 className="text-2xl font-medium">Schedule List</h1>
             </div>
           </div>
-          <CIScheduleList userId={userId}/>
+          <CIDataTable data={CISchedules.schedules}/>
         </>
       )}
 
@@ -57,7 +68,7 @@ export default async function SchedulePage() {
               <h1 className="text-2xl font-medium">Schedule List</h1>
             </div>
           </div>
-          <StudentScheduleList userId={userId}/>
+          <StudentDataTable data={StudentSchedules.schedules}/>
         </>
       )}
 

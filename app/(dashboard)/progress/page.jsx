@@ -10,6 +10,14 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+  import { 
+Card,
+CardHeader,
+CardContent,
+CardTitle,
+} from "@/components/ui/card";
+import GuidelinesTable from "./_components/guideline-table";
+import { UserIcon,  CheckIcon } from "lucide-react";
   import {
     Popover,
   } from "@/components/ui/popover"
@@ -52,6 +60,35 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                     <h1 className="text-2xl font-medium">RLE Performance</h1>
                     </div>
                 </div>
+        <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
+          <Card className="flex-1 shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Cases Submitted</CardTitle>
+              <UserIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{cases.length}/250</div>
+            </CardContent>
+          </Card>
+          <Card className="flex-1 shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Total Absences</CardTitle>
+              <UserIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+            </CardContent>
+          </Card>
+          <Card className="flex-1 shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Case Progress</CardTitle>
+              <CheckIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{(cases.length / 250) * 100}%</div>
+            </CardContent>
+          </Card>
+        </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                     <div className="overflow-x-auto gap-y-2">
                         {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
@@ -71,7 +108,6 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                                 <>
                         <div>
                             {!cases && <span>Fetching Data</span>}
-                            <h1 className="text-xl font-medium">Your Submitted Cases</h1>
                             {cases && <DataTable data={cases}/>}
                         </div>
                         <div className="my-4">
@@ -99,11 +135,11 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                         )}
                     </div>
                     <div className="overflow-x-auto gap-y-2">
-                        {data.token.role === 'Student' &&(
+                    {/* {data.token.role === 'Student' &&(
                         <div>
-                            {cases && <StudentCaseProgress data={cases}/>}
+                            <GuidelinesTable/>
                         </div>
-                        )}
+                        )} */}
                         {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
                             <div>
                                 <h1 className="text-xl font-medium">Attendance Monitoring</h1>
@@ -111,13 +147,18 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                                     <AttendanceProgress attendance={attendance} />
                                 ) : (
                                     <span>Not yet Scheduled!</span>
-                                )}
+                                    )}
                             </div>
                         )}
                     </div>
                     
              </div>
+             {data.token.role === 'Student' &&(
+             <div>
+                 {cases && <StudentCaseProgress data={cases}/>}
+             </div>
+             )}
              </div>
              </>
              )
-}
+            }

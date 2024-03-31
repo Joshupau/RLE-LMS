@@ -1,35 +1,40 @@
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 
 export const StudentScheduleItem = ({ dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
 
 
   return (
-<tr className="border-b border-gray-300">
-      <td className="py-2 px-4 text-center">      
+<TableRow>
+      <TableCell className="py-2 px-4 text-center">      
         {formatDateTimeRange(dateFrom, dateTo).map((dateRange, index) => (
                   <span key={index}>{dateRange}<br/></span>
                 ))}
-        </td>
-          <td className="py-2 px-4 text-center">
+        </TableCell>
+          <TableCell className="py-2 px-4 text-center">
           {user.map((user, index) => (
               <span key={index}>
                 {user.firstName} {user.lastName}
                 <br />
               </span>
             ))}
-              </td>
-        <td className="py-2 px-4 text-center">{area}</td>
-        <td className="py-2 px-4 text-center">{groupId}</td>
-        <td className="py-2 px-4 text-center">{yearLevel}</td>
-        <td className="py-2 px-4 text-center">
+              </TableCell>
+        <TableCell className="py-2 px-4 text-center">{area}</TableCell>
+        <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
+        <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>
+        <TableCell className="py-2 px-4 text-center">
           {Number(clinicalHours) === 1 ? "AM Shift" :
             Number(clinicalHours) === 2 ? "PM Shift" :
               Number(clinicalHours) === 3 ? "Graveyard Shift" : null}
-        </td>
-        <td className="py-2 px-4 text-center">
-            <Button onClick={()=>{}}>View Resource</Button>
-        </td>
-    </tr>
+        </TableCell>
+    </TableRow>
   );
 };
 

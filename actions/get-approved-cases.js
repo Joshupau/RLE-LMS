@@ -9,8 +9,8 @@ export const approvedCases = async (studentId) => {
             where: {
                 user: {
                     id: studentId,
-                    status: true,
-                }
+                },
+                status: true,
             },
             include: {
                 drCordCase: true,

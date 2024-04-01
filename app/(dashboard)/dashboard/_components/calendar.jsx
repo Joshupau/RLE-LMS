@@ -78,7 +78,7 @@ const SchedulingCalendar = ({ scheduledata }) => {
 );
 
   const flattenedEvents = [].concat(...events);
-  const colors = ['#ff9999', '#99ccff', '#99ff99'];
+  const colors = ['#ff9999', '#99ccff', ''];
 
   let lastColorIndex = 0;
 

@@ -43,6 +43,9 @@ export const authOptions = ({
             if(!passwordsMatch){
               return null;
             }
+            if(user.role === 'SystemAdmin'){
+              return user;
+            }
 
             console.log(user);
             return user;

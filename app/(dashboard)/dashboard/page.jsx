@@ -23,13 +23,6 @@ export const Dashboard = async () => {
               <div className="col-span-2 row-span-2">
               <CarouselPlugin/>
               </div>
-              <div>
-                  <Card>
-                    <CardContent>
-                      What to add here?
-                    </CardContent>
-                  </Card>
-              </div>
                 { data.token.role === 'Student' && (
                 <div>
                   <h1 className="text-xl font-medium">Approved Cases</h1>

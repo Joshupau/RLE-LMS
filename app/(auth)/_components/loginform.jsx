@@ -26,7 +26,7 @@ export const Loginform = () => {
               redirect: false,
             });
       
-            // If successful, redirect to the dashboard
+            console.log(response, "This is from logging in");
             if (response?.error) {
               setError("input correct credentials");
             } else {

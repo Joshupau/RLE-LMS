@@ -12,12 +12,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useToast } from "@/components/ui/use-toast";
 
 const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
   const router = useRouter();
 
   const clinicalInstructor = user.find((user) => user.role === 'ClinicalInstructor');
 
+  const { toast } = useToast();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -37,10 +39,24 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error('Failed to delete schedule');
+        toast({
+          title: "Uh oh...",
+          description:  "Cannot delete a schedule once there are submitted cases or resource posts.",
+          status: "destructive",
+        });        
       }
+      toast({
+        title: "Success",
+        description:  "Successfully deleted the schedule.",
+        status: "Success",
+      });   
     } catch (error) {
       console.error('Error deleting schedule:', error);
+      toast({
+        title: "Uh oh...",
+        description:  "Cannot delete a schedule once there are submitted cases or resource posts.",
+        status: "destructive",
+      });   
     }
   };
 
@@ -118,7 +134,8 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the schedule
-                  and remove the schedule data from our servers.
+                  and remove the schedule data from our servers. <br /> <br />
+                  Note: Scheduled can't be deleted once there is data in resource or cases are submitted.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

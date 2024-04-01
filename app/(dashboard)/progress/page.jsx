@@ -10,27 +10,30 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-  import { 
-Card,
-CardHeader,
-CardContent,
-CardTitle,
-} from "@/components/ui/card";
-import GuidelinesTable from "./_components/guideline-table";
-import { UserIcon,  CheckIcon } from "lucide-react";
   import {
     Popover,
   } from "@/components/ui/popover"
+
   import { studentSchedule } from "@/actions/get-student-schedule";
   import { studentCases } from "@/actions/get-student-cases";
-  import DataTable from "./DataTable";
-  import CIDataTable from "./CIDataTable";
   import { CasesAssigned } from "@/actions/get-cases";
 
+  import CIDataTable from "./CIDataTable";
+  import DataTable from "./DataTable";
+  import { getAbsences } from "@/actions/get-absences";
+  import { getAttendance } from "@/actions/get-attendance";
+  
+
+  import { CaseTrends } from "./_components/case-trends";
+  import { BarChart } from "./_components/case-analytics-barchart";
+  import GuidelinesTable from "./_components/guideline-table";
+  import { StudentPerformanceCards } from "./_components/student-performance-cards";
   import { AttendanceProgress } from "./_components/attendance-progress";
   import { StudentCaseProgress } from "./_components/student-case-progress";
   import { PatientCaseSubmission } from "./_components/patient-case-submission";
-import { getAttendance } from "@/actions/get-attendance";
+  import { AttendanceAnalytics } from "./_components/attendance-analytics";
+  import { getAttendanceAbsencesTotalByMonth } from "@/actions/get-dean-dashboard";
+import { getCasePerformance } from "@/actions/get-cases-performance";
 
 
 export default async function ProgressPage(){
@@ -43,15 +46,24 @@ const userRole = data.token.role;
 const fetchAttendance = ['ClinicalInstructor', 'Dean'].includes(userRole);
 const fetchSchedules = ['Student'].includes(userRole);
 const fetchCases = ['Student'].includes(userRole);
+const fetchAbsences = ['Student'].includes(userRole);
 const fetchCasesAssigned = ['ClinicalInstructor', 'Dean'].includes(userRole);
 
 const attendancePromise = fetchAttendance ? getAttendance(data.token.id) : Promise.resolve([]);
 const schedulesPromise = fetchSchedules ? studentSchedule(data.token.id) : Promise.resolve([]);
 const casesPromise = fetchCases ? studentCases(data.token.id) : Promise.resolve([]);
 const casesAssignedPromise = fetchCasesAssigned ? CasesAssigned(data.token.id) : Promise.resolve([]);
+const absencesPromise = fetchAbsences ? getAbsences(data.token.id): Promise.resolve([]);
 
-const [attendance, schedules, cases, casesAssigned] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise]);
+const analyticsData = await getAttendanceAbsencesTotalByMonth();
+const { barChartData, yearLevelTables } = await getCasePerformance();
 
+const [attendance, schedules, cases, casesAssigned, absences] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise, absencesPromise]);
+
+const groupColors = {
+    A: 'bg-green-500',
+    B: 'bg-blue-500',
+  };
     return(
         <>
             <div className="p-6">    
@@ -60,35 +72,11 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                     <h1 className="text-2xl font-medium">RLE Performance</h1>
                     </div>
                 </div>
-        <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
-          <Card className="flex-1 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Cases Submitted</CardTitle>
-              <UserIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{cases.length}/250</div>
-            </CardContent>
-          </Card>
-          <Card className="flex-1 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Total Absences</CardTitle>
-              <UserIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">0</div>
-            </CardContent>
-          </Card>
-          <Card className="flex-1 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium">Case Progress</CardTitle>
-              <CheckIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{(cases.length / 250) * 100}%</div>
-            </CardContent>
-          </Card>
-        </div>
+            {data.token.role === 'Student' &&(
+            <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
+            <StudentPerformanceCards absences={absences} cases={cases} />
+            </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                     <div className="overflow-x-auto gap-y-2">
                         {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
@@ -108,7 +96,7 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                                 <>
                         <div>
                             {!cases && <span>Fetching Data</span>}
-                            {cases && <DataTable data={cases}/>}
+                            {cases && cases.length > 0 && <DataTable data={cases}/>}
                         </div>
                         <div className="my-4">
 
@@ -135,12 +123,13 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                         )}
                     </div>
                     <div className="overflow-x-auto gap-y-2">
-                    {/* {data.token.role === 'Student' &&(
+                    {data.token.role === 'Dean' &&(
                         <div>
-                            <GuidelinesTable/>
+                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>                           
+                        <BarChart data={barChartData}/>
                         </div>
-                        )} */}
-                        {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
+                            )}
+                        {['ClinicalInstructor'].includes(data.token.role) && (
                             <div>
                                 <h1 className="text-xl font-medium">Attendance Monitoring</h1>
                                 {attendance.length > 0 ? (
@@ -153,9 +142,20 @@ const [attendance, schedules, cases, casesAssigned] = await Promise.all([attenda
                     </div>
                     
              </div>
-             {data.token.role === 'Student' &&(
+
+             {data.token.role === 'Dean' &&(
+                <>
+                <div>
+                    <CaseTrends yearLevelTables={yearLevelTables}/>
+                </div>
+              <div className="m-4">
+                <AttendanceAnalytics data={analyticsData}/>
+              </div>
+                </>
+             )}
+          {data.token.role === 'Student' &&(
              <div>
-                 {cases && <StudentCaseProgress data={cases}/>}
+            {cases && cases.length > 0 && <StudentCaseProgress data={cases} />}
              </div>
              )}
              </div>

@@ -32,20 +32,12 @@ export async function POST(request) {
     ) {
       return NextResponse.json({ error: "Missing Fields" }, { status: 400 });
     }
-
-    const combinedUsers = [...students, clinicalInstructor, userId];
-
-    const existingUsers = await prisma.user.findMany({
-      where: { id: { in: combinedUsers } },
-    });
-
-    if (existingUsers.length !== combinedUsers.length) {
-      return NextResponse.json({ error: "Invalid user IDs" }, { status: 400 });
-    }
-
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
 
+    const combinedUsers = [...students, clinicalInstructor, userId];
+    const recipientIds = [...students, clinicalInstructor];
+    
     const schedules = await prisma.scheduling.create({
       data: {
         clinicalHours,
@@ -61,7 +53,7 @@ export async function POST(request) {
       },
       include: {
         user: true,
-      }
+      },
     });
 
     const resourceGroup = await prisma.resourceGroup.create({
@@ -76,40 +68,33 @@ export async function POST(request) {
       },
     });
 
-        const recipientIds = [...students, clinicalInstructor];
+    const notificationPromises = recipientIds.map((userId) =>
+      prisma.notification.create({
+        data: {
+          title: "Schedule Notification",
+          message: `RLE schedule for Week/s ${week}.`,
+          recipientId: userId,
+          type: "general",
+          link: `/schedule/${schedules.id}`,
+          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        },
+      })
+    );
 
-        for (const userId of recipientIds) {
-             await prisma.notification.create({
-              data: {
-                  title: "Schedule Notification",
-                  message: `RLE schedule for Week/s ${week}.`,
-                  recipientId: userId, // Store the ID of each recipient
-                  type: "general", 
-                  link: `/schedule/${schedules.id}`,
-                  expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
-                },
-          });
-        }
+    await Promise.all(notificationPromises);
 
+    const userSchedulingData = students.flatMap((studentId) =>
+      dates.map((date) => ({
+        userId: studentId,
+        schedulingId: schedules.id,
+        date: date,
+        week: week,
+      }))
+    );
 
-    for (const studentId of students) {
-      try {
-        // Iterate over each date in the dates array
-        for (const date of dates) {
-          await prisma.userScheduling.create({
-            data: {
-              userId: studentId,
-              schedulingId: schedules.id,
-              date: date, 
-              week: week, 
-            },
-          });
-        }
-      } catch (error) {
-        console.error(`Error creating UserScheduling for student ${studentId}:`, error);
-      }
-    }
-    
+    await prisma.userScheduling.createMany({
+      data: userSchedulingData,
+    });
 
     const sanitizedSchedules = {
       id: schedules.id,
@@ -119,9 +104,8 @@ export async function POST(request) {
       groupId: schedules.groupId,
       yearLevel: schedules.yearLevel,
       area: schedules.area,
-      users: schedules.users, // Include the associated users in the response
+      users: schedules.user,
     };
-
 
     return NextResponse.json(sanitizedSchedules, resourceGroup);
   } catch (error) {

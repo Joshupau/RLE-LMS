@@ -93,6 +93,7 @@ function CreateSchedule() {
         formattedDates.map((date) => date.to)
       );
   
+  
       const data = {
         clinicalInstructor: selectedInstructor.id,
         clinicalHours: document.getElementById('hours').value,

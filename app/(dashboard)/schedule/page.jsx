@@ -1,7 +1,6 @@
 
 
 import Link from "next/link"
-import { StudentScheduleList} from "./_components/student-schedule-list";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

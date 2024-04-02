@@ -4,6 +4,8 @@ import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import Link from "next/link"
 import Image from "next/image"
 import { User2, LockKeyhole } from "lucide-react";
@@ -58,7 +60,7 @@ export const Loginform = () => {
                         <div className="relative">
                         <User2 
                         className="absolute left-3 top-1/2 transform -translate-y-1/2"/>
-                        <input
+                        <Input
                             value={data.schoolId}
                             onChange={(e) => {
                                 setData({...data, schoolId: e.target.value})}
@@ -73,7 +75,7 @@ export const Loginform = () => {
                     <label htmlFor="Password" className="mt-2 ml-4 block text-sm">Password</label>
                         <div className="relative">
                         <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2"/>
-                        <input
+                        <Input
                             onChange={(e) => {setData({...data, password: e.target.value})}}
                             value={data.password}
                             id="password"
@@ -88,7 +90,7 @@ export const Loginform = () => {
                         <Link href={'/forgotPassword'} className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
                     </div>
                     <div>
-                    <button className="w-full px-6 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-900">Login</button>
+                    <Button type="submit" className="w-full px-6 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-900">Login</Button>
                     </div>
                     {error &&
                     <div className="mt-5 bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md">

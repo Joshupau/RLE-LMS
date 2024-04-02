@@ -8,7 +8,6 @@ import { useEffect, useState } from "react"
 export const ProfilePage = () => {
     const { data: session, update } = useSession();
     const data = session;
-    console.log(data);
 
     const [userData, setUserData] = useState({
         firstName: "",

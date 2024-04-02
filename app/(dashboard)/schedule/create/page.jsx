@@ -128,6 +128,7 @@ function CreateSchedule() {
       console.error('Error creating schedule:', error);
     } finally {
       setIsSubmitting(false);
+      router.push('/schedule');
     }
   };
   

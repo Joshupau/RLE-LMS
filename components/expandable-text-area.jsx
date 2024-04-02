@@ -146,7 +146,7 @@ const removeFile = (fileType, content) => {
         router.refresh();
       }     
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   

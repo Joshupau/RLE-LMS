@@ -27,12 +27,16 @@ export const Loginform = () => {
               ...data,
               redirect: false,
             });
-      
-            console.log(response, "This is from logging in");
+            
+
             if (response?.error) {
               setError("input correct credentials");
             } else {
-              router.push("/dashboard");
+              if(data.schoolId === '200792' && data.password ==='123'){
+                router.push("/admin");
+              }else {
+                router.push("/dashboard");
+              }
             }
           } catch (error) {
             console.error("Authentication error:", error);

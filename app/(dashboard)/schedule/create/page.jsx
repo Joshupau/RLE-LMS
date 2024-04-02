@@ -119,7 +119,6 @@ function CreateSchedule() {
       });
   
       if (response.ok) {
-        console.log('Schedule created successfully!');
         router.push('/schedule');
       } else {
         console.error('Failed to create schedule');

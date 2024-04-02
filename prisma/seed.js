@@ -31,7 +31,6 @@ async function seedStudents(numStudents) {
       data: students,
     });
 
-    console.log(`Successfully seeded ${numStudents} students`);
   } catch (error) {
     console.error('Error seeding students:', error);
   } finally {

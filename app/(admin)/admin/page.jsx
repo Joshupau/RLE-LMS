@@ -1,9 +1,11 @@
 
 
-export const AdminPage = async () => {
+export default async function AdminPage (){
     return (
         <>
-        This is the admin route
+        <div>
+            Admin try
+        </div>
         </>
     )
 }

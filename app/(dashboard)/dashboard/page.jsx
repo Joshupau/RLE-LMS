@@ -9,6 +9,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { CISchedule } from "@/actions/get-ci-schedule";
 import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
+import { pendingCase } from "@/actions/get-pending-cases";
 
 
 export const Dashboard = async () => {
@@ -16,6 +17,7 @@ export const Dashboard = async () => {
 
   const scheduledata = await CISchedule(data.token.id);
   const ApprovedCases = await approvedCases(data.token.id);
+  const PendingCases = await pendingCase(data.token.id);
 
   return (
     <>
@@ -28,6 +30,14 @@ export const Dashboard = async () => {
                   <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
                     <DataTable data={ApprovedCases}/>
+                  </Card>
+              </div>
+                )}
+                { data.token.role === 'ClinicalInstructor' && (
+                <div>
+                  <h1 className="text-xl font-medium">Pending  Cases</h1>
+                  <Card>
+                    <DataTable data={PendingCases}/>
                   </Card>
               </div>
                 )}

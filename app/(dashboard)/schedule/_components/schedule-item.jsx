@@ -45,11 +45,13 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
           status: "destructive",
         });        
       }
-      toast({
-        title: "Success",
-        description:  "Successfully deleted the schedule.",
-        status: "Success",
-      });   
+      if(response.ok){
+        toast({
+          title: "Success",
+          description:  "Successfully deleted the schedule.",
+          status: "Success",
+        });   
+      }
     } catch (error) {
       console.error('Error deleting schedule:', error);
       toast({
@@ -116,15 +118,15 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
                       <Pencil className="mr-2 h-4 w-4" />
                       <span>View Schedule Details</span>
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleEditSchedule}>
+                        <ScanSearch className="mr-2 h-4 w-4" />
+                        <span >Edit Schedule</span>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
                      <AlertDialogTrigger className="flex">
                         <Trash2 className="mr-2 h-4 w-4" />
                         <span >Delete Schedule</span>
                     </AlertDialogTrigger>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleEditSchedule}>
-                        <ScanSearch className="mr-2 h-4 w-4" />
-                        <span >Edit Schedule</span>
                     </DropdownMenuItem>
                       </DropdownMenuGroup>
                   </DropdownMenuContent>           
@@ -135,7 +137,7 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the schedule
                   and remove the schedule data from our servers. <br /> <br />
-                  Note: Scheduled can't be deleted once there is data in resource or cases are submitted.
+                  Note: Once data is present in the resource or cases have been submitted, the schedule cannot be deleted.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

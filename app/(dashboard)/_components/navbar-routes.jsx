@@ -115,12 +115,8 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
                     </DropdownMenuContent>
                     </DropdownMenu>
                 <p className="mr-4">
-                    Welcome back {firstName.toUpperCase()} {lastName.toUpperCase()}
+                    Welcome, {firstName.toUpperCase()}!
                 </p>
-            <button onClick={handleSignOut} className="flex hover:bg-slate-200 transition  p-2 rounded-full">
-            <LogOut className="h-6 w-6 mr-2"/>
-                Signout
-            </button>
         </div>
     );
 };

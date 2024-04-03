@@ -7,6 +7,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model SchoolYear_Semester {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  schoolyear     String
+  semester       String
+
+  
+}
+
 model User {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
   schoolId       Int     @unique

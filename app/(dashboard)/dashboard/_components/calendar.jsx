@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Calendar, momentLocalizer, Navigate, Views } from 'react-big-calendar';
+import { useRouter } from 'next/navigation';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { format, parse, startOfDay, addHours } from 'date-fns';
@@ -10,6 +11,8 @@ const SchedulingCalendar = ({ scheduledata }) => {
   const localizer = momentLocalizer(moment);
   const [view, setView] = useState(); // Set initial view to week
   const [date, setDate] = useState(new Date());
+
+  const router = useRouter();
 
   // Function to parse clinical hours string
   const parseClinicalHours = (hoursString) => {
@@ -63,7 +66,7 @@ const SchedulingCalendar = ({ scheduledata }) => {
 
       // Add the event for the current day to the events array
       eventsInRange.push({
-        id: `${item.id}-${index}`,
+        id: `${item.id}`,
         title: `Area: ${item.area} - Clinical Hours: ${parseClinicalHours(item.clinicalHours)}`,
         start: startOfDay,
         end: endOfDay,
@@ -103,6 +106,10 @@ const SchedulingCalendar = ({ scheduledata }) => {
     return `${r}, ${g}, ${b}`;
   };
 
+  const handleSelectEvent = (event) => {
+    router.push(`/schedule/${event.id}`);
+  }
+
   return (
     <div className='h-[600px] bg-white w-full my-4 mb-15'>
 
@@ -113,6 +120,7 @@ const SchedulingCalendar = ({ scheduledata }) => {
         endAccessor="end"
         view={view}
         showMultiDayTimes
+        onSelectEvent={(event) => handleSelectEvent(event)}
         defaultView='month'
         date={date}
         onView={(newView) => setView(newView)}

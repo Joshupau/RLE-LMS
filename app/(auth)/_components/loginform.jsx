@@ -69,11 +69,11 @@ export const Loginform = () => {
                             onChange={(e) => {
                                 setData({...data, schoolId: e.target.value})}
                             }                  
-                            type="text"
                             id="schoolId"
                             name="ID number"
                             placeholder="ID Number"
-                            className="border text-sm text-black w-full rounded-xl bg-cyan-200 pl-10 pr-3 py-2 focus:outline-none focus:ring focus:border-blue-500"
+                            className="focus-visible:ring-transparent text-sm text-black w-full rounded-xl bg-cyan-200 pl-10 pr-3 py-2 "
+                            autocomplete="off"
                         />
                     </div>
                     <label htmlFor="Password" className="mt-2 ml-4 block text-sm">Password</label>
@@ -86,7 +86,7 @@ export const Loginform = () => {
                             name="password"
                             type="password"
                             placeholder="Password"
-                            className="border text-sm text-black w-full h-10 rounded-xl bg-cyan-200 pl-10 pr-3 py-2"
+                            className="focus-visible:ring-transparent text-sm text-black w-full h-10 rounded-xl bg-cyan-200 pl-10 pr-3 py-2"
                             required
                         />
                     </div>

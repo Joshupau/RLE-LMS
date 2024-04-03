@@ -1,89 +1,101 @@
 import { getScheduleId } from "@/actions/get-schedule-id";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import DataTable from "./DataTable";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getScheduleWithUsers } from "@/actions/get-schedule";
+import { redirect } from "next/navigation";
 
 export default async function ScheduleIdPage ({ params }) {
 
     const scheduleId = params.id;
 
+    const session = await getServerSession(authOptions);
+    const selectSchedule = await getScheduleWithUsers();
+
     const schedules  = await getScheduleId(scheduleId);
+    if(session.token.role === 'Student'){
+      return <p>Not allowed on this page!</p>;
+    }
+
 
     const clinicalInstructor = schedules.user.find((user) => user.role === 'ClinicalInstructor');
+    const filteredUsers = schedules.user.filter((user) => user.role === 'Student');
+
+    const studentData = filteredUsers.map((user) => ({
+      id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      contacts: user?.contacts,
+      scheduleId: schedules.id
+    }));
 
 
   return (
     <div className="p-6">
     <div className="flex items-center justify-between">
       <div className="flex flex-col gap-y-2">
-        <h1 className="text-2xl font-medium">Schedule List</h1>
+        <h1 className="text-2xl font-medium">Schedule Details</h1>
       </div>
-        <Link href={'/schedule'}><Button>
-          Return
-        </Button></Link>
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
             <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead>
-                <tr className="border-b border-gray-300">
-                    <th className="py-2 px-4 font-semibold">Field</th>
-                    <th className="py-2 px-4 font-semibold">Details</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Schedule Dates</td>
-                    <td className="py-2 px-4">
+            <Table className="rounded-md border" >
+                <TableHeader>
+                <TableRow className="bg-slate-200 hover:bg-slate-200">
+                    <TableCell className="font-semibold">Field</TableCell>
+                    <TableCell className="text-center font-semibold">Details</TableCell>
+                </TableRow>
+                </TableHeader>
+                <TableBody>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Schedule Dates</TableCell>
+                    <TableCell className="text-center">
                     <p>
                     {formatDateTimeRange(schedules.dateFrom, schedules.dateTo).map((dateRange, index) => (
                   <span key={index}>{dateRange}<br/></span>
                   ))}
                     </p>
-                    </td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Group:</td>
-                    <td className="py-2 px-4">{schedules.groupId}</td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Area:</td>
-                    <td className="py-2 px-4">{schedules.area}</td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Clinical Hours:</td>
-                    <td className="py-2 px-4">{Number(schedules.clinicalHours) === 1 ? "AM Shift" :
+                    </TableCell>
+                </TableRow>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Group:</TableCell>
+                    <TableCell className="text-center">{schedules.groupId}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Area:</TableCell>
+                    <TableCell className="text-center">{schedules.area}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Clinical Hours:</TableCell>
+                    <TableCell className="text-center">{Number(schedules.clinicalHours) === 1 ? "AM Shift" :
                             Number(schedules.clinicalHours) === 2 ? "PM Shift" :
                             Number(schedules.clinicalHours) === 3 ? "Graveyard Shift" : null}
-              </td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Year Level:</td>
-                    <td className="py-2 px-4">{schedules.yearLevel}</td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Clinical Instructor</td>
-                    <td className="py-2 px-4">
-                    <p>{clinicalInstructor.firstName} {clinicalInstructor.lastName}</p>
-                    </td>
-                </tr>
-                <tr className="border-b border-gray-300">
-                    <td className="py-2 px-4 font-semibold">Students</td>
-                    <td className="py-2 px-4">
-                    <ol className="list-decimal">
-                        {schedules.user.map((user, index) => (
-                          user.role === 'Student' &&(
+              </TableCell>
+                </TableRow>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Year Level:</TableCell>
+                    <TableCell className="text-center">{schedules.yearLevel}</TableCell>
+                </TableRow>
+                <TableRow className="border-b border-gray-300">
+                    <TableCell className="font-semibold">Clinical Instructor</TableCell>
+                    <TableCell className="text-center">
+                  {clinicalInstructor.firstName} {clinicalInstructor.lastName}
+                    </TableCell>
+                </TableRow>
 
-                            <li key={index}>{user.firstName} {user.lastName}</li>
-                            )
-                            ))}
-                    </ol>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
             </div>
             <div className="overflow-x-auto">
-                    Extraboretche
+                    <DataTable schedules={selectSchedule} data={studentData} user={session.token}/>
             </div>
             </div>
         </div>
@@ -120,4 +132,3 @@ const formatDateTimeRange = (dateFromArray, dateToArray) => {
       return "Invalid Date Range";
     }
   };
-

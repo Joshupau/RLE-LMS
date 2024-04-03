@@ -1,34 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
 
-export const ClinicalInstructorSelect = ({ onSelectInstructor, value }) => {
+export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalInstructor }) => {
   const [clinicalInstructors, setClinicalInstructors] = useState([]); // Initialize clinical instructors state
   const [selectedInstructorId, setSelectedInstructorId] = useState(""); // Add state for selected instructor ID
 
   useEffect(() => {
-    const fetchClinicalInstructors = async () => {
-      try {
-        const response = await fetch("/api/clinicalInstructor"); // Adjust URL
-        const instructors = await response.json();
-        
-        setSelectedInstructorId(value);
-        if (!instructors) {
-          console.warn("Clinical instructors are empty"); // Adjust message
-        } else {
-          setClinicalInstructors(instructors);
-        }
-      } catch (error) {
-        console.error("Failed to fetch clinical instructors", error);
-      }
-    };
-
-    fetchClinicalInstructors();
-  }, [value]); 
+    setClinicalInstructors(clinicalInstructor)
+    setSelectedInstructorId(value);
+  }, [clinicalInstructor, value]); 
   
   const selectedInstructor = useMemo(
     () => clinicalInstructors.find((instructor) => instructor.id === selectedInstructorId),
     [clinicalInstructors, selectedInstructorId]
   );
 
+  
   useEffect(() => {
     if (selectedInstructor && onSelectInstructor) {
       onSelectInstructor(selectedInstructor);

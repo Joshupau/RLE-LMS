@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { format, parse, startOfDay, addHours } from 'date-fns';
 
-const SchedulingCalendar = ({ scheduledata }) => {
+const SchedulingCalendar = ({ role, scheduledata }) => {
   const localizer = momentLocalizer(moment);
   const [view, setView] = useState(); // Set initial view to week
   const [date, setDate] = useState(new Date());
@@ -107,8 +107,10 @@ const SchedulingCalendar = ({ scheduledata }) => {
   };
 
   const handleSelectEvent = (event) => {
-    router.push(`/schedule/${event.id}`);
-  }
+    if (role !== 'Student') {
+      router.push(`/schedule/${event.id}`);
+    }
+  };
 
   return (
     <div className='h-[600px] bg-white w-full my-4 mb-15'>

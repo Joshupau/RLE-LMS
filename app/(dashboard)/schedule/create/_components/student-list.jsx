@@ -19,6 +19,12 @@ export const StudentList = (
     onSelectStudents(updatedStudents); // Pass updated students to parent component
   };
   
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    const allStudentIds = students.map((student) => student.id);
+    setSelectedStudents(isChecked ? allStudentIds : []);
+    onSelectStudents(isChecked ? allStudentIds : []);
+  };
 
   return (
     <>
@@ -31,8 +37,17 @@ export const StudentList = (
               <th className="px-4 py-2 text-left">Year Level</th>
               <th className="px-4 py-2 text-left">Group</th>
               <th className="px-4 py-2 text-left">Section</th>
-              <th className="px-4 py-2 text-right">Select</th>
-            </tr>
+              <th className="px-4 py-2 text-right">
+                <div className="flex items-center justify-end mr-2">
+                  <span className="mr-2">Select All</span>
+                    <input
+                    type="checkbox"
+                    className=""
+                    checked={selectedStudents.length === students.length}
+                    onChange={handleSelectAll}
+                  />
+                </div>
+              </th>            </tr>
           </thead>
           <tbody>
             {students && students.map((student) => (

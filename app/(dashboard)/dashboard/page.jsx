@@ -10,6 +10,7 @@ import { CISchedule } from "@/actions/get-ci-schedule";
 import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
+import { redirect } from "next/navigation";
 
 
 export const Dashboard = async () => {
@@ -18,6 +19,7 @@ export const Dashboard = async () => {
   const scheduledata = await CISchedule(data.token.id);
   const ApprovedCases = await approvedCases(data.token.id);
   const PendingCases = await pendingCase(data.token.id);
+
 
   return (
     <>

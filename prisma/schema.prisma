@@ -11,8 +11,7 @@ model SchoolYear_Semester {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
   schoolyear     String
   semester       String
-
-  
+  current        Boolean @default(false)
 }
 
 model User {

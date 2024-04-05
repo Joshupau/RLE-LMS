@@ -36,6 +36,7 @@ import {
 import { getCasePerformance } from "@/actions/get-cases-performance";
 import { getProgressReport } from "@/actions/get-progress-report";
 
+import { ProgressReport } from "./_components/progress-report";
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
@@ -58,9 +59,8 @@ const absencesPromise = fetchAbsences ? getAbsences(data.token.id): Promise.reso
 
 const analyticsData = await getAttendanceAbsencesTotalByMonth();
 const { barChartData, yearLevelTables } = await getCasePerformance();
-const ProgressReport = await getProgressReport();
+const ProgressReportData = await getProgressReport();
 const [attendance, schedules, cases, casesAssigned, absences] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise, absencesPromise]);
-
 
 const groupColors = {
     A: 'bg-green-500',
@@ -88,7 +88,7 @@ const groupColors = {
               </div>
 
               <div>
-                Table 
+                <ProgressReport data={ProgressReportData}/>
               </div>
                 </>
              )}

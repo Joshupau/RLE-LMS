@@ -1,3 +1,4 @@
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -42,6 +43,8 @@ export async function POST(request) {
 
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
+    const schoolyear = await getCurrentSchoolYear();
+
 
     const schedules = await prisma.scheduling.update({
       where: { id: scheduleId },
@@ -54,6 +57,7 @@ export async function POST(request) {
         area: area,
         week: week,
         userIds: userIdsArray,
+        schoolyearId: schoolyear.id,
       },
       include: {
         user: true,

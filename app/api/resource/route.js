@@ -2,6 +2,7 @@ import { PrismaClient, UserRole } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 
 const prisma = new PrismaClient();
 
@@ -26,11 +27,13 @@ export async function POST(request) {
       select: { scheduleId: true },
     });
 
+    const schoolyear = await getCurrentSchoolYear();
     // Create a new resource using Prisma
     const newResource = await prisma.resource.create({
       data: {
         description,
         uploadLinks: fileUrls,
+        schedulingId: schoolyear.id,
         resourceGroup: {
           connect: {
             id: resourceGroupId,

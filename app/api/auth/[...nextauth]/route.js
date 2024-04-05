@@ -69,9 +69,19 @@ export const authOptions = ({
     async jwt({ token, user, trigger, session }) {
 
       if(trigger === "update"){
-       return{ ...token, ...session.user} 
-      }
 
+       return{ 
+        ...token,          
+        id: user.id,
+        schoolId: user.schoolId,
+        email: user.email,
+        firstName: user.firstName,
+        middleName: user.middleName,
+        lastName: user.lastName,
+        role: user.role,
+        age: user.age,
+      } 
+      }
       if (user) {
         return {
           ...token,
@@ -79,6 +89,7 @@ export const authOptions = ({
           schoolId: user.schoolId,
           email: user.email,
           firstName: user.firstName,
+          middleName: user.middleName,
           lastName: user.lastName,
           role: user.role,
           age: user.age,
@@ -93,10 +104,8 @@ export const authOptions = ({
           email: token.email,
           firstName: token.firstName,
           middleName: token.middleName,
-          lastName: token.lastName,
           role: token.role,
           age: token.age,
-          // Include any other relevant user properties
         };
       }
       return session;

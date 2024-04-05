@@ -1,3 +1,4 @@
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -37,6 +38,9 @@ export async function POST(request) {
 
     const combinedUsers = [...students, clinicalInstructor, userId];
     const recipientIds = [...students, clinicalInstructor];
+
+    const schoolyear = await getCurrentSchoolYear();
+
     
     const schedules = await prisma.scheduling.create({
       data: {
@@ -47,6 +51,7 @@ export async function POST(request) {
         yearLevel: yearLevel,
         area: area,
         week: week,
+        schoolyearId: schoolyear.id,
         user: {
           connect: combinedUsers.map((userId) => ({ id: userId })),
         },

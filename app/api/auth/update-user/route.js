@@ -1,16 +1,12 @@
-// api/auth/update-user.js
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { signIn } from "next-auth/react";
 
 const prisma = new PrismaClient();
 
-export async function POST(req, res) {
-//   if (!req.headers.authorization) {
-//     return NextResponse.json({ error: "Missing " }, { status: 401 });  
-//     }
+export async function POST(req, ) {
 
   const updatedData = await req.json();
+
   const {
     firstName,
     middleName,

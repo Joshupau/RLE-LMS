@@ -1,3 +1,4 @@
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -29,6 +30,8 @@ export async function POST(req, res){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 
           }
 
+          const schoolyear = await getCurrentSchoolYear();
+
           const CommonInfo = await prisma.submissionOfPatientCases.create({
             data: {
                 schedulingId: scheduleId,
@@ -37,6 +40,7 @@ export async function POST(req, res){
                 level: level,
                 date: date,
                 userId: userId,
+                schoolyearId: schoolyear.id,
             }
           });
 

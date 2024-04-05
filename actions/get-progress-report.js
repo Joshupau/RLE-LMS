@@ -106,7 +106,6 @@ export const getProgressReport = async () => {
                 submissionOfPatientCases: true,
             }
         });
-
         const generateProgressReport = (student) => {
             const progressReport = {};
             Object.keys(goals).forEach((yearLevel) => {
@@ -114,33 +113,42 @@ export const getProgressReport = async () => {
                 Object.keys(goals[yearLevel]).forEach((caseType) => {
                     const submissions = student.submissionOfPatientCases.filter(
                         (submission) =>
-                            submission.yearLevel === parseInt(yearLevel, 10) &&
-                            submission.caseType === caseType
+                            submission.caseType.toLowerCase() === caseType.toLowerCase()
                     );
-                    if (submissions.length === 0) {
-                        progressReport[yearLevel][caseType] = "Pending";
-                    } else if (submissions.length >= goals[yearLevel][caseType]) {
-                        progressReport[yearLevel][caseType] = "Complete";
+                    const numSubmissions = submissions.length;
+                    if (numSubmissions === 0) {
+                        progressReport[yearLevel][caseType] = 0; // No Cases
+                    } else if (numSubmissions >= goals[yearLevel][caseType]) {
+                        progressReport[yearLevel][caseType] = 100; // Complete
                     } else {
-                        progressReport[yearLevel][caseType] = "Ongoing";
+                        // Calculate completion percentage
+                        const completionPercentage = Math.round((numSubmissions / goals[yearLevel][caseType]) * 100);
+                        progressReport[yearLevel][caseType] = completionPercentage;
                     }
                 });
             });
             return progressReport;
         };
+        
 
-        // Map over each student and generate their progress report
-        const studentsWithProgressReport = students.map((student) => ({
-            id: student.id,
-            firstName: student.firstName,
-            lastName: student.lastName,
-            yearLevel: student.yearLevel,
-            group: student.group,
-            progressReport: generateProgressReport(student),
-        }));
+        const groupedStudents = students.reduce((acc, student) => {
+            const yearLevel = student.yearLevel.toString();
+            if (!acc[yearLevel]) {
+                acc[yearLevel] = [];
+            }
+            acc[yearLevel].push({
+                id: student.id,
+                firstName: student.firstName,
+                lastName: student.lastName,
+                yearLevel: student.yearLevel,
+                group: student.group,
+                progressReport: generateProgressReport(student),
+            });
+            return acc;
+        }, {});
 
-        console.log(studentsWithProgressReport);
-
+        console.log(groupedStudents);
+        return groupedStudents;
         
     } catch (error) {
         console.error('Failed to get progress report', error);

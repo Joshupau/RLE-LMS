@@ -6,8 +6,8 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalIn
 
   useEffect(() => {
     setClinicalInstructors(clinicalInstructor)
-    setSelectedInstructorId(value);
-  }, [clinicalInstructor, value]); 
+    setSelectedInstructorId(value[0]);
+  }, [value]); 
   
   const selectedInstructor = useMemo(
     () => clinicalInstructors.find((instructor) => instructor.id === selectedInstructorId),
@@ -25,6 +25,7 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalIn
     return <p>Loading...</p>;
   }
 
+ 
   return (
     <>
       <label htmlFor="instructor">Clinical Instructor:</label>

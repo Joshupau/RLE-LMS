@@ -6,6 +6,7 @@ import { ClinicalInstructorSelect } from "./clinical-instructor";
 import { DatePickerWithRange } from "./date-picker";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const CreateSchedule = ({
  students,
@@ -117,7 +118,11 @@ export const CreateSchedule = ({
                 <span className="text-sm text-slate-700">Create Schedule</span>
             </div>
             <div>
-                <Button onClick={handleEnterSchedule} disabled={isSubmitting}>
+            <Link className="mx-2" href={'/schedule'}><Button>
+                    Return
+                    </Button></Link>
+
+                <Button className="bg-green-500 hover:bg-green-600" onClick={handleEnterSchedule} disabled={isSubmitting}>
                     Enter Schedule
                 </Button>
             </div>

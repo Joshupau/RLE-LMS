@@ -21,6 +21,8 @@ export const Loginform = () => {
 
     const loginUser = async (e) => {
         e.preventDefault();
+        router.prefetch("/dashboard");
+
         try {
             // Attempt to sign in
             const response = await signIn('credentials', {

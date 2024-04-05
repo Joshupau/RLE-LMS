@@ -61,7 +61,7 @@
     "next-auth": "^4.24.5",
     "react": "^18",
     "react-big-calendar": "^1.11.2",
-    "react-day-picker": "^8.9.1",
+    "react-day-picker": "^8.10.0",
     "react-dom": "^18",
     "react-hook-form": "^7.49.2",
     "react-id-swiper": "^4.0.0",

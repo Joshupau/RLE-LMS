@@ -4,13 +4,13 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 import { Suspense } from "react";
 import { PostCard } from "./_components/post-card";
-import Loading from "../loading";
 import { Skeleton } from "@/components/ui/skeleton"
 import { getResourcePosts } from "@/actions/get-resource-post";
 import ExpandableTextarea from "@/components/expandable-text-area";
 import { Ghost } from 'lucide-react';
 
 import { getResourceGroupIds } from "@/actions/get-resource-group-ids";
+import { SkeletonCard } from "@/components/skeleton-loader";
 
 export default async function ResourceIdPage({ params, searchParams }) {
 
@@ -38,7 +38,7 @@ export default async function ResourceIdPage({ params, searchParams }) {
            </div>
           </div>
             <div className="my-5">
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<SkeletonCard />}>
               {resourcePost ? (
                 <>
                 {resourcePost.length > 0 ? (

@@ -34,6 +34,7 @@ import {
   import { AttendanceAnalytics } from "./_components/attendance-analytics";
   import { getAttendanceAbsencesTotalByMonth } from "@/actions/get-dean-dashboard";
 import { getCasePerformance } from "@/actions/get-cases-performance";
+import { getProgressReport } from "@/actions/get-progress-report";
 
 
 export default async function ProgressPage(){
@@ -57,8 +58,9 @@ const absencesPromise = fetchAbsences ? getAbsences(data.token.id): Promise.reso
 
 const analyticsData = await getAttendanceAbsencesTotalByMonth();
 const { barChartData, yearLevelTables } = await getCasePerformance();
-
+const ProgressReport = await getProgressReport();
 const [attendance, schedules, cases, casesAssigned, absences] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise, absencesPromise]);
+
 
 const groupColors = {
     A: 'bg-green-500',
@@ -77,9 +79,22 @@ const groupColors = {
             <StudentPerformanceCards absences={absences} cases={cases} />
             </div>
                 )}
+            
+            {data.token.role === 'Dean' &&(
+                <>
+              <div className="m-4">
+              <h1 className="text-xl font-medium mb-2">Attendance Line Chart</h1>                           
+                <AttendanceAnalytics data={analyticsData}/>
+              </div>
+
+              <div>
+                Table 
+              </div>
+                </>
+             )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                     <div className="overflow-x-auto gap-y-2">
-                        {['ClinicalInstructor', 'Dean'].includes(data.token.role) && (
+                        {['ClinicalInstructor'].includes(data.token.role) && (
                             <>
                             <div>
                                 {!casesAssigned && <span>Fetching Data</span>}
@@ -92,6 +107,12 @@ const groupColors = {
                             </div>
                             </>
                         )}
+                        {data.token.role === 'Dean' &&(
+                        <div>
+                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>                           
+                        <BarChart data={barChartData}/>
+                        </div>
+                            )}
                             {data.token.role === 'Student' &&(
                                 <>
                         <div>
@@ -99,36 +120,37 @@ const groupColors = {
                             {cases && cases.length > 0 && <DataTable data={cases}/>}
                         </div>
                         <div className="my-4">
-
-                                <Dialog>
-                        <Popover>
-                            <DialogTrigger asChild>
-                            <Button>
-                                Submit Patient Case
-                            </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px] md:min-w-max">
-                                <DialogHeader>
-                                <DialogTitle>Patient Case Information</DialogTitle>
-                                <DialogDescription>
-                                    Type the information of your Case.
-                                </DialogDescription>
-                                </DialogHeader>
-                                <PatientCaseSubmission userId={schedules.id} yearLevel={schedules.yearLevel} schedules={schedules.schedules} />
-                            </DialogContent>
-                        </Popover>
-                            </Dialog>
+                        <Dialog>
+                            <Popover>
+                                <DialogTrigger asChild>
+                                <Button>
+                                    Submit Patient Case
+                                </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px] md:min-w-max">
+                                    <DialogHeader>
+                                    <DialogTitle>Patient Case Information</DialogTitle>
+                                    <DialogDescription>
+                                        Type the information of your Case.
+                                    </DialogDescription>
+                                    </DialogHeader>
+                                    <PatientCaseSubmission userId={schedules.id} yearLevel={schedules.yearLevel} schedules={schedules.schedules} />
+                                </DialogContent>
+                            </Popover>
+                        </Dialog>
                         </div>
                         </>
                         )}
                     </div>
                     <div className="overflow-x-auto gap-y-2">
                     {data.token.role === 'Dean' &&(
-                        <div>
-                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>                           
-                        <BarChart data={barChartData}/>
-                        </div>
-                            )}
+                        <>
+                            <div>
+                            <h1 className="text-xl font-medium mb-2">Cases Comparison</h1>                           
+                                <CaseTrends yearLevelTables={yearLevelTables}/>
+                            </div>
+                            </>
+                        )}
                         {['ClinicalInstructor'].includes(data.token.role) && (
                             <div>
                                 <h1 className="text-xl font-medium">Attendance Monitoring</h1>
@@ -142,17 +164,6 @@ const groupColors = {
                     </div>
                     
              </div>
-
-             {data.token.role === 'Dean' &&(
-                <>
-                <div>
-                    <CaseTrends yearLevelTables={yearLevelTables}/>
-                </div>
-              <div className="m-4">
-                <AttendanceAnalytics data={analyticsData}/>
-              </div>
-                </>
-             )}
           {data.token.role === 'Student' &&(
              <div>
             {cases && cases.length > 0 && <StudentCaseProgress data={cases} />}

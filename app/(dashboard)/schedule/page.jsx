@@ -13,13 +13,14 @@ import StudentDataTable from "./StudentDataTable";
 import { getScheduleWithUsers } from "@/actions/get-schedule";
 import { CISchedule } from "@/actions/get-ci-schedule";
 import { studentSchedule } from "@/actions/get-student-schedule";
+import { Suspense } from "react";
+import { SkeletonCard } from "@/components/skeleton-loader";
 
 export default async function SchedulePage() {
 
   const data = await getServerSession(authOptions);
 
   const userRole = data?.token.role;
-  const userId = data?.token.id;
 
   const DeanSchedules = await getScheduleWithUsers();
   const CISchedules = await CISchedule(data.token.id);

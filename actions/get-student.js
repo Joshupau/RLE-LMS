@@ -5,7 +5,7 @@ export const getStudent = async () => {
     const prisma = new PrismaClient();
     const students = await prisma.user.findMany({
       where: { role: UserRole.Student },
-      orderBy: { yearLevel: "asc"}
+      orderBy: [{ yearLevel: "asc" }, { section: "asc" }]
     });
 
     return students;

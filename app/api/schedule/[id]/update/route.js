@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
-
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -18,6 +17,7 @@ export async function POST(request) {
       yearLevel,
       students,
       week,
+      dates,
     } = body;
 
     if (
@@ -27,28 +27,24 @@ export async function POST(request) {
       !group ||
       !yearLevel ||
       !students ||
-      !week 
+      !week ||
+      !dates.length
     ) {
       return NextResponse.json({ error: "Missing Fields" }, { status: 400 });
     }
 
-    const combinedUsers = [...students, clinicalInstructor[0], userId];
-
-    const existingUsers = await prisma.user.findMany({
-      where: { id: { in: combinedUsers } },
-    });
-
-    if (existingUsers.length !== combinedUsers.length) {
-      return NextResponse.json({ error: "Invalid user IDs" }, { status: 400 });
-    }
+    const combinedUsers = [...students, clinicalInstructor.id, userId];
+    const userIdsObject = combinedUsers.reduce((obj, userId) => {
+      obj[userId] = userId;
+      return obj;
+    }, {});
+    const userIdsArray = Object.keys(userIdsObject);
 
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
 
     const schedules = await prisma.scheduling.update({
-        where:{
-            id: scheduleId,
-        },
+      where: { id: scheduleId },
       data: {
         clinicalHours,
         dateFrom: dateFromArray,
@@ -57,30 +53,79 @@ export async function POST(request) {
         yearLevel: yearLevel,
         area: area,
         week: week,
-        user: {
-          connect: combinedUsers.map((userId) => ({ id: userId })),
-        },
+        userIds: userIdsArray,
       },
       include: {
         user: true,
-      }
+      },
     });
 
-    const sanitizedSchedules = {
-        id: schedules.id,
-        clinicalHours: schedules.clinicalHours,
-        dateFrom: schedules.dateFrom,
-        dateTo: schedules.dateTo,
-        groupId: schedules.groupId,
-        yearLevel: schedules.yearLevel,
-        area: schedules.area,
-        users: schedules.user, // Include the associated users in the response
-      };
+    await prisma.resourceGroup.update({
+      where: {
+        scheduleId: scheduleId,
+      },
+      data: {
+        name: schedules.week,
+        userIds: userIdsArray,
+      },
+    });
 
-    return NextResponse.json(sanitizedSchedules);
+    const notificationPromises = students.map((userId) =>
+      prisma.notification.create({
+        data: {
+          title: "Schedule Notification",
+          message: `RLE schedule for Week/s ${week}.`,
+          recipientId: userId,
+          type: "general",
+          link: `/schedule`,
+          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        },
+      })
+    );
+    
+    prisma.notification.create({
+      data: {
+        title: "Schedule Notification",
+        message: `RLE schedule for Week/s ${week}.`,
+        recipientId: clinicalInstructor.id,
+        type: "general",
+        link: `/schedule/${schedules.id}`,
+        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    await Promise.all(notificationPromises);
+
+    const userSchedulingPromises = [];
+
+    await prisma.userScheduling.deleteMany({
+      where: {
+        schedulingId: schedules.id,
+        week: week,
+      },
+    });
+
+    const userSchedulingData = students.flatMap((studentId) =>
+      dates.map((date) => ({
+        userId: studentId,
+        schedulingId: schedules.id,
+        date: date,
+        week: week,
+      }))
+    );
+
+    await prisma.userScheduling.createMany({
+      data: userSchedulingData,
+    });
+
+    await Promise.all(userSchedulingPromises);
+
+  
+    return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {
-    console.error("Error creating schedule:", error);
-    return NextResponse.json({ error: "Internal Server Error" },{ status: 500 });
+    console.error("Error updating schedule:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
 export const dynamicParams = false;

@@ -12,6 +12,12 @@ model SchoolYear_Semester {
   schoolyear     String
   semester       String
   current        Boolean @default(false)
+
+  scheduling Scheduling[]
+  resource Resource[]
+  submissionOfPatientCase SubmissionOfPatientCases[]
+  userscheduling UserScheduling[]
+  resourceGroup ResourceGroup[]
 }
 
 model User {
@@ -64,7 +70,9 @@ model UserScheduling {
   notes String?
 
 
-  scheduling Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
+  schoolyearId String? @db.ObjectId
+  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  scheduling Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user User @relation(fields: [userId], references: [id])
 
 }
@@ -86,6 +94,10 @@ model Scheduling {
   resources                Resource[]
   submissionOfPatientCases SubmissionOfPatientCases[]
   userScheduling        UserScheduling[]
+
+  schoolyearId String? @db.ObjectId
+  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+ 
  }
 
 model ResourceGroup {
@@ -96,6 +108,10 @@ model ResourceGroup {
   userIds     String[]     @db.ObjectId
   users       User[]       @relation(fields: [userIds], references: [id])
   resources   Resource[]   
+
+  schoolyearId String? @db.ObjectId
+  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+ 
 }
 
 
@@ -104,6 +120,8 @@ model Resource {
   description String
   uploadLinks String[]
 
+  schoolyearId String? @db.ObjectId
+  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   
   resourceGroupId String @db.ObjectId
   resourceGroup ResourceGroup @relation(fields: [resourceGroupId], references: [id])
@@ -130,6 +148,10 @@ model SubmissionOfPatientCases {
 
   user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduling    Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
+  
+  schoolyearId String? @db.ObjectId
+  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+ 
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

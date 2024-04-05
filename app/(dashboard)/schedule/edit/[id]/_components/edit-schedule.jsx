@@ -7,6 +7,7 @@ import { DatePickerWithRange } from "./date-picker";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 
 
 export const EditSchedule = ({
@@ -16,6 +17,8 @@ export const EditSchedule = ({
     clinicalInstructor,
 }) => {
 
+  const { toast } = useToast();
+  const router = useRouter();
   
   const [selectedGroup, setSelectedGroup] = useState(""); 
   const [selectedYearLevel, setSelectedYearLevel] = useState(""); 
@@ -23,7 +26,7 @@ export const EditSchedule = ({
   const [selectedClinicalHours, setSelectedClinicalHours] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const [selectedInstructor, setSelectedInstructor] = useState(null);
+  const [selectedInstructor, setSelectedInstructor] = useState("");
   const [selectedClinicalArea, setSelectedClinicalArea] = useState("");
   const [week, setSelectedWeek] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +38,7 @@ export const EditSchedule = ({
   const handleWeekChange = (event) => setSelectedWeek(event.target.value);
   const handleClinicalHoursChange = (event) => setSelectedClinicalHours(event.target.value);
   const handleClinicalAreaChange = (event) => setSelectedClinicalArea(event.target.value);
+
   
   useEffect(() => {
     if (!schedule) return;
@@ -65,16 +69,35 @@ export const EditSchedule = ({
     setSanitizedDates(sanitizedDates);
   };
   
+    function getDatesInRanges(startDates, endDates) {
+      const dates = [];
+    
+      for (let i = 0; i < startDates.length; i++) {
+        let startDate = new Date(startDates[i]);
+        let endDate = new Date(endDates[i]); 
+    
+        while (startDate <= endDate) {
+          dates.push(new Date(startDate));
+          startDate.setDate(startDate.getDate() + 1); 
+        }
+      }
+    
+      return dates;
+    }
+  
   
     const handleEnterSchedule = async () => {
       try {
         setIsSubmitting(true);
     
-        // Ensure selectedDateRange contains objects with valid Date objects
         const formattedDates = selectedDateRange.map(({ from, to }) => ({
           from: new Date(from),
           to: new Date(to),
         }));
+        const DatesofDuty = getDatesInRanges(
+          formattedDates.map((date) => date.from),
+          formattedDates.map((date) => date.to)
+        );
 
     
         const data = {
@@ -89,6 +112,7 @@ export const EditSchedule = ({
           students: selectedStudents,
           week: week,
           scheduleId,
+          dates: DatesofDuty,
         };
     
         console.log('Data to be sent:', data);
@@ -102,23 +126,30 @@ export const EditSchedule = ({
         });
     
         if (response.ok) {
-          const updatedSchedule = await response.json();
-          // Update UI or handle success based on updatedSchedule
-          console.log('Schedule updated successfully!');
+          toast({
+            title: "Success",
+            description: "Successfully updated the schedule.",
+            status: "success"
+          })
           router.push('/schedule');
         } else {
-          const errorData = await response.json();
-          console.error('Failed to update schedule:', errorData);
-          // Handle specific error based on errorData (e.g., display error message)
+          toast({
+            title: "Uh ohh...",
+            description: "Failed to update the schedule.",
+            status: "error"
+          })        
         }
       } catch (error) {
         console.error('Error updating schedule:', error);
-        // Handle general error (e.g., network error, unexpected data)
-      } finally {
+        toast({
+          title: "Uh ohh...",
+          description: "Failed to update the schedule.",
+          status: "error"
+        }) 
+        } finally {
         setIsSubmitting(false);
       }
     };
-    console.log(selectedInstructor);
     
     return (
         <>

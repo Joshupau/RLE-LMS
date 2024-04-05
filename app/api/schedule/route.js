@@ -68,18 +68,29 @@ export async function POST(request) {
       },
     });
 
-    const notificationPromises = recipientIds.map((userId) =>
+    const notificationPromises = students.map((userId) =>
       prisma.notification.create({
         data: {
           title: "Schedule Notification",
           message: `RLE schedule for Week/s ${week}.`,
           recipientId: userId,
           type: "general",
-          link: `/schedule/${schedules.id}`,
+          link: `/schedule`,
           expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         },
       })
     );
+    
+    prisma.notification.create({
+      data: {
+        title: "Schedule Notification",
+        message: `RLE schedule for Week/s ${week}.`,
+        recipientId: clinicalInstructor,
+        type: "general",
+        link: `/schedule/${schedules.id}`,
+        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      },
+    });
 
     await Promise.all(notificationPromises);
 

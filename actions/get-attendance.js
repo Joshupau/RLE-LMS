@@ -38,7 +38,7 @@ export const getAttendance = async (userId) => {
     return attendance;
 
   } catch (error) {
-    console.error("Error fetching clinical instructors:", error);
+    console.error("Error fetching attendance:", error);
     throw error; 
   }
 };

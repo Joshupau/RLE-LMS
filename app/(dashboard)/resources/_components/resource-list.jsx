@@ -3,6 +3,8 @@ import { ResourceCard } from "./resource-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { headers } from "next/headers";
 import { getResourceGroup } from '@/actions/get-resourcegroups';
+import { Suspense } from 'react';
+import { SkeletonCard } from '@/components/skeleton-loader';
 
 async function getresource(userId) {
   try {
@@ -20,26 +22,29 @@ export const ResourceList = async ({ userId }) => {
 
   return (
     <div>
+
       {resource ? (
         <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
           {resource.length > 0 ? (
             resource.map((item) => (
+              <Suspense fallback={<SkeletonCard/>}>
               <ResourceCard
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                users={item.users}
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              users={item.users}
               />
-            ))
-          ) : (
-            <div className="flex flex-wrap space-y-3">
+              </Suspense>
+              ))
+              ) : (
+                <div className="flex flex-wrap space-y-3">
               <p>No resources found for this user.</p>
             </div>
           )}
         </div>
       ) : (
         <Skeleton className="h-[275px] w-[650px] rounded-xl" />
-      )}
+        )}
     </div>
   );
 };

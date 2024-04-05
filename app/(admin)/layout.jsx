@@ -3,6 +3,8 @@ import Provider from '@/context/provider'
 import { Sidebar } from './_components/sidebar'
 import { Navbar } from './_components/navbar'
 import { Toaster } from "@/components/ui/toaster"
+import { Suspense } from 'react'
+import LoadingModal from '@/components/ui/loading-modal'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -25,7 +27,9 @@ export default function RootLayout({ children }) {
                 <Sidebar />
             </div>
             <main className="md:pl-56 pt-[80px] h-full">
-            {children}
+              <Suspense fallback={<LoadingModal/>}>
+                 {children}
+              </Suspense>
             </main>
         </div>
         <Toaster />

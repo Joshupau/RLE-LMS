@@ -47,10 +47,10 @@ export const ProgressReport = ({ data }) => {
             <CardContent className="flex my-3 gap-4 justify-start">
 
             <div>
-                Year level Filter:
+                Select Year Level:
                 <Select onValueChange={(e) => setYearLevelFilter(parseInt(e))}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select Year"/>
+                        <SelectValue placeholder="Year Level"/>
                     </SelectTrigger>
                     <SelectContent> 
                     <SelectGroup> 
@@ -62,10 +62,10 @@ export const ProgressReport = ({ data }) => {
                 </Select>
             </div>
             <div>
-                Group Filter:
+                Select Group:
                 <Select onValueChange={(e) => setGroupFilter(e)}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select Group"/>
+                        <SelectValue placeholder="Group"/>
                     </SelectTrigger>
                     <SelectContent> 
                     <SelectGroup> 

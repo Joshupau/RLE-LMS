@@ -34,7 +34,7 @@ export const AttendanceAnalytics = ({ data }) => {
         <Card style={{ height: '400px' }}>
             <ResponsiveLine
                 data={formattedData}
-                margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
+                margin={{ top: 10, right: 10, bottom: 60, left: 40 }}
                 xScale={{ type: "point" }}
                 yScale={{ type: "linear", min: 0, max: "auto" }}
                 axisBottom={{ tickSize: 0, tickPadding: 16 }}
@@ -50,9 +50,9 @@ export const AttendanceAnalytics = ({ data }) => {
                         anchor: 'bottom',
                         direction: 'row',
                         translateY: 40,
-                        itemWidth: 120,
-                        itemHeight: 20,
-                        symbolSize: 12,
+                        itemWidth: 180,
+                        itemHeight: 0,
+                        symbolSize: 15,
                         symbolShape: 'circle',
                         textColor: '#333',
                         symbolBorderColor: 'rgba(0, 0, 0, .5)',

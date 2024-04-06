@@ -39,6 +39,7 @@ import { getProgressReport } from "@/actions/get-progress-report";
 
 import { ProgressReport } from "./_components/progress-report";
 import { SkeletonCard } from "@/components/skeleton-loader";
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
@@ -63,6 +64,10 @@ const analyticsData = await getAttendanceAbsencesTotalByMonth();
 const { barChartData, yearLevelTables } = await getCasePerformance();
 const ProgressReportData = await getProgressReport();
 const [attendance, schedules, cases, casesAssigned, absences] = await Promise.all([attendancePromise, schedulesPromise, casesPromise, casesAssignedPromise, absencesPromise]);
+
+const currentschoolyear = await getCurrentSchoolYear();
+
+console.log(currentschoolyear);
 
 const groupColors = {
     A: 'bg-green-500',

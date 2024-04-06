@@ -135,7 +135,7 @@ const removeFile = (fileType, content) => {
   const handleDataSubmission = async (fileUrls, description, resourceGroupId, userId, urlToDelete, id, uploadUrl) => {
     try {
 
-      const response = await fetch(`/api/resource/update`, {
+      const response = await fetch(`/api/resource/${resourceGroupId}/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

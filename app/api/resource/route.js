@@ -28,12 +28,18 @@ export async function POST(request) {
     });
 
     const schoolyear = await getCurrentSchoolYear();
-    // Create a new resource using Prisma
+
+    console.log(schoolyear.id);
+
     const newResource = await prisma.resource.create({
       data: {
         description,
         uploadLinks: fileUrls,
-        schedulingId: schoolyear.id,
+        schoolyear: {
+          connect:{
+            id: schoolyear.id,
+          }
+        },
         resourceGroup: {
           connect: {
             id: resourceGroupId,

@@ -4,7 +4,6 @@ import { ResponsiveBar } from '@nivo/bar';
 import { Card } from '@/components/ui/card';
 
 export const BarChart = ({ data }) => {
-    console.log(data);
     return (
         <Card className="h-[400px] m-2">
         <ResponsiveBar

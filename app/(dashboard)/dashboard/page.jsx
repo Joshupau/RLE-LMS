@@ -15,14 +15,23 @@ import { SkeletonCard } from "@/components/skeleton-loader";
 
 
 export const Dashboard = async () => {
-  const data = await getServerSession(authOptions);
+  let data;
+  try {
+    data = await getServerSession(authOptions);
+  } catch (error) {
+    console.error("Error fetching server session:", error);
+    return null; 
+  }
+
+  if (!data || !data.token) {
+    return null; 
+  }
 
   const [scheduledata, ApprovedCases, PendingCases] = await Promise.all([
-    CISchedule(data?.token?.id),
-    approvedCases(data?.token?.id),
-    pendingCase(data?.token?.id)
+    CISchedule(data.token.id),
+    approvedCases(data.token.id),
+    pendingCase(data.token.id)
   ]);
-
 
   return (
     <>

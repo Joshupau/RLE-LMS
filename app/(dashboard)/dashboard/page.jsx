@@ -18,9 +18,9 @@ export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
   const [scheduledata, ApprovedCases, PendingCases] = await Promise.all([
-    CISchedule(data.token.id),
-    approvedCases(data.token.id),
-    pendingCase(data.token.id)
+    CISchedule(data?.token?.id),
+    approvedCases(data?.token?.id),
+    pendingCase(data?.token?.id)
   ]);
 
 

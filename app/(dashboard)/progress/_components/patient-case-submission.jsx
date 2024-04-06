@@ -883,6 +883,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </Select>
           </div>
           <div className="flex flex-col space-y-2 justify-end">
+          <Label>Medical Diagnosis</Label>
             <Input
               type="text"
               placeholder="Medical Diagnosis"

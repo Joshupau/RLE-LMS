@@ -23,6 +23,7 @@ import {
   import { getAbsences } from "@/actions/get-absences";
   import { getAttendance } from "@/actions/get-attendance";
   
+  import { Suspense } from "react";
 
   import { CaseTrends } from "./_components/case-trends";
   import { BarChart } from "./_components/case-analytics-barchart";
@@ -37,6 +38,7 @@ import { getCasePerformance } from "@/actions/get-cases-performance";
 import { getProgressReport } from "@/actions/get-progress-report";
 
 import { ProgressReport } from "./_components/progress-report";
+import { SkeletonCard } from "@/components/skeleton-loader";
 
 export default async function ProgressPage(){
     const data = await getServerSession(authOptions);
@@ -76,19 +78,25 @@ const groupColors = {
                 </div>
             {data.token.role === 'Student' &&(
             <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-start md:gap-8">
-            <StudentPerformanceCards absences={absences} cases={cases} />
+                <Suspense fallback={<SkeletonCard/>}>
+                    <StudentPerformanceCards absences={absences} cases={cases} />
+                </Suspense>
             </div>
                 )}
             
             {data.token.role === 'Dean' &&(
                 <>
               <div className="m-4">
-              <h1 className="text-xl font-medium mb-2">Attendance Line Chart</h1>                           
+              <h1 className="text-xl font-medium mb-2">Attendance Line Chart</h1>
+              <Suspense fallback={<SkeletonCard/>}>
                 <AttendanceAnalytics data={analyticsData}/>
+                </Suspense>                           
               </div>
 
               <div>
+              <Suspense fallback={<SkeletonCard/>}>
                 <ProgressReport data={ProgressReportData}/>
+                </Suspense>
               </div>
                 </>
              )}
@@ -100,7 +108,9 @@ const groupColors = {
                                 {!casesAssigned && <span>Fetching Data</span>}
                                 <h1 className="text-xl font-medium">Student Cases</h1>
                                 {casesAssigned.length > 0 ? (
-                                <CIDataTable data={casesAssigned}/>
+                                    <Suspense fallback={<SkeletonCard/>}>
+                                    <CIDataTable data={casesAssigned}/>
+                                    </Suspense>
                                 ) : (
                                 <span>No cases submitted</span>
                                 )}                            
@@ -109,15 +119,21 @@ const groupColors = {
                         )}
                         {data.token.role === 'Dean' &&(
                         <div>
-                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>                           
-                        <BarChart data={barChartData}/>
+                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>
+                        <Suspense fallback={<SkeletonCard/>}>
+                            <BarChart data={barChartData}/>
+                        </Suspense>                           
                         </div>
                             )}
                             {data.token.role === 'Student' &&(
                                 <>
                         <div>
                             {!cases && <span>Fetching Data</span>}
-                            {cases && cases.length > 0 && <DataTable data={cases}/>}
+                            {cases && cases.length > 0 && 
+                            <Suspense fallback={<SkeletonCard/>}>
+                            <DataTable data={cases}/>
+                            </Suspense>
+                            }
                         </div>
                         <div className="my-4">
                         <Dialog>

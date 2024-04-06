@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import PR2DataTable from './pr-2-datatable';
 import PR3DataTable from './pr-3-datatable';
 import PR4DataTable from './pr-4-datatable';
@@ -44,7 +44,7 @@ export const ProgressReport = ({ data }) => {
 
         return (
         <Card>
-            <div className="flex justify-end">
+            <CardContent className="flex my-3 gap-4 justify-start">
 
             <div>
                 Year level Filter:
@@ -75,7 +75,7 @@ export const ProgressReport = ({ data }) => {
                     </SelectContent>
                 </Select>
             </div>
-            </div>
+            </CardContent>
             <div>
             {yearLevelFilter === 2 && <PR2DataTable data={filteredData} />}
                 {yearLevelFilter === 3 && <PR3DataTable data={filteredData} />}

@@ -39,7 +39,7 @@ export const Dashboard = async () => {
               <div className="col-span-2 row-span-2">
               <CarouselPlugin/>
               </div>
-              {data.token.role === 'Student' && ApprovedCases.length !== 0 && (
+              {data.token?.role === 'Student' && ApprovedCases.length !== 0 && (
                 <div>
                   <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
@@ -48,7 +48,7 @@ export const Dashboard = async () => {
                 </div>
               )}
 
-              {data.token.role === 'ClinicalInstructor' && PendingCases.length !== 0 && (
+              {data.token?.role === 'ClinicalInstructor' && PendingCases.length !== 0 && (
                 <div>
                   <h1 className="text-xl font-medium">Pending Cases</h1>
                   <Card>

@@ -10,28 +10,19 @@ import { CISchedule } from "@/actions/get-ci-schedule";
 import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import LoadingModal from "@/components/ui/loading-modal";
 import { SkeletonCard } from "@/components/skeleton-loader";
 
 
 export const Dashboard = async () => {
-  let data;
-  try {
-    data = await getServerSession(authOptions);
-  } catch (error) {
-    console.error("Error fetching server session:", error);
-    return null; 
-  }
+  const data = await getServerSession(authOptions);
 
-  if (!data || !data.token) {
-    return null; 
-  }
+  const scheduledata = await CISchedule(data.token.id);
+  const ApprovedCases = await approvedCases(data.token.id);
+  const PendingCases = await pendingCase(data.token.id);
 
-  const [scheduledata, ApprovedCases, PendingCases] = await Promise.all([
-    CISchedule(data.token.id),
-    approvedCases(data.token.id),
-    pendingCase(data.token.id)
-  ]);
 
   return (
     <>
@@ -39,24 +30,22 @@ export const Dashboard = async () => {
               <div className="col-span-2 row-span-2">
               <CarouselPlugin/>
               </div>
-              {data.token?.role === 'Student' && ApprovedCases.length !== 0 && (
+                { data.token.role === 'Student' && (
                 <div>
                   <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
-                    <DataTable data={ApprovedCases} />
+                    <DataTable data={ApprovedCases}/>
                   </Card>
-                </div>
-              )}
-
-              {data.token?.role === 'ClinicalInstructor' && PendingCases.length !== 0 && (
+              </div>
+                )}
+                { data.token.role === 'ClinicalInstructor' && (
                 <div>
-                  <h1 className="text-xl font-medium">Pending Cases</h1>
+                  <h1 className="text-xl font-medium">Pending  Cases</h1>
                   <Card>
-                    <DataTable data={PendingCases} />
+                    <DataTable data={PendingCases}/>
                   </Card>
-                </div>
-              )}
-
+              </div>
+                )}
               <div className="col-span-2 row-span-2">
                 <Suspense fallback={<SkeletonCard/>}>
                   <SchedulingCalendar scheduledata={scheduledata.schedules}/>

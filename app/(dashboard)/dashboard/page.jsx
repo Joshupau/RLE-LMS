@@ -16,20 +16,16 @@ async function getUserData(){
   const res = await getServerSession(authOptions);
 
   if(!res){
-    return null;
+    return;
   }
-
   return res.token
-
 }
-
-export const Dashboard = async ({}) => {
+export const Dashboard = async () => {
   const data = await getUserData();
 
-  const scheduledata = await CISchedule(data.id);
+  const { schedules } = await CISchedule(data.id);
   const ApprovedCases = await approvedCases(data.id);
   const PendingCases = await pendingCase(data.id);
-
 
   return (
     <>
@@ -54,7 +50,7 @@ export const Dashboard = async ({}) => {
               </div>
                 )}
               <div className="col-span-2 row-span-2">
-                  <SchedulingCalendar scheduledata={scheduledata.schedules}/>                
+                  <SchedulingCalendar scheduledata={schedules}/>                
               </div>
         </div>
     </>

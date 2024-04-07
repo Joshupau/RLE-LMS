@@ -12,13 +12,14 @@ import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
 
 import { redirect } from 'next/navigation'
+import { getSession } from "next-auth/react";
 
 
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
   if(!data){
-    redirect('/');
+    return <p>Loading....</p>
   }
   const schedules = await CISchedule(data.token.id);
   const ApprovedCases = await approvedCases(data.token.id);

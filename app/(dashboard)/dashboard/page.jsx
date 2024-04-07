@@ -12,59 +12,47 @@ import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
 
 
-async function getUserData(){
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
-  return session.token
+async function fetchData(data) {
+  const schedules = await CISchedule(data.token.id);
+  const ApprovedCases = await approvedCases(data.token.id);
+  const PendingCases = await pendingCase(data.token.id);
+  return { schedules, ApprovedCases, PendingCases };
 }
+
 export const Dashboard = async () => {
-  const data = await getUserData();
+  const data = await getServerSession(authOptions);
 
-  console.log(data);
-
-  const  schedules = await CISchedule(data.id);
-  const ApprovedCases = await approvedCases(data.id);
-  const PendingCases = await pendingCase(data.id);
+  // Fetch all data after server session is received
+  const { schedules, ApprovedCases, PendingCases } = await fetchData(data);
 
   return (
     <>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
-              <div className="col-span-2 row-span-2">
-              <CarouselPlugin/>
-              </div>
-                {/* { data.role === 'Student' && (
-                <div>
-                  <h1 className="text-xl font-medium">Approved Cases</h1>
-                  <Card>
-                    <DataTable data={ApprovedCases}/>
-                  </Card>
-              </div>
-                )}
-                { data.role === 'ClinicalInstructor' && (
-                <div>
-                  <h1 className="text-xl font-medium">Pending  Cases</h1>
-                  <Card>
-                    <DataTable data={PendingCases}/>
-                  </Card>
-              </div>
-                )}
-              <div className="col-span-2 row-span-2">
-                  <SchedulingCalendar scheduledata={schedules.schedules}/>                
-              </div> */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
+        <div className="col-span-2 row-span-2">
+          <CarouselPlugin />
         </div>
+        {data.role === 'Student' && ApprovedCases && (
+          <div>
+            <h1 className="text-xl font-medium">Approved Cases</h1>
+            <Card>
+              <DataTable data={ApprovedCases} />
+            </Card>
+          </div>
+        )}
+        {data.role === 'ClinicalInstructor' && PendingCases && (
+          <div>
+            <h1 className="text-xl font-medium">Pending Cases</h1>
+            <Card>
+              <DataTable data={PendingCases} />
+            </Card>
+          </div>
+        )}
+        <div className="col-span-2 row-span-2">
+          <SchedulingCalendar scheduledata={schedules.schedules} />
+        </div>
+      </div>
     </>
   );
-}
+};
 
 export default Dashboard;
-
-

@@ -16,12 +16,19 @@ import LoadingModal from "@/components/ui/loading-modal";
 import { SkeletonCard } from "@/components/skeleton-loader";
 
 
-export const Dashboard = async () => {
-  const data = await getServerSession(authOptions);
+async function getUserData(){
+  const res = await getServerSession(authOptions);
 
-  const scheduledata = await CISchedule(data.token.id);
-  const ApprovedCases = await approvedCases(data.token.id);
-  const PendingCases = await pendingCase(data.token.id);
+  return res.token
+
+}
+
+export const Dashboard = async ({}) => {
+  const data = await getUserData();
+
+  const scheduledata = await CISchedule(data.id);
+  const ApprovedCases = await approvedCases(data.id);
+  const PendingCases = await pendingCase(data.id);
 
 
   return (
@@ -30,7 +37,7 @@ export const Dashboard = async () => {
               <div className="col-span-2 row-span-2">
               <CarouselPlugin/>
               </div>
-                { data.token.role === 'Student' && (
+                { data.role === 'Student' && (
                 <div>
                   <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
@@ -38,7 +45,7 @@ export const Dashboard = async () => {
                   </Card>
               </div>
                 )}
-                { data.token.role === 'ClinicalInstructor' && (
+                { data.role === 'ClinicalInstructor' && (
                 <div>
                   <h1 className="text-xl font-medium">Pending  Cases</h1>
                   <Card>
@@ -58,3 +65,5 @@ export const Dashboard = async () => {
 }
 
 export default Dashboard;
+
+

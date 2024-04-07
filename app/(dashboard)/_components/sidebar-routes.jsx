@@ -24,6 +24,11 @@ const guestRoutes = [
         icon: BarChart,
         label: "Progress",
         href: "/progress"
+    },
+    {
+        icon: BarChart,
+        label: "rledashboard",
+        href: "/rledashboard"
     }
 
 

@@ -13,17 +13,25 @@ import { pendingCase } from "@/actions/get-pending-cases";
 
 
 async function getUserData(){
-  const res = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-  if(!res){
-    return;
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
   }
-  return res.token
+
+  return session.token
 }
 export const Dashboard = async () => {
   const data = await getUserData();
 
-  const { schedules } = await CISchedule(data.id);
+  console.log(data);
+
+  const  schedules = await CISchedule(data.id);
   const ApprovedCases = await approvedCases(data.id);
   const PendingCases = await pendingCase(data.id);
 
@@ -50,7 +58,7 @@ export const Dashboard = async () => {
               </div>
                 )}
               <div className="col-span-2 row-span-2">
-                  <SchedulingCalendar scheduledata={schedules}/>                
+                  <SchedulingCalendar scheduledata={schedules.schedules}/>                
               </div>
         </div>
     </>

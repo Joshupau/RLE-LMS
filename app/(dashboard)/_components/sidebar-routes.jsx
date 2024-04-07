@@ -8,7 +8,7 @@ const guestRoutes = [
     {
         icon: Layout,
         label: "Dashboard",
-        href: "/rledashboard"
+        href: "/dashboard",
     },
     {
         icon: Compass,
@@ -24,7 +24,7 @@ const guestRoutes = [
         icon: BarChart,
         label: "Progress",
         href: "/progress"
-    },
+    }
 
 
 ];

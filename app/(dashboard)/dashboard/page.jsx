@@ -15,6 +15,10 @@ import { pendingCase } from "@/actions/get-pending-cases";
 async function getUserData(){
   const res = await getServerSession(authOptions);
 
+  if(!res){
+    return null;
+  }
+
   return res.token
 
 }

@@ -22,12 +22,12 @@ async function fetchData(data) {
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
-  const { schedules, ApprovedCases, PendingCases } = await fetchData(data);
-
-
   if(!data){
     return <p> Loading ...</p>
   }
+  const { schedules, ApprovedCases, PendingCases } = await fetchData(data);
+
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">

@@ -37,7 +37,7 @@ export const Loginform = () => {
               if(data.schoolId === '200792' && data.password ==='123'){
                 router.push("/admin");
               }else {
-                router.push("/welcome");
+                router.push("/dashboard");
               }
             }
           } catch (error) {

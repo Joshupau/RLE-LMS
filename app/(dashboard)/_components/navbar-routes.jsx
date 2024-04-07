@@ -63,7 +63,7 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
     }
 
     return (
-        <div className="flex items-center gap-x-2 ml-auto">
+        <div className="flex items-center z-50 gap-x-2 ml-auto">
                 <Popover>
                 <PopoverTrigger onClick={()=>handleReadTrue(notification)}>
                     <div className="relative">
@@ -78,7 +78,7 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
                     )}
                     </div>
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className="bg-white">
                     <div className="flex flex-col space-y-2">
                     {notification.map(notification => (
                         <a href={notification.link} key={notification.id} className="block hover:bg-gray-100 p-2 rounded-md">

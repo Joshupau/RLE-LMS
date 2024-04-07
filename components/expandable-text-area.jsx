@@ -9,9 +9,11 @@ import MoonLoader from 'react-spinners/MoonLoader';
 import { useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
+import { useToast } from './ui/use-toast';
 
 const ExpandableTextarea = ({ id }) => {
   const { edgestore } = useEdgeStore();
+  const { toast } = useToast();
   
   const [expanded, setExpanded] = useState(false);
   
@@ -140,13 +142,28 @@ const removeFile = (fileType, content) => {
       });
  
       if (!response.ok) {
+        toast({
+          title: "Uh oh...",
+          description: "Failed to upload resources.",
+          status: "destructive"
+        })
         throw new Error("Failed to submit data to MongoDB");
       }
       if(response.ok){
+        toast({
+          title: "Success",
+          description: "Successfully uploaded resources.",
+          status: "destructive"
+        })
         router.refresh();
       }     
     } catch (error) {
       console.error(error);
+      toast({
+        title: "Uh oh...",
+        description: "Failed to upload resources. Try again later.",
+        status: "destructive"
+      })
     }
   };
   

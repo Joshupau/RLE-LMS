@@ -1,7 +1,7 @@
 
 import CarouselPlugin from "./_components/carousel";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 import  SchedulingCalendar  from "./_components/calendar";
 import { getServerSession } from "next-auth";
@@ -10,10 +10,6 @@ import { CISchedule } from "@/actions/get-ci-schedule";
 import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import LoadingModal from "@/components/ui/loading-modal";
-import { SkeletonCard } from "@/components/skeleton-loader";
 
 
 async function getUserData(){
@@ -54,10 +50,7 @@ export const Dashboard = async ({}) => {
               </div>
                 )}
               <div className="col-span-2 row-span-2">
-                <Suspense fallback={<SkeletonCard/>}>
-                  <SchedulingCalendar scheduledata={scheduledata.schedules}/>
-                </Suspense>
-                
+                  <SchedulingCalendar scheduledata={scheduledata.schedules}/>                
               </div>
         </div>
     </>

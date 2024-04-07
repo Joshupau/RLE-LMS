@@ -30,10 +30,12 @@ import EditPost from "./edit-post";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 
 export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, user, createdAt, updatedAt }) => {
   const { edgestore } = useEdgeStore();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -44,6 +46,11 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
         method: 'DELETE'
       });
       if(!response.ok){
+        toast({
+          title: "Uh oh...",
+          description: "Failed to edit resource.",
+          status: "destructive"
+        })
         throw new Error('Failed to delete resource');
       }
       if(response.ok){
@@ -53,11 +60,21 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
               url: links,
             });
           });
+          toast({
+            title: "Success",
+            description: "Successfully deleted resource.",
+            status: "Success"
+          })
           router.refresh();
         }
       }
     } catch (error) {
-      console.error('Error deleting resource:', error);     
+      console.error('Error deleting resource:', error);
+      toast({
+        title: "Uh oh...",
+        description: "Failed to edit resource.",
+        status: "destructive"
+      })     
     }
   }
   const isImage = (url) => {

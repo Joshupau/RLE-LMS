@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
-import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 
 export const BasicInfo = ({ data }) => {
-    const { update } = useSession();
+
     const { toast } = useToast();
 
     const [userData, setUserData] = useState({
@@ -57,21 +56,30 @@ export const BasicInfo = ({ data }) => {
           });
       
           if (!response.ok) {
+            toast({
+                title: "Uh oh...",
+                description: "Failed to update Basic Information.",
+                status: "failed",
+            });
             throw new Error("Error updating user information");
           }
       
           const updatedUserData = await response.json();
-          console.log(updatedUserData);
-
-          await update({
-            ...session,
-            user: updatedUserData, 
-          });
       
           setUserData(updatedUserData);
+          toast({
+            title: "Success",
+            description: "Succesfully updated your Basic Information.",
+            status: "failed",
+        });
       
         } catch (error) {
           console.error("Error updating user:", error);
+          toast({
+            title: "Uh oh...",
+            description: "Failed to update Basic Information. Please try again later.",
+            status: "failed",
+        });
         }
       };
     return (

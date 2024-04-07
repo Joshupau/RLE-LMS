@@ -8,14 +8,18 @@ import { getNotification } from "@/actions/get-notification";
 
 export const Navbar = async () => {
     const data = await getServerSession(authOptions);
+
+    if (!data) {
+        return <p>Loading ...</p>
+      }
     
-    const notification = await getNotification(data.token.id);
+    const notification = await getNotification(data?.token?.id);
     
 
     return (
         <div className="position-fixed top-0 left-0 right-0 z-10 p-4 border-b h-full flex items-center bg-white shadow-sm ">
         <MobileSidebar/>
-        <NavbarRoutes notifications={notification} firstName={data.token.firstName} lastName={data.token.lastName}/>
+        <NavbarRoutes notifications={notification} firstName={data?.token?.firstName} lastName={data?.token?.lastName}/>
         </div>
         )
 }

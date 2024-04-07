@@ -11,22 +11,18 @@ import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
 
+import { redirect } from 'next/navigation'
 
-async function fetchData(data) {
-  const schedules = await CISchedule(data.token.id);
-  const ApprovedCases = await approvedCases(data.token.id);
-  const PendingCases = await pendingCase(data.token.id);
-  return { schedules, ApprovedCases, PendingCases };
-}
 
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
   if(!data){
-    return <p> Loading ...</p>
+    redirect('/');
   }
-  const { schedules, ApprovedCases, PendingCases } = await fetchData(data);
-
+  const schedules = await CISchedule(data.token.id);
+  const ApprovedCases = await approvedCases(data.token.id);
+  const PendingCases = await pendingCase(data.token.id);
 
   return (
     <>

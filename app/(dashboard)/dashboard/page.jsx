@@ -22,16 +22,19 @@ async function fetchData(data) {
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
 
-  // Fetch all data after server session is received
   const { schedules, ApprovedCases, PendingCases } = await fetchData(data);
 
+
+  if(!data){
+    return <p> Loading ...</p>
+  }
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
         <div className="col-span-2 row-span-2">
           <CarouselPlugin />
         </div>
-        {data.role === 'Student' && ApprovedCases && (
+        {data.token.role === 'Student' && ApprovedCases && (
           <div>
             <h1 className="text-xl font-medium">Approved Cases</h1>
             <Card>
@@ -39,7 +42,7 @@ export const Dashboard = async () => {
             </Card>
           </div>
         )}
-        {data.role === 'ClinicalInstructor' && PendingCases && (
+        {data.token.role === 'ClinicalInstructor' && PendingCases && (
           <div>
             <h1 className="text-xl font-medium">Pending Cases</h1>
             <Card>

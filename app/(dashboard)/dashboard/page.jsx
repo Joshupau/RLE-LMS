@@ -41,7 +41,7 @@ export const Dashboard = async () => {
               <div className="col-span-2 row-span-2">
               <CarouselPlugin/>
               </div>
-                { data.role === 'Student' && (
+                {/* { data.role === 'Student' && (
                 <div>
                   <h1 className="text-xl font-medium">Approved Cases</h1>
                   <Card>
@@ -59,7 +59,7 @@ export const Dashboard = async () => {
                 )}
               <div className="col-span-2 row-span-2">
                   <SchedulingCalendar scheduledata={schedules.schedules}/>                
-              </div>
+              </div> */}
         </div>
     </>
   );

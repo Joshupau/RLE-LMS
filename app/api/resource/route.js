@@ -29,7 +29,6 @@ export async function POST(request) {
 
     const schoolyear = await getCurrentSchoolYear();
 
-    console.log(schoolyear.id);
 
     const newResource = await prisma.resource.create({
       data: {

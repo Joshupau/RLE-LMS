@@ -48,7 +48,6 @@ const fuzzyFilterFn = (rows, filterValue) => {
 
 const PR4DataTable = ({ data }) => {
   
-    console.log(data);
   const [pagination, setPagination] = useState({
     pageIndex: 0, // Initial page index
     pageSize: 5, // Default page size

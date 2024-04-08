@@ -22,9 +22,6 @@ export async function DELETE(req, res) {
       if (!deletedResource) {
           return new NextResponse.json("resource post not found", { status: 404 });
       }
-      if(deletedResource){
-          console.log("success in deleting resource post");
-      }
   
       return NextResponse.json(deletedResource);
   } catch (error) {

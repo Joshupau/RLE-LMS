@@ -6,7 +6,6 @@ export async function POST(req) {
     try {
     const { oldPassword, hashedPassword } = await req.json();
     
-    console.log(oldPassword, hashedPassword)
     const isOldPasswordCorrect = await bcrypt.compare(oldPassword, hashedPassword);
 
     return NextResponse.json({ isOldPasswordCorrect });

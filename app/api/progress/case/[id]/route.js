@@ -37,8 +37,6 @@ export async function POST(req,res) {
             },
           });
 
-          console.log(notification);
-
 
         return NextResponse.json(approve, notification);
     } catch (error) {

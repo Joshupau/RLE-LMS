@@ -1,10 +1,9 @@
-"use client"
+'use client'
 
 import { Layout, Compass, List, BarChart } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
-import { usePathname } from "next/navigation";
 
-const guestRoutes = [
+const studentRoutes = [
     {
         icon: Layout,
         label: "Dashboard",
@@ -23,46 +22,76 @@ const guestRoutes = [
     {
         icon: BarChart,
         label: "Progress",
-        href: "/progress"
-    }
+        href: "/progress/student"
+    }];
 
-
-];
-
-const teacherRoutes = [
+const instructorRoutes = [
+    {
+        icon: Layout,
+        label: "Dashboard",
+        href: "/dashboard",
+    },
+    {
+        icon: Compass,
+        label: "Schedule",
+        href: "/schedule",
+    },
     {
         icon: List,
-        label: "Courses",
-        href: "/teacher/courses",
+        label: "Resources",
+        href: "/resources",
     },
     {
         icon: BarChart,
-        label: "Analytics",
-        href: "/teacher/analytics",
+        label: "Progress",
+        href: "/progress/ci"
     }
-
-
 ];
 
-export const SidebarRoutes = () => {
-    const pathname = usePathname();
+const deanRoutes = [
+    {
+        icon: Layout,
+        label: "Dashboard",
+        href: "/dashboard",
+    },
+    {
+        icon: Compass,
+        label: "Schedule",
+        href: "/schedule",
+    },
+    {
+        icon: BarChart,
+        label: "Progress",
+        href: "/progress"
+    }];
 
-    const isTeacherPage = pathname?.includes("/teacher");
+export const SidebarRoutes = ({ session }) => {
+    const userRole = session?.token?.role;
+    
+    let routes;
 
+    switch (userRole) {
+        case 'Student':
+            routes = studentRoutes;
+            break;
+        case 'ClinicalInstructor':
+            routes = instructorRoutes;
+            break;
+        case 'Dean':
+            routes = deanRoutes;
+            break;
+    }
 
-    const routes = isTeacherPage ? teacherRoutes : guestRoutes;
-
-
-    return(
+    return (
         <div className="flex flex-col w-full">
             {routes.map((route) => (
-            <SidebarItem
-            key={route.href}
-            icon ={route.icon}
-            label={route.label}
-            href={route.href}
-            />
+                <SidebarItem
+                    key={route.href}
+                    icon={route.icon}
+                    label={route.label}
+                    href={route.href}
+                />
             ))}
         </div>
-    )
-}
+    );
+};

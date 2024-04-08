@@ -42,7 +42,6 @@ export async function POST(request){
                 status: true,
             }
         });
-        console.log(user); //REMOVE AFTER DEVELOPMENT
     
         return NextResponse.json(user);
     

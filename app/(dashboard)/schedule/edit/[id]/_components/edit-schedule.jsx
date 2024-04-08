@@ -115,7 +115,6 @@ export const EditSchedule = ({
           dates: DatesofDuty,
         };
     
-        console.log('Data to be sent:', data);
     
         const response = await fetch(`/api/schedule/${scheduleId}/update`, {
           method: 'POST',

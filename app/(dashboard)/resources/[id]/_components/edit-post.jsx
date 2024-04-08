@@ -46,7 +46,6 @@ const EditPost = ({
   
 
 const removeFile = (fileType, content) => {
-  console.log(content);
   if (fileType === 'image') {
     window.URL.revokeObjectURL(content.imageUrl);
     setPendingImages((prevImages) =>
@@ -159,11 +158,6 @@ const removeFile = (fileType, content) => {
                    url: links,
                });
            });
-           if(deleteURL){
-              console.log("Successfully deleted files in edgestore");
-            } else {
-              console.log("Failed to delete files in edgestore");
-           };
         };
         onClose();
         router.refresh();
@@ -185,23 +179,17 @@ const removeFile = (fileType, content) => {
     ];
   
     const uploadPromises = allPendingUploads.map(fileObject => {
-      // Return a promise for each upload
       return uploadToEdgeStore(fileObject);
     });
   
     try {
-      // Wait for all uploads to finish using Promise.all
       const fileUrls = await Promise.all(uploadPromises);
   
-      console.log("All uploads successful:", fileUrls);
   
-      // Call handleDataSubmission after all uploads are complete
       await handleDataSubmission(fileUrls, description, resourceGroupId, userId, urlToDelete, id, uploadUrl);
     } catch (error) {
       console.error("Error during uploads or data submission:", error);
-      // Handle errors appropriately
     } finally {
-      // Clear pending uploads regardless of success
       setPendingImages([]);
       setPendingFiles([]);
       setIsLoading(false);

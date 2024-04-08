@@ -47,7 +47,6 @@ export const authOptions = ({
               return user;
             }
 
-            console.log(user);
             return user;
           } catch (error) {
             console.log("Error: ", error);

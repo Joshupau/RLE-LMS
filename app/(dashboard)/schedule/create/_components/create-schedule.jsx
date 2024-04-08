@@ -87,7 +87,6 @@ export const CreateSchedule = ({
           dates: DatesofDuty,
         };
     
-        console.log('Data to be sent:', data);
     
         const response = await fetch('/api/schedule', {
           method: 'POST',

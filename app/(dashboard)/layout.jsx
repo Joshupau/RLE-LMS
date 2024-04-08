@@ -30,9 +30,9 @@ export default async function RootLayout({ children }) {
                 <Navbar session={session}/>
             </div>
             <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
-                <Sidebar />
+                <Sidebar session={session} />
             </div>
-            <main className="md:pl-56 pt-[80px] h-full">
+            <main className="md:pl-56 h-full">
               <Suspense fallback={<LoadingModal/>}>
                  {children}
               </Suspense>

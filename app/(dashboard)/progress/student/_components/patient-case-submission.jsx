@@ -213,7 +213,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
     updatedSurgeons.splice(indexToRemove, 1);
     setSurgeonCount(surgeonCount - 1);
     setORSurgeon(updatedSurgeons);
-    console.log(ORSurgeon);
   };
   
   
@@ -248,7 +247,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         });
     
         if (response.ok) {
-          console.log('Successfully Submitted Medical Case!');
           toast({
             title: "Success",
             description: "Patient case submitted successfully",
@@ -290,7 +288,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         });
     
         if (response.ok) {
-          console.log('Successfully Submitted DR Cord Case!');
           toast({
             title: "Success",
             description: "DR Cord case submitted successfully",
@@ -330,7 +327,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         });
     
         if (response.ok) {
-          console.log('Successfully Submitted DR MA Case!');
           toast({
             title: "Success",
             description: "DR Major/Assist case submitted successfully",
@@ -372,7 +368,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         });
     
         if (response.ok) {
-          console.log('Successfully Submitted OR Major/Minor Case!');
           toast({
             title: "Success",
             description: `${value} case submitted successfully`,
@@ -413,7 +408,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         });
     
         if (response.ok) {
-          console.log('Successfully Submitted CHN Case!');
           toast({
             title: "Success",
             description: `${value} case submitted successfully`,
@@ -428,7 +422,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           });
         }
       }else {
-        console.log("Invalid Case Type");
         toast({
           title: "Invalid",
           description: "Invalid Case Type",

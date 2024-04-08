@@ -28,7 +28,6 @@ export const getResourceGroup = async (userId) => {
             }
         });
 
-        console.log(resources);
 
         return resources;
 

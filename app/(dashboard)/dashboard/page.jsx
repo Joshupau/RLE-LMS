@@ -43,7 +43,7 @@ export const Dashboard = async () => {
         )}
         {schedules.schedules.length > 0 && (
           <div className="col-span-2 row-span-2">
-            <SchedulingCalendar scheduledata={schedules.schedules} />
+            <SchedulingCalendar role={data.token.role} scheduledata={schedules.schedules} />
           </div>
         )}
       </div>

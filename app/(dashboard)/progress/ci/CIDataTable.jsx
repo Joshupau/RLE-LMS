@@ -34,11 +34,45 @@ getCoreRowModel,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
   
+
+const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300 }) => {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onChange(value);
+    }, debounceTime);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, onChange, debounceTime]);
+
+  return <Input value={value} onChange={e => setValue(e.target.value)} placeholder="Search..." />;
+};
+
+const fuzzyFilterFn = (rows, filterValue) => {
+  return rows.filter(row => {
+    const rowValues = Object.values(row).map(value =>
+      typeof value === 'string' || typeof value === 'number' ? value.toString().toLowerCase() : ''
+    );
+    return rowValues.some(value =>
+      value.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  });
+};
+
+
+
 const CIDataTable = ({ data }) => {
+
+  const [globalFilter, setGlobalFilter] = useState('');
+
 
     const { toast } = useToast();
     const router = useRouter();
@@ -49,19 +83,29 @@ const CIDataTable = ({ data }) => {
       pageSize: 5, // Default page size
     });
 
+    useEffect(() => {
+      if (globalFilter === null) {
+        setGlobalFilter('');
+      }
+    }, [globalFilter]);
   
-    const table = useReactTable({
-      data,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      onPaginationChange: setPagination,
-      state: {
-        pagination,
-      },
-    });
+  const table = useReactTable({
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    state: {
+      pagination,
+      globalFilter,
+    },
+    globalFilterFn: fuzzyFilterFn,
+  });
   
-    // Slice the data array based on pagination settings
-    const paginatedData = data.slice(
+  const paginatedFilteredData = data
+    .filter(row => { 
+      return fuzzyFilterFn([row], globalFilter).length > 0;
+    })
+    .slice(
       pagination.pageIndex * pagination.pageSize,
       (pagination.pageIndex + 1) * pagination.pageSize
     );
@@ -99,6 +143,12 @@ const CIDataTable = ({ data }) => {
     };
 
     return (
+      <>
+        <div className="flex justify-end">
+          <div className="w-1/4 max-w-xs m-2">
+            <DebouncedInput value={globalFilter} onChange={setGlobalFilter} />
+          </div>
+        </div>
       <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
@@ -113,7 +163,7 @@ const CIDataTable = ({ data }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((Case) => (
+            {paginatedFilteredData.map((Case) => (
               <TableRow key={Case.id}>
                 <TableCell className="text-center">{Case.caseNumber}</TableCell>
                 <TableCell className="text-center">{Case.caseType}</TableCell>
@@ -357,6 +407,7 @@ const CIDataTable = ({ data }) => {
           </Button>
         </div>
       </div>
+      </>
     );
   };
   

@@ -101,10 +101,6 @@ export const Loginform = () => {
                      <p>{error}</p>
                      </div>
                      }
-                    <div className="text-right">
-                    <Link className="text-sm mt-3" href={'register'}> Don't have an account? <span className="underline">Register</span>
-                    </Link>
-                    </div>
                 </form>
             </div>
         </div>

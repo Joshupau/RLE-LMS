@@ -38,7 +38,7 @@ export async function POST(req, res){
                 level: level,
                 date: date,
                 userId: userId,
-                schoolyear: schoolyear.id,
+                schoolyearId: schoolyear.id,
             }
           });
 

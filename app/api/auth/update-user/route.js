@@ -14,6 +14,7 @@ export async function POST(req, ) {
     age,
     email,
     id,
+    contact
   } = updatedData
   try {
     const updatedUser = await prisma.user.update({
@@ -24,6 +25,7 @@ export async function POST(req, ) {
         lastName: lastName,
         age: Number(age),
         email: email,
+        contact: Number(contact),
       },
     });
 

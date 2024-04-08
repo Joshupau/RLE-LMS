@@ -40,15 +40,21 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
 
   const router = useRouter();
 
-  const onDelete = async (id, uploadLinks, resourceGroupId) => {
+  const onDelete = async (id, uploadLinks) => {
     try {
-      const response = await fetch(`/api/resource/${id}/delete?id=${id}`, {
-        method: 'DELETE'
+
+      console.log(id)
+      const response = await fetch(`/api/resource/${id}/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
       });
       if(!response.ok){
         toast({
           title: "Uh oh...",
-          description: "Failed to edit resource.",
+          description: "Failed to delete resource.",
           status: "destructive"
         })
         throw new Error('Failed to delete resource');
@@ -72,7 +78,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
       console.error('Error deleting resource:', error);
       toast({
         title: "Uh oh...",
-        description: "Failed to edit resource.",
+        description: "Failed to delete resource.",
         status: "destructive"
       })     
     }
@@ -120,7 +126,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
                   </DialogTrigger>
               </DropdownMenuItem>
               <DropdownMenuItem
-              onClick={()=>onDelete(id, uploadLinks, resourceGroupId)}
+              onClick={()=>onDelete(id, uploadLinks)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 <span >Delete Post</span>

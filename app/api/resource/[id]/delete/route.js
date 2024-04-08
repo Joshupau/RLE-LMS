@@ -10,10 +10,7 @@ export async function DELETE(req, res) {
     }
   
     try {
-      const url = new URL(req.url);
-      const searchparams = new URLSearchParams(url.searchParams);
-      const id = searchparams.get('id');
-  
+     const { id } = await req.json();
   
       const deletedResource = await prisma.resource.delete({
         where: { id },

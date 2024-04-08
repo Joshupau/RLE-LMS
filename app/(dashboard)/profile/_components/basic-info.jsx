@@ -16,7 +16,8 @@ export const BasicInfo = ({ data }) => {
         age: "",
         schoolId: "",
         email: "",
-        id: ""
+        id: "",
+        contact: "",
     })
 
     useEffect(()=>{
@@ -29,6 +30,7 @@ export const BasicInfo = ({ data }) => {
                 schoolId: data.schoolId,
                 email: data.email,
                 id: data.id,
+                contact: data.contact
             })        
         } else {
             return;
@@ -44,6 +46,7 @@ export const BasicInfo = ({ data }) => {
           age: userData.age,
           email: userData.email,
           id: userData.id, 
+          contact: userData.contact
         };
       
         try {
@@ -147,6 +150,16 @@ export const BasicInfo = ({ data }) => {
                     value={userData.schoolId} 
                     className="border border-black text-sm text-black rounded-xl bg-slate-200 p-2" 
                     readOnly />
+                </div>
+                <div className="flex flex-col space-y-2 justify-end">
+                    <label htmlFor="idNumber">Contact Number: </label>
+                <Input type="number" 
+                    id="contact" 
+                    placeholder="Contact Number e.g 639..." 
+                    onChange={(e)=>{ setUserData({...userData, contact: e.target.value})}} 
+                    value={userData.contact} 
+                    className="border border-black text-sm text-black rounded-xl bg-slate-200 p-2" 
+                    />
                 </div>
             </div>
                 <div className="flex m-4 justify-end">

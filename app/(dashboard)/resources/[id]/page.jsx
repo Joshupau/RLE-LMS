@@ -11,6 +11,8 @@ import { Ghost } from 'lucide-react';
 
 import { getResourceGroupIds } from "@/actions/get-resource-group-ids";
 import { SkeletonCard } from "@/components/skeleton-loader";
+import { Card, CardContent } from "@/components/ui/card";
+import { getScheduleInResource } from "@/actions/get-schedule-in-resource";
 
 export default async function ResourceIdPage({ params, searchParams }) {
 
@@ -18,15 +20,28 @@ export default async function ResourceIdPage({ params, searchParams }) {
 
   const data = await getServerSession(authOptions);
   const resourcePost = await getResourcePosts(id);
+  const scheduledata = await getScheduleInResource(id);
+
   
   return (
-    <div className="bg-slate-50">
-        <div className="grid md:grid-cols-3 items-center justify-center mt-20">
-          <div>
-            hi
+    <div className="h-full">
+        <div className="grid md:grid-cols-3 mt-20">
+          <div className="justify-end flex mt-8 my-5 mr-4">
+            <Card className="h-32 shadow-lg w-56">
+              <CardContent>
+                <h1 className="font-bold">Schedule Details</h1>
+                <p>week: {scheduledata.week}</p>
+                <p>Area: {scheduledata.area}</p>
+                <p>Shift:   
+                   {Number(scheduledata.clinicalHours) === 1 ? " AM Shift" :
+                   Number(scheduledata.clinicalHours) === 2 ? " PM Shift" :
+                   Number(scheduledata.clinicalHours) === 3 ? " Graveyard Shift" : null}
+                </p>
+              </CardContent>
+            </Card>
           </div>
          
-           <div>
+           <div className="items-center justify-center">
             <div className="mt-8 my-5 w-full bg-white">
             <div className="m-4 md:w-[40rem] bg-white border-2 shadow-xl p-2 mx-auto flex items-center">
               <div className="rounded-full  bg-white overflow-hidden mr-4">

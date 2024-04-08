@@ -40,7 +40,7 @@ export const StudentPage = async () => {
     
     return(
         <>
-             <div className="p-6 mt-16">    
+             <div className="p-6 mt-28">    
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-y-2">
                     <h1 className="text-2xl font-medium">RLE Performance</h1>

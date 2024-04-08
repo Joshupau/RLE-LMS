@@ -256,7 +256,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           console.error('Failed to Submit Medical Case :<');
           toast({
             title: "Failed",
-            description: "Failed to submit case successfully",
+            description: "Failed to submit patient case.",
             variant: "destructive"
           });
         }
@@ -297,7 +297,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           console.error('Failed to Submit DR Cord Case :<');
           toast({
             title: "Failed",
-            description: "Failed to submit case successfully",
+            description: "Failed to submit patient case.",
             variant: "destructive"
           });
         }
@@ -336,7 +336,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           console.error('Failed to Submit DR MA Case :<');
           toast({
             title: "Failed",
-            description: "Failed to submit case successfully",
+            description: "Failed to submit patient case.",
             variant: "destructive"
           });
         }
@@ -377,7 +377,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           console.error(`Failed to Submit ${value} Case :<`);
           toast({
             title: "Failed",
-            description: "Failed to submit case successfully",
+            description: "Failed to submit patient case.",
             variant: "destructive"
           });
         }
@@ -417,7 +417,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           console.error(`Failed to Submit ${value} Case :<`);
           toast({
             title: "Failed",
-            description: "Failed to submit case successfully",
+            description: "Failed to submit patient case.",
             variant: "destructive"
           });
         }
@@ -534,7 +534,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                 {date ? format(date, "PPP") : <span>Date of Case Acquired</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto bg-white p-0">
               <Calendar
                 mode="single"
                 selected={date}
@@ -645,7 +645,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                 {dateAdmitted ? format(dateAdmitted, "PPP") : <span>Date Admitted</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto bg-white p-0">
               <Calendar
                 mode="single"
                 selected={dateAdmitted}
@@ -670,7 +670,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                 {dateDischarged ? format(dateDischarged, "PPP") : <span>Date Discharged</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto bg-white p-0">
               <Calendar
                 mode="single"
                 selected={dateDischarged}
@@ -726,7 +726,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                 {dateDelivered ? format(dateDelivered, "PPP") : <span>Date of Delivery</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto bg-white p-0">
               <Calendar
                 mode="single"
                 selected={dateDelivered}
@@ -976,7 +976,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
 
               {Array(patientCount).fill(null).map((_, index) => (
                 <TabsContent value={index}>
-                    <h1 className="text-2xl font-medium">Patient {index + 1} Information</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col space-y-2 justify-end">
                 <Label>Name</Label>

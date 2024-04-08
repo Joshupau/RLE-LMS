@@ -52,11 +52,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
         body: JSON.stringify({ id }),
       });
       if(!response.ok){
-        toast({
-          title: "Uh oh...",
-          description: "Failed to delete resource.",
-          status: "destructive"
-        })
+        router.refresh();
         throw new Error('Failed to delete resource');
       }
       if(response.ok){

@@ -38,10 +38,10 @@ const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300 }) =
 const fuzzyFilterFn = (rows, filterValue) => {
   return rows.filter(row => {
     const rowValues = Object.values(row).map(value =>
-      typeof value === 'string' ? value.toLowerCase() : value
+      typeof value === 'string' || typeof value === 'number' ? value.toString().toLowerCase() : ''
     );
     return rowValues.some(value =>
-      value.toString().toLowerCase().includes(filterValue.toLowerCase())
+      value.toLowerCase().includes(filterValue.toLowerCase())
     );
   });
 };

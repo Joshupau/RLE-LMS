@@ -22,7 +22,7 @@ import {
   } from "@/components/ui/popover"
 import { StudentCaseProgress } from "./_components/student-case-progress";
 import { StudentPerformanceCards } from "./_components/student-performance-cards";
-import { PatientCaseSubmission } from "../_components/patient-case-submission";
+import { PatientCaseSubmission } from "./_components/patient-case-submission";
 
 export const StudentPage = async () => {
     const data = await getServerSession(authOptions);

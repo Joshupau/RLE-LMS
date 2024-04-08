@@ -73,7 +73,6 @@ import {
       }
     }, [selectedWeek, selectedDate]);
     
-    console.log(groupedByWeek);
     
     return (
       <Card>

@@ -90,7 +90,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
     setOpen(false);
   };
   return (
-    <div className="m-4 md:w-[40rem] shadow-md border rounded border-gray-300 p-2 mx-auto flex flex-col items-start h-auto">
+    <div className="m-4 bg-white md:w-[40rem] shadow-md border rounded border-gray-300 p-2 mx-auto flex flex-col  h-auto">
       <div className="flex justify-between p-2 cursor-pointer w-full"> 
         <div>
         <p>
@@ -156,20 +156,22 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
         )}
       </div>
 
-      <div className="flex-wrap w-full justify-center">
+      <div className="flex-wrap items-center h-auto justify-center text-center">
         {uploadLinks.map((link, index) => (
-          <div key={index}>
-            {isImage(link) ? (
-              <img
+         <div key={index} className="overflow-hidden items-center"> 
+          {isImage(link) ? (
+              <Image
                 src={link}
                 alt={`Image from ${link}`}
-                className="w-full h-auto my-2 object-cover rounded-md"
-              />
+                className="w-full h-[40rem] object-cover rounded-md max-w-full" 
+                width={500}
+                height={300}
+                />
             ) : (
             
             <>
 
-        <div className="border flex items-center">
+        <div className="border mt-2 flex items-center">
             <Image
             height={140}
             width={140}

@@ -11,9 +11,6 @@ import DataTable from "./DataTable";
 import { approvedCases } from "@/actions/get-approved-cases";
 import { pendingCase } from "@/actions/get-pending-cases";
 
-import { redirect } from 'next/navigation'
-import { getSession } from "next-auth/react";
-
 
 export const Dashboard = async () => {
   const data = await getServerSession(authOptions);
@@ -27,12 +24,12 @@ export const Dashboard = async () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
+      <div className="grid grid-cols-1 mt-20 md:grid-cols-3 gap-6 my-16">
         <div className="col-span-2 row-span-2">
           <CarouselPlugin />
         </div>
         {data.token.role === 'Student' && ApprovedCases && (
-          <div>
+          <div className="mt-10">
             <h1 className="text-xl font-medium">Approved Cases</h1>
             <Card>
               <DataTable data={ApprovedCases} />
@@ -40,8 +37,8 @@ export const Dashboard = async () => {
           </div>
         )}
         {data.token.role === 'ClinicalInstructor' && PendingCases && (
-          <div>
-            <h1 className="text-xl font-medium">Pending Cases</h1>
+          <div className="mt-10">
+          <h1 className="text-xl font-medium">Pending Cases</h1>
             <Card>
               <DataTable data={PendingCases} />
             </Card>

@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card';
 
 export const LinePlot = ({ data }) => {
 
-    console.log(data);
     return (
         <Card style={{ width: '45%', height: '400px' }}>
         <ResponsiveLine

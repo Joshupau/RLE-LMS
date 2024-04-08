@@ -147,7 +147,6 @@ export const getProgressReport = async () => {
             return acc;
         }, {});
 
-        console.log(groupedStudents);
         return groupedStudents;
         
     } catch (error) {

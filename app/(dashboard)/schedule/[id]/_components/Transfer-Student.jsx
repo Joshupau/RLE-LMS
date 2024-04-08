@@ -23,8 +23,6 @@ export const TransferStudent = ({data, schedules, onTransferStatusChange}) => {
     }
     const handleTransfer = async () => {
         try {
-            console.log("Transfer button clicked");
-            console.log("Selected schedule:", scheduleSelect);
             const response = await fetch(`/api/schedule/${scheduleSelect}/transfer`, {
                 method: 'POST',
                 headers: {
@@ -36,9 +34,7 @@ export const TransferStudent = ({data, schedules, onTransferStatusChange}) => {
                     oldId: data.scheduleId,
                 })
             });
-    
-            console.log("Response:", response);
-    
+        
             if (response.ok) {
                 onTransferStatusChange(true);
             } else {

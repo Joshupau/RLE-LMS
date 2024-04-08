@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 export async function POST(req, res){
     try {
         const body = await req.json();
-        console.log(body);
         const  {
             scheduleId,
             caseType,

@@ -38,7 +38,6 @@ export default function Registerform () {
             } else {
                 setError(null);
                 const userInfo = await response.json();
-                console.log(userInfo);
                 router.push('/');
             }
         } catch (error) {

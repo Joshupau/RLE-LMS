@@ -1,8 +1,7 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -46,7 +45,7 @@ export async function POST(request) {
     const schoolyear = await getCurrentSchoolYear();
 
 
-    const schedules = await prisma.scheduling.update({
+    const schedules = await db.scheduling.update({
       where: { id: scheduleId },
       data: {
         clinicalHours,
@@ -64,7 +63,7 @@ export async function POST(request) {
       },
     });
 
-    await prisma.resourceGroup.update({
+    await db.resourceGroup.update({
       where: {
         scheduleId: scheduleId,
       },
@@ -75,7 +74,7 @@ export async function POST(request) {
     });
 
     const notificationPromises = students.map((userId) =>
-      prisma.notification.create({
+      db.notification.create({
         data: {
           title: "Schedule Notification",
           message: `RLE schedule for Week/s ${week}.`,
@@ -87,7 +86,7 @@ export async function POST(request) {
       })
     );
     
-    prisma.notification.create({
+    db.notification.create({
       data: {
         title: "Schedule Notification",
         message: `RLE schedule for Week/s ${week}.`,
@@ -102,7 +101,7 @@ export async function POST(request) {
 
     const userSchedulingPromises = [];
 
-    await prisma.userScheduling.deleteMany({
+    await db.userScheduling.deleteMany({
       where: {
         schedulingId: schedules.id,
         week: week,
@@ -118,7 +117,7 @@ export async function POST(request) {
       }))
     );
 
-    await prisma.userScheduling.createMany({
+    await db.userScheduling.createMany({
       data: userSchedulingData,
     });
 

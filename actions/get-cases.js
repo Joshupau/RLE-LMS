@@ -1,10 +1,9 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { db } from "@/lib/db";
 
 export const CasesAssigned = async (clinicalInstructorId) => {
   try {
-    const prisma = new PrismaClient();
 
-   const cases = await prisma.submissionOfPatientCases.findMany({
+   const cases = await db.submissionOfPatientCases.findMany({
     where: {
         scheduling: {
             user: {

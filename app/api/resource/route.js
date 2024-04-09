@@ -1,10 +1,9 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export async function POST(request) {
   try {
@@ -22,7 +21,7 @@ export async function POST(request) {
     const { description, resourceGroupId, fileUrls } = body;
 
 
-    const schedulingId = await prisma.resourceGroup.findUnique({
+    const schedulingId = await db.resourceGroup.findUnique({
       where: { id: resourceGroupId },
       select: { scheduleId: true },
     });
@@ -30,7 +29,7 @@ export async function POST(request) {
     const schoolyear = await getCurrentSchoolYear();
 
 
-    const newResource = await prisma.resource.create({
+    const newResource = await db.resource.create({
       data: {
         description,
         uploadLinks: fileUrls,
@@ -57,7 +56,7 @@ export async function POST(request) {
       },
     });
 
-    const userIds = await prisma.resourceGroup.findUnique({
+    const userIds = await db.resourceGroup.findUnique({
       where: { id: resourceGroupId },
       select: { 
         users: {
@@ -72,7 +71,7 @@ export async function POST(request) {
     });
     
 
-    const author = await prisma.user.findUnique({
+    const author = await db.user.findUnique({
       where: { id: userId },
       select: {
         firstName: true,
@@ -89,7 +88,7 @@ export async function POST(request) {
           continue; 
         }
 
-        await prisma.notification.create({
+        await db.notification.create({
           data: {
               title: "Resource Notification",
               message: `New Resource Post uploaded by ${author.firstName} ${author.lastName}.`,

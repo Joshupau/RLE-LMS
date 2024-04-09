@@ -1,11 +1,9 @@
-
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
 export const getResourceGroupIds = async () => {
     try {
-        const prisma = new PrismaClient();
 
-        const resourceGroupIds = await prisma.resourceGroup.findMany({
+        const resourceGroupIds = await db.resourceGroup.findMany({
             select: { id: true }, 
           });
 

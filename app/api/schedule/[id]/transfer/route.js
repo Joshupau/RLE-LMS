@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
@@ -20,7 +18,7 @@ export async function POST(request) {
 
     // Try removing the user from the old schedule
     try {
-      remove = await prisma.scheduling.update({
+      remove = await db.scheduling.update({
         where: {
           id: oldId,
         },
@@ -38,7 +36,7 @@ export async function POST(request) {
     }
 
     try {
-      add = await prisma.scheduling.update({
+      add = await db.scheduling.update({
         where: {
           id: selectId,
         },
@@ -55,7 +53,7 @@ export async function POST(request) {
       throw new Error("Failed to add user to schedule");
     }
 
-    const notify = await prisma.notification.create({
+    const notify = await db.notification.create({
         data: {
             title: "Schedule Transfer Notification",
             message: `You have been transfered to ${add.area}.`,

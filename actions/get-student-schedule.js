@@ -1,11 +1,9 @@
-import { PrismaClient, UserRole } from "@prisma/client"
-
+import { UserRole } from "@prisma/client"
+import { db } from "@/lib/db";
 
 export const studentSchedule = async (studentId) => {
-    
     try {
-        const prisma = new PrismaClient();
-        const schedule = await prisma.user.findUnique({
+        const schedule = await db.user.findUnique({
             where: {
                 id: studentId,
             },

@@ -1,10 +1,8 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getNotification = async (userId) => {
-  try {
-    const prisma = new PrismaClient();
- 
-    const Notification = await prisma.notification.findMany({
+  try { 
+    const Notification = await db.notification.findMany({
         where: {
             recipientId: userId,
         },

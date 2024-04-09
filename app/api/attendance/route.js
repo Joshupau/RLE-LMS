@@ -1,8 +1,7 @@
 
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function POST(req,res) {
     try {
@@ -29,7 +28,7 @@ export async function POST(req,res) {
               console.warn(`Skipping student ${student.id}: Missing timeIn or timeOut`);
               continue; 
             }
-           const update = await prisma.userScheduling.update({
+           const update = await db.userScheduling.update({
               where: {
                 id: student.id,
               },

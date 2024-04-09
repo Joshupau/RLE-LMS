@@ -1,8 +1,7 @@
 
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function POST(req,res) {
     try {
@@ -18,7 +17,7 @@ export async function POST(req,res) {
         }
 
         for(const notif of notification){
-            await prisma.notification.update({
+            await db.notification.update({
                 where: {
                     id: notif.id,
                 },

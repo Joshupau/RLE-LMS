@@ -1003,8 +1003,8 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
                   required/>
                 </div>
                 <div className="flex flex-col space-y-2 justify-end">
-                 <Label>Occupation/Workplace</Label>
-                  <Input type="date" name="occupation" placeholder="Occupation/Workplace" 
+                 <Label>Birthday</Label>
+                  <Input type="date" name="occupation" placeholder="Birthday" 
                     value={patientInfos.birthdays[index] || ''}
                     onChange={(e)=> {
                       const updatedbirthdays = [...patientInfos.birthdays]; // Create a copy of the array

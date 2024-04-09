@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getAllSchoolYear = async () => {
   try {
-    const prisma = new PrismaClient();
-    const schoolyear = await prisma.schoolYear_Semester.findMany({
+
+    const schoolyear = await db.schoolYear_Semester.findMany({
         orderBy: [{ schoolyear: "asc" }, { semester: "asc" }]
     })
 

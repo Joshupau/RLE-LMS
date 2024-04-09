@@ -13,7 +13,7 @@ export default async function ProfilePage() {
     const data = await getUserData(session?.token.id);
 
     return (
-        <div className="p-6">    
+        <div className="p-6 mt-16">    
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-y-2">
                     <h1 className="text-2xl font-medium">Personal Information</h1>

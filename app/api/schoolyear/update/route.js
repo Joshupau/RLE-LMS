@@ -1,14 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(req, res) {
     try {
         const body = await req.json();
         const { schoolyearId } = body;
 
-        await prisma.schoolYear_Semester.updateMany({
+        await db.schoolYear_Semester.updateMany({
             where: {
                 id: {
                     not: schoolyearId
@@ -19,7 +17,7 @@ export async function POST(req, res) {
             }
         });
 
-        await prisma.schoolYear_Semester.update({
+        await db.schoolYear_Semester.update({
             where: {
                 id: schoolyearId
             },

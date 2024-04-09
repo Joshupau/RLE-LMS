@@ -1,12 +1,9 @@
-
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
 export const getResourcePosts = async (id) => {
     try {
-        const prisma = new PrismaClient();
 
-
-        const resourcePost = await prisma.resource.findMany({
+        const resourcePost = await db.resource.findMany({
             where: {
               resourceGroupId: id,
             },

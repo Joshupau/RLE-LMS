@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getScheduleId = async (scheduleId) => {
     try {
-      const prisma = new PrismaClient();
-      const schedules = await prisma.scheduling.findUnique({
+      
+      const schedules = await db.scheduling.findUnique({
         where: {
             id: scheduleId,
         },

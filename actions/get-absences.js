@@ -1,22 +1,21 @@
-import { PrismaClient } from '@prisma/client';
+
+import { db } from "@/lib/db";
 
 export const getAbsences = async (userId) => {
   try {
-    const prisma = new PrismaClient();
     
-    const currentDate = new Date(); // Get the current date
+    const currentDate = new Date(); 
 
-    const attendance = await prisma.userScheduling.findMany({
+    const attendance = await db.userScheduling.findMany({
         where: {
             userId: userId,
         },
     });
 
-    // Calculate the number of absences and filter out past dates
     let absences = 0;
     const filteredAttendance = attendance.filter(day => {
         if (new Date(day.date) < currentDate) {
-            return false; // Filter out past dates
+            return false; 
         }
         if (!day.timeIn || !day.timeOut) {
             absences++;

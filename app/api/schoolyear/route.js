@@ -1,8 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-
-
-const prisma = new PrismaClient();
 
 export async function POST(req, res){
     try {
@@ -14,7 +11,7 @@ export async function POST(req, res){
             semester,
         } = body;
 
-        const Newschoolyear = await prisma.schoolYear_Semester.create({
+        const Newschoolyear = await db.schoolYear_Semester.create({
             data: {
                 schoolyear: schoolyear,
                 semester: semester,

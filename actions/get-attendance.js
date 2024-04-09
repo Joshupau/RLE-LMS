@@ -1,10 +1,9 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { db } from '@/lib/db';
 
 export const getAttendance = async (userId) => {
   try {
-    const prisma = new PrismaClient();
     
-    const attendance = await prisma.scheduling.findMany({
+    const attendance = await db.scheduling.findMany({
         where: {
             user: {
                 some: {

@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getScheduleInResource = async (resourceGroupId) => {
     try {
-      const prisma = new PrismaClient();
-      const { scheduleId } = await prisma.resourceGroup.findUnique({
+      const { scheduleId } = await db.resourceGroup.findUnique({
         where: { id: resourceGroupId}
       });
 

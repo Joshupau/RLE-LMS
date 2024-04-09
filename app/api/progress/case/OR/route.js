@@ -1,8 +1,7 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
-import { PrismaClient, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export async function POST(req, res){
     try {
@@ -31,7 +30,7 @@ export async function POST(req, res){
 
           const schoolyear = await getCurrentSchoolYear();
 
-          const CommonInfo = await prisma.submissionOfPatientCases.create({
+          const CommonInfo = await db.submissionOfPatientCases.create({
             data: {
                 schedulingId: scheduleId,
                 caseNumber: caseNumber,
@@ -43,7 +42,7 @@ export async function POST(req, res){
             }
           });
 
-          const MedicalInfo = await prisma.oRMajorMinorCase.create({
+          const MedicalInfo = await db.oRMajorMinorCase.create({
             data:{
                 patientName: patientName,
                 age: age,
@@ -65,7 +64,7 @@ export async function POST(req, res){
             medicalInfo: MedicalInfo,
             commonInfo: CommonInfo,
           };
-          const ClinicalInstructorId = await prisma.scheduling.findUnique({
+          const ClinicalInstructorId = await db.scheduling.findUnique({
             where: {
               id: scheduleId,
             },
@@ -88,18 +87,18 @@ export async function POST(req, res){
           
           const recipientId = ClinicalInstructorId.user[0].id;
           
-          const userName = await prisma.user.findUnique({
+          const userName = await db.user.findUnique({
             where: { id: userId },
             select: { firstName: true, lastName: true }
           });
           
-          const notification = await prisma.notification.create({
+          const notification = await db.notification.create({
             data: {
               title: "Case Submission Notification",
               message: `${caseType} case submitted by ${userName.firstName} ${userName.lastName}`,
               recipientId: recipientId, 
               type: "general", 
-              link: `/progress`,
+              link: `/progress/ci`,
               expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
             },
           });

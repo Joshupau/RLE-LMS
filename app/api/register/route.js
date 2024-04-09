@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export async function POST(request){
     try {
@@ -13,7 +11,7 @@ export async function POST(request){
             return new NextResponse({ error: "Missing fields" }, { status: 400 });
         }
     
-        const exist = await prisma.user.findUnique({
+        const exist = await db.user.findUnique({
             where: {
                 email: email,
                 schoolId: schoolId,
@@ -30,7 +28,7 @@ export async function POST(request){
     
         const hashedPassword = await bcrypt.hash(password, 10);
     
-        const user = await prisma.user.create({
+        const user = await db.user.create({
             data: {
                 firstName,
                 middleName,
@@ -44,7 +42,6 @@ export async function POST(request){
         });
     
         return NextResponse.json(user);
-    
     } catch (error) {
         console.log("[REGISTER]", error);
         return new NextResponse({ error: "Internal Error" }, { status: 500 });

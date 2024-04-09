@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getScheduleWithUsers = async () => {
   try {
-    const prisma = new PrismaClient();
-    const schedulingData = await prisma.scheduling.findMany({
+    const schedulingData = await db.scheduling.findMany({
       include: {
         user: {
           select: {

@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { db } from "@/lib/db";
 
 export const getCurrentSchoolYear = async () => {
   try {
-    const prisma = new PrismaClient();
-    const SchoolYear = await prisma.schoolYear_Semester.findMany({
+    const SchoolYear = await db.schoolYear_Semester.findMany({
       select: {
         id: true,
         schoolyear: true,

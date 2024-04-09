@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 
 export async function POST(request) {
@@ -16,9 +14,8 @@ export async function POST(request) {
         uploadUrl,
      } = body;
 
-     
      const combinedLinks = [...fileUrls, ...uploadUrl];
-     const updateResource = await prisma.resource.update({
+     const updateResource = await db.resource.update({
         where: {
             id: id,
             author: {

@@ -1,7 +1,5 @@
-const { PrismaClient, UserRole } = require("@prisma/client");
-
-
-const prisma = new PrismaClient();
+import { UserRole } from "@prisma/client";
+import { db } from "@/lib/db";
 
 const caseTypes = [
     "Medical",
@@ -93,7 +91,7 @@ const caseTypes = [
 export const getProgressReport = async () => {
     try {
 
-        const students = await prisma.user.findMany({
+        const students = await db.user.findMany({
             where: {
                 role: UserRole.Student,
             },

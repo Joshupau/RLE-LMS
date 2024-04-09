@@ -1,9 +1,10 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import {  UserRole } from '@prisma/client';
+import { db } from '@/lib/db';
 
 export const getClinicalInstructors = async () => {
   try {
     const prisma = new PrismaClient();
-    const clinicalInstructors = await prisma.user.findMany({
+    const clinicalInstructors = await db.user.findMany({
       where: { role: UserRole.ClinicalInstructor },
     });
 

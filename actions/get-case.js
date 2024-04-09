@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
 export const getCase = async(id) => {
     try {
-        const prisma = new PrismaClient();
 
-        const Gcase = await prisma.submissionOfPatientCases.findUnique({
+        const Gcase = await db.submissionOfPatientCases.findUnique({
             where: {
                 id: id,
             },

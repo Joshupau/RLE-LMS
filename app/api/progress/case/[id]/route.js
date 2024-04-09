@@ -1,5 +1,5 @@
 
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -18,7 +18,7 @@ export async function POST(req,res) {
         }
 
 
-        const approve = await prisma.submissionOfPatientCases.update({
+        const approve = await db.submissionOfPatientCases.update({
             where: {
                 id: id,
             },
@@ -26,13 +26,13 @@ export async function POST(req,res) {
                 status: status ? false : true,
             }
         });
-        const notification = await prisma.notification.create({
+        const notification = await db.notification.create({
             data: {
               title: "Case Notification",
               message: `Your case ${approve.caseType} has been ${approve.status ? 'approved' : 'disapproved'}`,
               recipientId: approve.userId, 
               type: "general", 
-              link: `/progress`,
+              link: `/progress/student`,
               expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
             },
           });

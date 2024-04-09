@@ -1,11 +1,10 @@
-import { PrismaClient, UserRole } from "@prisma/client";
+import {  UserRole } from "@prisma/client";
+import { db } from "@/lib/db";
 
 export const getResources = async (userId) => {
     try {
 
-        const prisma = new PrismaClient();
-
-        const resources = await prisma.user.findUnique({
+        const resources = await db.user.findUnique({
             where: {
                 id: userId,
             },

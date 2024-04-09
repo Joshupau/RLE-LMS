@@ -1,9 +1,10 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
+import { db } from '@/lib/db';
+
 
 export const getStudent = async () => {
   try {
-    const prisma = new PrismaClient();
-    const students = await prisma.user.findMany({
+    const students = await db.user.findMany({
       where: { role: UserRole.Student },
       orderBy: [{ yearLevel: "asc" }, { section: "asc" }]
     });

@@ -1,11 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { format } from 'date-fns';
+import { db } from "@/lib/db";
 
 export const getCasePerformance = async () => {
   try {
-    const prisma = new PrismaClient();
 
-    const cases = await prisma.submissionOfPatientCases.findMany({
+    const cases = await db.submissionOfPatientCases.findMany({
         include: {
             user: {
                 select: {

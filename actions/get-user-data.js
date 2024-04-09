@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export const getUserData = async (userId) => {
     try {
 
-        const userData = await prisma.user.findUnique({
+        const userData = await db.user.findUnique({
             where: { id: userId}
         })
         

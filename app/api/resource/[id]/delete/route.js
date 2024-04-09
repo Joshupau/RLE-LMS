@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
-export async function DELETE(req, res) {
-    const prisma = new PrismaClient();
-  
+export async function DELETE(req, res) {  
     if(!req.method === 'DELETE'){
       return NextResponse.json({ status: 500 }, "Internal server error");
   
@@ -12,7 +10,7 @@ export async function DELETE(req, res) {
     try {
      const { id } = await req.json();
   
-      const deletedResource = await prisma.resource.delete({
+      const deletedResource = await db.resource.delete({
         where: { id },
       });
       

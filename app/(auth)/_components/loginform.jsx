@@ -73,7 +73,7 @@ export const Loginform = () => {
                             name="ID number"
                             placeholder="ID Number"
                             className="focus-visible:ring-transparent text-sm text-black w-full rounded-xl bg-cyan-200 pl-10 pr-3 py-2 "
-                            autocomplete="off"
+                            autoComplete="off"
                         />
                     </div>
                     <label htmlFor="Password" className="mt-2 ml-4 block text-sm">Password</label>

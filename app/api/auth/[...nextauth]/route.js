@@ -2,15 +2,14 @@ import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export const authOptions = ({
   pages:{
     signIn: "/"
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
         name: "credentials",
@@ -27,7 +26,7 @@ export const authOptions = ({
               return null;
             }
   
-            const user = await prisma.user.findUnique({
+            const user = await db.user.findUnique({
               where: {
                   schoolId: parseInt(credentials.schoolId)
               }

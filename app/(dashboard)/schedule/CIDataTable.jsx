@@ -56,6 +56,7 @@ import {
                 dateTo={schedule.dateTo}
                 user={schedule.user}
                 area={schedule.area}
+                clinicalArea={schedule.clinicalArea}
                 clinicalHours={schedule.clinicalHours}
                 groupId={schedule.groupId}
                 yearLevel={schedule.yearLevel}

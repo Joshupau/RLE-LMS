@@ -1,5 +1,17 @@
 import { useState, useEffect, useMemo } from "react";
 
+import { 
+Select,
+SelectContent,
+SelectTrigger,
+SelectItem,
+SelectValue,
+SelectGroup,
+} from "@/components/ui/select";
+
+import { Label } from "@/components/ui/label";
+
+
 export const ClinicalInstructorSelect = ({ onSelectInstructor, clinicalInstructor }) => {
   const [clinicalInstructors, setClinicalInstructors] = useState(clinicalInstructor) // Initialize clinical instructors state
   const [selectedInstructorId, setSelectedInstructorId] = useState(""); // Add state for selected instructor ID
@@ -22,22 +34,24 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, clinicalInstructo
 
   return (
     <>
-      <label htmlFor="instructor">Clinical Instructor:</label>
-      <select
+      <Label className="mb-2 text-md" htmlFor="instructor">Select Clinical Instructor:</Label>
+      <Select
         id="instructor"
-        value={selectedInstructorId}
-        onChange={(e) => setSelectedInstructorId(e.target.value)}
+        onValueChange={(e) => setSelectedInstructorId(e)}
         aria-label="Select Clinical Instructor"
       >
-        <option value="">
-          Select Clinical Instructor
-        </option>
+        <SelectTrigger className="w-[20rem]">
+          <SelectValue placeholder="Clinical Instructor"/>
+        </SelectTrigger>
+        <SelectContent>
+
         {clinicalInstructors.map((instructor) => (
-          <option key={instructor.id} value={instructor.id}>
+          <SelectItem key={instructor.id} value={instructor.id}>
             {`${instructor.firstName} ${instructor.lastName}`}
-          </option>
+          </SelectItem>
         ))}
-      </select>
+        </SelectContent>
+      </Select>
     </>
   );
 };

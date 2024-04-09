@@ -26,7 +26,7 @@ export const StudentScheduleItem = ({ dateFrom, dateTo, user, area, clinicalHour
               </span>
             ))}
               </TableCell>
-        <TableCell className="py-2 px-4 text-center">{area}</TableCell>
+        <TableCell className="py-2 px-4 text-center">{area.name}</TableCell>
         <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
         <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>
         <TableCell className="py-2 px-4 text-center">

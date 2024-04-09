@@ -37,37 +37,41 @@ export default async function ProgressPage(){
                 <>
               <div className="my-16">
               <h1 className="text-xl font-medium mb-2">Attendance Line Chart</h1>
-              <Suspense fallback={<SkeletonCard/>}>
-                <AttendanceAnalytics data={analyticsData}/>
-                </Suspense>                           
+              {analyticsData && analyticsData.length > 0 ? (
+                <Suspense fallback={<SkeletonCard/>}>
+                  <AttendanceAnalytics data={analyticsData}/>
+                </Suspense>
+              ) : null}                          
               </div>
 
               <div className="my-16">
                     <h1 className="text-xl font-medium mb-2">RLE Progress Report</h1>
-                    <ProgressReport data={ProgressReportData}/>
+                    {ProgressReportData && ProgressReportData.length > 0 ? (
+                      <ProgressReport data={ProgressReportData}/>
+                    ) : null}
               </div>
                 </>
              )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-16">
                     <div className="overflow-x-auto gap-y-2">
-                        {data.token.role === 'Dean' &&(
-                        <div>
-                        <h1 className="text-xl font-medium">Cases Submitted per level</h1>
-                        <Suspense fallback={<SkeletonCard/>}>
-                            <BarChart data={barChartData}/>
-                        </Suspense>                           
-                        </div>
-                            )}
+                        {data.token.role === 'Dean' && barChartData.length > 0 ? (
+                          <div>
+                          <h1 className="text-xl font-medium">Cases Submitted per level</h1>
+                          <Suspense fallback={<SkeletonCard/>}>
+                              <BarChart data={barChartData}/>
+                          </Suspense>                           
+                          </div>
+                        ) : null}
                     </div>
                     <div className="overflow-x-auto gap-y-2">
-                    {data.token.role === 'Dean' &&(
+                    {data.token.role === 'Dean' && yearLevelTables && yearLevelTables.length > 0 ? (
                         <>
                             <div>
                             <h1 className="text-xl font-medium mb-2">Cases Comparison</h1>                           
                                 <CaseTrends yearLevelTables={yearLevelTables}/>
                             </div>
                             </>
-                        )}
+                        ) : null}
                     </div>      
              </div>
              </div>

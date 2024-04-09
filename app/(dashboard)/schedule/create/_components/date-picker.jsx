@@ -80,7 +80,7 @@ function DatePickerWithRangeItem({ dates, onSelect, onClose, dateRange }) {
           )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-4" align="start">
+        <PopoverContent className="w-auto bg-white p-4" align="start">
           <Calendar
             initialFocus
             mode="range"

@@ -1,6 +1,9 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { db } from "@/lib/db";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function POST(request) {
   try {
@@ -44,12 +47,12 @@ export async function POST(request) {
         dateTo: dateToArray,
         groupId: group,
         yearLevel: yearLevel,
-        area: area,
         week: week,
         schoolyearId: schoolyear.id,
         user: {
           connect: combinedUsers.map((userId) => ({ id: userId })),
         },
+        areaId: area,
       },
       include: {
         user: true,
@@ -114,7 +117,6 @@ export async function POST(request) {
       dateTo: schedules.dateTo,
       groupId: schedules.groupId,
       yearLevel: schedules.yearLevel,
-      area: schedules.area,
       users: schedules.user,
     };
 

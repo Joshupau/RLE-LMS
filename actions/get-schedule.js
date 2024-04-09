@@ -10,7 +10,8 @@ export const getScheduleWithUsers = async () => {
             lastName: true,
             role: true,
           }
-        }
+        },
+        clinicalArea: true,
       }
     });
     

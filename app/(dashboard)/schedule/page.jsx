@@ -18,7 +18,7 @@ export default async function SchedulePage() {
   let DeanSchedules = await getScheduleWithUsers();
   let CISchedules = await CISchedule(data.token.id);
   let StudentSchedules = await studentSchedule(data.token.id);
-
+  
   if (!DeanSchedules) DeanSchedules = [];
   if (!CISchedules) CISchedules = { schedules: [] };
   if (!StudentSchedules) StudentSchedules = { schedules: [] };
@@ -35,15 +35,15 @@ export default async function SchedulePage() {
           {DeanSchedules.length > 0 ? (
             <div>
               <DeanDataTable data={DeanSchedules} />
+            </div>
+          ) : (
+            <p>No schedules</p>
+          )}
               <div className="mt-4">
                 <Link href={"/schedule/create"}>
                   <Button>Create Schedule</Button>
                 </Link>
               </div>
-            </div>
-          ) : (
-            <p>No schedules</p>
-          )}
         </>
       )}
       {userRole === "ClinicalInstructor" && (

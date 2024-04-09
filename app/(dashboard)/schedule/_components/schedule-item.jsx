@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "@/components/ui/use-toast";
 
-const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
+const ScheduleItem = ({ id, dateFrom, dateTo, user, area,clinicalArea, clinicalHours, groupId, yearLevel }) => {
   const router = useRouter();
 
   const clinicalInstructor = user.find((user) => user.role === 'ClinicalInstructor');
@@ -98,7 +98,7 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId
         ))}
       </TableCell>
       <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor.firstName} ${clinicalInstructor.lastName}`}</TableCell>
-      <TableCell className="py-2 px-4 text-center">{area}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{area}{clinicalArea?.name}</TableCell>
       <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
       <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>
       <TableCell className="py-2 px-4 text-center">

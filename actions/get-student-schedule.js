@@ -25,8 +25,9 @@ export const studentSchedule = async (studentId) => {
                             select: {
                                 firstName: true,
                                 lastName: true,
-                            }
-                        }
+                            },
+                        },
+                        clinicalArea: true,   
                     }
                 }
             }

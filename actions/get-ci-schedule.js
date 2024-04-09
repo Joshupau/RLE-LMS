@@ -27,7 +27,8 @@ export const CISchedule = async (clinicalInstructorId) => {
                                 firstName: true,
                                 lastName: true,
                             }
-                        }
+                        },
+                        clinicalArea: true,
                     }
                 }
             }

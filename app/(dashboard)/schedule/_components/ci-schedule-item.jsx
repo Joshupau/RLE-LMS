@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import React from 'react'; // Import React
 
-const CIScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
+const CIScheduleItem = ({ id, clinicalArea, dateFrom, dateTo, user, area, clinicalHours, groupId, yearLevel }) => {
   const router = useRouter();
 
   const handleViewSchedule = (value) => {
@@ -54,7 +54,7 @@ const CIScheduleItem = ({ id, dateFrom, dateTo, user, area, clinicalHours, group
           <span key={index}>{dateRange}<br /></span>
         ))}
       </TableCell>
-      <TableCell className="py-2 px-4 text-center">{area}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{area} {clinicalArea?.name}</TableCell>
       <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
       <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>
       <TableCell className="py-2 px-4 text-center">

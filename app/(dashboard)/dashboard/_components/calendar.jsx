@@ -54,11 +54,9 @@ const SchedulingCalendar = ({ role, scheduledata }) => {
 
     const eventsInRange = [];
 
-    // Iterate through each day within the range of the event
     let currentDate = new Date(dateFrom);
     const endDate = new Date(item.dateTo[index]);
     while (currentDate <= endDate) {
-      // Create start and end times for the current day
       const startOfDay = new Date(currentDate);
       startOfDay.setHours(startTime, 0, 0);
       const endOfDay = new Date(currentDate);
@@ -67,7 +65,7 @@ const SchedulingCalendar = ({ role, scheduledata }) => {
       // Add the event for the current day to the events array
       eventsInRange.push({
         id: `${item.id}`,
-        title: `Area: ${item.area} - Clinical Hours: ${parseClinicalHours(item.clinicalHours)}`,
+        title: `Area: ${item.clinicalArea?.name} - Clinical Hours: ${parseClinicalHours(item.clinicalHours)}`,
         start: startOfDay,
         end: endOfDay,
       });

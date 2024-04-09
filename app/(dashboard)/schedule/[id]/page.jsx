@@ -71,7 +71,7 @@ export default async function ScheduleIdPage ({ params }) {
                 </TableRow>
                 <TableRow className="border-b border-gray-300">
                     <TableCell className="font-semibold">Area:</TableCell>
-                    <TableCell className="text-center">{schedules.area}</TableCell>
+                    <TableCell className="text-center">{schedules.clinicalArea.name}</TableCell>
                 </TableRow>
                 <TableRow className="border-b border-gray-300">
                     <TableCell className="font-semibold">Clinical Hours:</TableCell>

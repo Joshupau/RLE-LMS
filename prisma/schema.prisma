@@ -8,49 +8,49 @@ generator client {
 }
 
 model SchoolYear_Semester {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  schoolyear     String
-  semester       String
-  current        Boolean @default(false)
+  id                      String  @id @default(auto()) @map("_id") @db.ObjectId
+  schoolyear              String
+  semester                String
+  current                 Boolean @default(false)
 
-  scheduling Scheduling[]
-  resource Resource[]
+  scheduling              Scheduling[]
+  resource                Resource[]
   submissionOfPatientCase SubmissionOfPatientCases[]
-  userscheduling UserScheduling[]
-  resourceGroup ResourceGroup[]
+  userscheduling          UserScheduling[]
+  resourceGroup           ResourceGroup[]
 }
 
 model User {
-  id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  schoolId       Int     @unique
-  firstName      String
-  middleName     String?
-  lastName       String
-  email          String  @unique
-  hashedPassword String
-  age            Int
-  contact        Int?
+  id                      String  @id @default(auto()) @map("_id") @db.ObjectId
+  schoolId                Int     @unique
+  firstName               String
+  middleName              String?
+  lastName                String
+  email                   String  @unique
+  hashedPassword          String
+  age                     Int
+  contact                 Int?
 
-  status Boolean
-  role   UserRole @default(Student)
+  status                  Boolean
+  role                    UserRole @default(Student)
 
   // Student Additional Fields
-  yearLevel Int?
-  section   String?
-  gender    String?
-  group     String?
+  yearLevel               Int?
+  section                 String?
+  gender                  String?
+  group                   String?
 
-  resources Resource[]
+  resources               Resource[]
   submissionOfPatientCases SubmissionOfPatientCases[]
-  userScheduling UserScheduling[]
+  userScheduling          UserScheduling[]
 
-  resourceGroupIds String[] @db.ObjectId
-  resourceGroup ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
+  resourceGroupIds        String[] @db.ObjectId
+  resourceGroup           ResourceGroup[] @relation(fields: [resourceGroupIds], references: [id])
   
-  scheduleIds String[] @db.ObjectId
-  schedules Scheduling[] @relation(fields: [scheduleIds], references: [id])
+  scheduleIds             String[] @db.ObjectId
+  schedules               Scheduling[] @relation(fields: [scheduleIds], references: [id])
   
-  notification Notification[]
+  notification            Notification[]
 }
 
 enum UserRole {
@@ -82,23 +82,34 @@ model Scheduling {
   id                   String     @id @default(auto()) @map("_id") @db.ObjectId
   groupId              String
   clinicalHours        String
-  area                 String
+  area                 String?
   week                 String
   yearLevel            Int
   dateFrom             DateTime[]
   dateTo               DateTime[]
   
-  userIds               String[]     @db.ObjectId
+  userIds              String[]     @db.ObjectId
   user User[] @relation(fields: [userIds], references: [id])
 
   resourceGroup   ResourceGroup?
   resources                Resource[]
+
+
+  areaId                String?     @db.ObjectId
+  clinicalArea          Area? @relation(fields: [areaId], references: [id])
+
   submissionOfPatientCases SubmissionOfPatientCases[]
   userScheduling        UserScheduling[]
 
   schoolyearId String? @db.ObjectId
   schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
  
+ }
+
+ model Area {
+  id                   String     @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  schedule             Scheduling[]
  }
 
 model ResourceGroup {

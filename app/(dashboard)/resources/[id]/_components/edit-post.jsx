@@ -220,7 +220,6 @@ const removeFile = (fileType, content) => {
     <div>
         <div>
           <Newtiptap description={description} postedDescription={descriptions} onChange={handleDescriptionChange} />
-            {/* Display uploaded images */}
             {pendingImages.map((image) => (
             <DisplayFile
               key={`image-${image.key}`}
@@ -263,7 +262,6 @@ const removeFile = (fileType, content) => {
 
           <div className="flex justify-between mt-4">
           <div className="flex gap-x-5">
-            {/* Image Upload */}
             <label className="upload-icon-container circle-icon bg-blue-500 text-white p-2 rounded-full cursor-pointer">
               <input
                 type="file"

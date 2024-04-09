@@ -121,20 +121,20 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
                 <span>Edit Post</span>
                   </DialogTrigger>
               </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Copy className="mr-2 h-4 w-4" />
+                <span>Copy Link</span>
+              </DropdownMenuItem>
               <DropdownMenuItem
               onClick={()=>onDelete(id, uploadLinks)}
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 <span >Delete Post</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Copy className="mr-2 h-4 w-4" />
-                <span>Copy Link</span>
-              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="overflow-scroll">
           <DialogHeader>
              <DialogTitle>Edit Post</DialogTitle>
                 <DialogDescription>

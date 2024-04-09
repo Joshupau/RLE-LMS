@@ -179,6 +179,12 @@ const CIDataTable = ({ data }) => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                         <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                        <DialogTrigger className="flex justify-start">
+                            <ScanSearch className="mr-2 h-4 w-4" />
+                            <span >View Case Details</span>
+                          </DialogTrigger>
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleApproveCase(Case.id, Case.status)}>
                             <Pencil className="mr-2 h-4 w-4" />
                             <span>{Case.status ? "Disapprove" : "Approve"} Case</span>
@@ -186,12 +192,6 @@ const CIDataTable = ({ data }) => {
                         <DropdownMenuItem>
                             <Trash2 className="mr-2 h-4 w-4" />
                             <span >Delete Case</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                        <DialogTrigger className="flex justify-start">
-                            <ScanSearch className="mr-2 h-4 w-4" />
-                            <span >View Case Details</span>
-                          </DialogTrigger>
                         </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>

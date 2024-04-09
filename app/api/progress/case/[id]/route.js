@@ -2,8 +2,6 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
-
 export async function POST(req,res) {
     try {
         const body = await req.json();

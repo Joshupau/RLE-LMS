@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-
-const prisma = new PrismaClient();
 
 export async function POST(req ) {
 
@@ -10,7 +8,7 @@ export async function POST(req ) {
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const UpdatedPassword = await prisma.user.update({
+    const UpdatedPassword = await db.user.update({
         where: { id: userId },
         data: {
             hashedPassword: hashedPassword,

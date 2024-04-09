@@ -1,7 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
-const { faker } = require('@faker-js/faker');
 
-const prisma = new PrismaClient();
+import { db } from '@/lib/db';
+const { faker } = require('@faker-js/faker');
 
 function randomPick(options) {
   return options[Math.floor(Math.random() * options.length)];
@@ -27,15 +26,13 @@ async function seedStudents(numStudents) {
   try {
     const students = Array.from({ length: numStudents }, generateStudent);
 
-    await prisma.user.createMany({
+    await db.user.createMany({
       data: students,
     });
 
   } catch (error) {
     console.error('Error seeding students:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
+  } 
 }
 
 const numStudents = 100;

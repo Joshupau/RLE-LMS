@@ -3,7 +3,6 @@ import { db } from '@/lib/db';
 
 export const getClinicalInstructors = async () => {
   try {
-    const prisma = new PrismaClient();
     const clinicalInstructors = await db.user.findMany({
       where: { role: UserRole.ClinicalInstructor },
     });

@@ -103,7 +103,11 @@ const SchedulingCalendar = ({ role, scheduledata }) => {
     if (role !== 'Student') {
       router.push(`/schedule/${event.id}`);
     }
+    if (role === 'Student') {
+      router.push(`/schedule`);
+    }
   };
+
 
   return (
     <div className='h-[600px] bg-white w-full my-4 mb-15'>

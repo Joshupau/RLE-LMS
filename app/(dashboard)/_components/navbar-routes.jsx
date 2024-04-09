@@ -43,7 +43,7 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
 
     const handleReadTrue = async (notification) => {
         try {
-
+            setUnreadCount(0);
             const response = await fetch(`/api/notification`, {
                 method: 'POST',
                 headers: {
@@ -55,7 +55,6 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
             if(!response.ok){
                 console.warn("Failed to make notifications read");
             }
-            setUnreadCount(0);
 
         } catch (error) {
             console.warn("Failed to make notifications read", error);

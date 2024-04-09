@@ -140,6 +140,9 @@ const removeFile = (fileType, content) => {
           resourceGroupId,
         }),
       });
+      if (response.status === 504) {
+        router.reload();
+      }
  
       if (!response.ok) {
         toast({

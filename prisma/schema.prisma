@@ -201,7 +201,7 @@ model MedicalCase {
   attendingPhysician String
   medicalDiagnosis   String
   dateAdmitted       DateTime
-  dateDischarge      DateTime
+  dateDischarge      DateTime?
 
   submissionOfPatientCases   SubmissionOfPatientCases @relation(fields: [submissionOfPatientCasesId], references: [id], onDelete: Cascade)
   submissionOfPatientCasesId String                   @db.ObjectId

@@ -103,14 +103,14 @@ export const NavbarRoutes = ({firstName, lastName, notifications}) => {
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Link href="/profile">
+                            <Link className="w-full" href="/profile">
                             Profile
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleSignOut}>
                         <LogOut className="mr-2 h-4 w-4" />
-                        <span onClick={handleSignOut}>Log out</span>
+                        <span>Log out</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                     </DropdownMenu>

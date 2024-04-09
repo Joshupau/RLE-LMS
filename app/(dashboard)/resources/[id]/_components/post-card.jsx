@@ -116,7 +116,7 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
           <DropdownMenuContent className="w-56">
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                  <DialogTrigger className="flex justify-start">
+                  <DialogTrigger className="flex w-full justify-start">
                 <Pencil className="mr-2 h-4 w-4" />
                 <span>Edit Post</span>
                   </DialogTrigger>

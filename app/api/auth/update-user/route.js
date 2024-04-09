@@ -15,7 +15,7 @@ export async function POST(req, ) {
     contact
   } = updatedData
   try {
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await db.user.update({
       where: { id: id }, // Use verified user ID
       data: {
         firstName: firstName,

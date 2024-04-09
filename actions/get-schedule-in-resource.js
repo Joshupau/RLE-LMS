@@ -6,7 +6,7 @@ export const getScheduleInResource = async (resourceGroupId) => {
         where: { id: resourceGroupId}
       });
 
-      const schedule = await prisma.scheduling.findUnique({
+      const schedule = await db.scheduling.findUnique({
         where: { id: scheduleId }
       });
 

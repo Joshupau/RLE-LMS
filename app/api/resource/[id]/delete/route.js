@@ -22,8 +22,6 @@ export async function DELETE(req, res) {
   } catch (error) {
       console.log("[RESOURCE_DELETE]", error)
       return new NextResponse("Internal Error", { status: 500 });
-  } finally {
-      await prisma.$disconnect();
-    }
+  }
   }
   

@@ -53,11 +53,9 @@ export const StudentPage = async () => {
                 </Suspense>
             </div>
                 )}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-16">
-                    <div className="overflow-x-auto gap-y-2">
                         {data.token.role === 'Student' &&(
                                 <>
-                        <div>
+                        <div className="mt-16">
                             {!cases && <span>Fetching Data</span>}
                             {cases && cases.length > 0 && 
                             <Suspense fallback={<SkeletonCard/>}>
@@ -65,11 +63,11 @@ export const StudentPage = async () => {
                             </Suspense>
                             }
                         </div>
-                        <div className="my-4">
+                        <div className="my-4 flex flex-end justify-end items-end">
                         <Dialog>
                             <Popover>
                                 <DialogTrigger asChild>
-                                <Button>
+                                <Button className="h-[3rem] text-md bg-blue-500 hover:bg-blue-600">
                                     Submit Patient Case
                                 </Button>
                                 </DialogTrigger>
@@ -87,10 +85,8 @@ export const StudentPage = async () => {
                         </div>
                         </>
                         )}
-                    </div>     
-             </div>
           {data.token.role === 'Student' &&(
-             <div>
+             <div className="mt-16">
             {cases && cases.length > 0 && <StudentCaseProgress data={cases} />}
              </div>
              )}

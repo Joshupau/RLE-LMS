@@ -7,8 +7,12 @@ export const getScheduleInResource = async (resourceGroupId) => {
       });
 
       const schedule = await db.scheduling.findUnique({
-        where: { id: scheduleId }
-      });
+        where: { id: scheduleId },
+        include: {
+          clinicalArea: true,
+        }
+      },
+    );
 
       return schedule
 

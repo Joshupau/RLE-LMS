@@ -84,7 +84,7 @@ export async function POST(request) {
       })
     );
     
-    db.notification.create({
+   const cinotificationpromise = db.notification.create({
       data: {
         title: "Schedule Notification",
         message: `RLE schedule for Week/s ${week}.`,
@@ -95,7 +95,7 @@ export async function POST(request) {
       },
     });
 
-    await Promise.all(notificationPromises);
+    await Promise.all(notificationPromises, cinotificationpromise);
 
     const userSchedulingData = students.flatMap((studentId) =>
       dates.map((date) => ({

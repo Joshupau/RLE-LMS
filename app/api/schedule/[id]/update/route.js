@@ -44,7 +44,6 @@ export async function POST(request) {
     const dateToArray = dateTo.map((date) => new Date(date));
     const schoolyear = await getCurrentSchoolYear();
 
-
     const schedules = await db.scheduling.update({
       where: { id: scheduleId },
       data: {
@@ -53,7 +52,7 @@ export async function POST(request) {
         dateTo: dateToArray,
         groupId: group,
         yearLevel: yearLevel,
-        area: area,
+        areaId: area,
         week: week,
         userIds: userIdsArray,
         schoolyearId: schoolyear.id,
@@ -63,7 +62,7 @@ export async function POST(request) {
       },
     });
 
-    await db.resourceGroup.update({
+    const resources = await db.resourceGroup.update({
       where: {
         scheduleId: scheduleId,
       },
@@ -85,8 +84,8 @@ export async function POST(request) {
         },
       })
     );
-    
-    db.notification.create({
+
+    const cinotificationpromise = db.notification.create({
       data: {
         title: "Schedule Notification",
         message: `RLE schedule for Week/s ${week}.`,
@@ -94,17 +93,6 @@ export async function POST(request) {
         type: "general",
         link: `/schedule/${schedules.id}`,
         expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      },
-    });
-
-    await Promise.all(notificationPromises);
-
-    const userSchedulingPromises = [];
-
-    await db.userScheduling.deleteMany({
-      where: {
-        schedulingId: schedules.id,
-        week: week,
       },
     });
 
@@ -117,13 +105,19 @@ export async function POST(request) {
       }))
     );
 
-    await db.userScheduling.createMany({
-      data: userSchedulingData,
-    });
+    await Promise.all([
+      ...notificationPromises,
+      resources,
+      cinotificationpromise,
+      db.userScheduling.deleteMany({
+        where: {
+          schedulingId: schedules.id,
+          week: week,
+        },
+      }).then(() => db.userScheduling.createMany({ data: userSchedulingData })),
+      // Add other promises here if needed
+    ]);
 
-    await Promise.all(userSchedulingPromises);
-
-  
     return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {
     console.error("Error updating schedule:", error);

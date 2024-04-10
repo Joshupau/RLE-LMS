@@ -7,14 +7,42 @@ import { DatePickerWithRange } from "./date-picker";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+import { Plus } from 'lucide-react';
+import { 
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from "@/components/ui/dialog"
+  
+  import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
+const yearLevels = [
+  { value: 1, name: "1st Year" },
+  { value: 2, name: "2nd Year" },
+  { value: 3, name: "3rd Year" },
+  { value: 4, name: "4th Year" },
+];
 
 export const EditSchedule = ({
     userId,
     schedule,
     student,
     clinicalInstructor,
+    areas,
 }) => {
 
   const { toast } = useToast();
@@ -27,18 +55,15 @@ export const EditSchedule = ({
   const [selectedDateRange, setSelectedDateRange] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState("");
-  const [selectedClinicalArea, setSelectedClinicalArea] = useState("");
+  const [selectedArea, setSelectedArea] = useState();
   const [week, setSelectedWeek] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sanitizedDates, setSanitizedDates] = useState([]);
   const [scheduleId, setScheduleId] = useState("");
-  
-  const handleGroupChange = (event) => setSelectedGroup(event.target.value);
-  const handleYearLevelChange = (event) => setSelectedYearLevel(Number(event.target.value));
-  const handleWeekChange = (event) => setSelectedWeek(event.target.value);
-  const handleClinicalHoursChange = (event) => setSelectedClinicalHours(event.target.value);
-  const handleClinicalAreaChange = (event) => setSelectedClinicalArea(event.target.value);
+  const [createArea, SetCreateArea] = useState("");
 
+  const handleYearLevelChange = (event) => setSelectedYearLevel(Number(event));
+  const handleWeekChange = (event) => setSelectedWeek(event.target.value);
   
   useEffect(() => {
     if (!schedule) return;
@@ -47,7 +72,7 @@ export const EditSchedule = ({
     setSelectedStudents(schedule.user.filter(user => user.role === 'Student').map(user => user.id));
     setSelectedGroup(schedule.groupId);
     setSelectedYearLevel(schedule.yearLevel);
-    setSelectedClinicalArea(schedule.area);
+    setSelectedArea(schedule.clinicalArea.id);
     setSelectedClinicalHours(schedule.clinicalHours);
     setSelectedWeek(schedule.week);
     setScheduleId(schedule.id);
@@ -103,7 +128,7 @@ export const EditSchedule = ({
         const data = {
           clinicalInstructor: selectedInstructor,
           clinicalHours: selectedClinicalHours,
-          area: selectedClinicalArea,
+          area: selectedArea,
           dateFrom: formattedDates.map((date) => date.from),
           dateTo: formattedDates.map((date) => date.to),
           userId,
@@ -149,6 +174,45 @@ export const EditSchedule = ({
         setIsSubmitting(false);
       }
     };
+
+    const handleAddArea = async () => {
+      try {
+        const response = await fetch('/api/schedule/area', {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ createArea })
+        });
+        toast({
+          title: "Success",
+          description: "Successfully added a new clinical area.",
+          status: "Success"
+        });
+        if(response.ok){
+          toast({
+            title: "Success",
+            description: "Successfully added a new clinical area.",
+            status: "Success"
+          });
+        } else {
+          toast({
+            title: "Uh oh...",
+            description: "Failed to add new clinical area.",
+            status: "Failed"
+          });
+        }
+
+      } catch (error) {
+        console.error('Error adding area:', error); 
+        toast({
+          title: "Uh oh...",
+          description: "Failed to add new clinical area.",
+          status: "Failed"
+        });
+      }
+    }
+
     
     return (
         <>
@@ -169,7 +233,7 @@ export const EditSchedule = ({
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-                    <div className="flex items-center gap-x-2">
+                <div className="flex flex-col w-[20rem]">
                     <ClinicalInstructorSelect
                     onSelectInstructor={(selectedInstructor) => setSelectedInstructor(selectedInstructor)}
                     value={selectedInstructor}
@@ -178,54 +242,91 @@ export const EditSchedule = ({
                     />
             
                     </div>
-                    <div className="flex items-center gap-x-2">
-                        <label htmlFor="hours">Clinical Hours:</label>
-                        <select id="hours" value={selectedClinicalHours} onChange={handleClinicalHoursChange}>
-                        <option value="">Select Clinical Hours</option>
-                        <option value="1">Morning Shift</option>
-                        <option value="2">Afternoon Shift</option>
-                        <option value="3">Graveyard Shift</option>
-                        </select>
-                        </div>
-                    <div className="flex items-center gap-x-2">
-                    <label htmlFor="area">Area:</label>
-                    <select id="area" value={selectedClinicalArea} onChange={handleClinicalAreaChange}>
-                        <option value="">Select Clinical Area</option>
-                        <option value="WMMC">WMMC</option>
-                        <option value="General">General</option>          
-                        <option value="Doctors">Doctor's</option>          
-                        <option value="Brent">Brent</option> 
-                        <option value="StaMariaHC">Sta Maria Health Center</option>                   
-                        </select>     
-                        </div>
-                    <div className="flex items-center gap-x-2">
-                    <label htmlFor="date">Date:</label>
+                    <div className="flex flex-col w-[20rem]">
+                      <Label className="mb-2 text-md" htmlFor="hours">Select Clinical Hour:</Label>
+                      <Select value={selectedClinicalHours} onValueChange={(e) => setSelectedClinicalHours(e)} id="hours">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Clinical Hours"/>
+                        </SelectTrigger>
+                          <SelectContent>
+                          <SelectItem value="1">Morning Shift</SelectItem>
+                          <SelectItem value="2">Afternoon Shift</SelectItem>
+                          <SelectItem value="3">Graveyard Shift</SelectItem>
+                          </SelectContent>
+                      </Select>   
+                      </div>
+                        <div className="flex flex-col w-[20rem]">
+                        <Label className="mb-2 text-md" htmlFor="area">Select Area:</Label>
+                        <div className="flex items-center gap-x-2">
+                          <Select value={selectedArea} onValueChange={(e) => setSelectedArea(e)} id="area" className="mr-2 focus-visible:ring-transparent">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Clinical Area"/>
+                            </SelectTrigger>
+                            <SelectContent className="focus-visible:ring-transparent">
+                              {areas.map((area) => (
+                                <SelectItem key={area.id} value={area.id}>
+                                  {area?.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Dialog>
+                            <DialogTrigger className="border rounded-md hover:bg-slate-100 p-[7px]">
+                              <Plus/>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Add Clinical Area</DialogTitle>
+                              </DialogHeader>
+                              <Input value={createArea} onChange={(e) => SetCreateArea(e.target.value)} placeholder="Clinical Area"/>
+                              <DialogFooter>
+                                  <DialogClose>
+                                    <Button onClick={handleAddArea}>
+                                      Submit
+                                    </Button>
+                                  </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>     
+                      </div>
+                    <div className="flex flex-col w-[20rem]">
+                    <Label className="mb-2 text-md" htmlFor="date">Date:</Label>
                     <DatePickerWithRange
                     onSelectDateRange={setSelectedDateRange}
                     value={sanitizedDates}
                     />
                     </div>
-                    <div className="flex items-center gap-x-2">
-                        <label htmlFor="group">Group:</label>
-                        <select id="group" value={selectedGroup} onChange={handleGroupChange}>
-                        <option value="">All Groups</option>
-                        <option value="A">Group A</option>
-                        <option value="B">Group B</option>
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <label htmlFor="yearLevel">Year Level:</label>
-                        <select id="yearLevel" value={selectedYearLevel} onChange={handleYearLevelChange}>
-                        <option value="">All Year Levels</option>
-                        <option value="1">1st year</option>
-                        <option value="2">2nd year</option>          
-                        <option value="3">3rd year</option>          
-                        <option value="4">4th year</option>          
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <label htmlFor="week">Week/s:</label>
-                        <input 
+                    <div className="flex flex-col w-[20rem]">
+                      <Label className="mb-2 text-md" htmlFor="group">Select Group:</Label>
+                      <Select id="group" value={selectedGroup} onValueChange={(e) => setSelectedGroup(e)}>
+                          <SelectTrigger>
+                            <SelectValue  placeholder="Group"/>
+                          </SelectTrigger>
+                          <SelectContent>
+                          <SelectItem value="A">Group A</SelectItem>
+                          <SelectItem value="B">Group B</SelectItem>
+                          </SelectContent>
+                      </Select>
+                      </div>
+                      <div className="flex flex-col w-[20rem]">
+                        <Label className="mb-2 text-md" htmlFor="yearLevel">Select Year Level:</Label>
+                        <Select id="yearLevel" value={selectedYearLevel} onValueChange={handleYearLevelChange}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Year Level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {yearLevels.map((level) => (
+                              <SelectItem key={level.value} value={level.value}>
+                                {level.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex flex-col w-[20rem]">
+                      <Label className="mb-2 text-md" htmlFor="week">Week/s:</Label>
+                        <Input 
                         type="text" 
                         id="week"
                         className="border border-slate-300 rounded-xl p-1" 

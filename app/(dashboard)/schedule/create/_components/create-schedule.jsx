@@ -55,10 +55,6 @@ export const CreateSchedule = ({
   
     const router = useRouter();
   
-    const handleGroupChange = (event) => {
-      setSelectedGroup(event.target.value);
-    };
-  
     const handleYearLevelChange = (event) => {
       setSelectedYearLevel(Number(event));
     };
@@ -201,9 +197,9 @@ export const CreateSchedule = ({
             </div>
             <div className="flex flex-col w-[20rem]">
                 <Label className="mb-2 text-md" htmlFor="hours">Select Clinical Hour:</Label>
-                <Select onValueChange={(e) => setSelectedHour(e)} id="hours">
+                <Select value={selectedHour} onValueChange={(e) => setSelectedHour(e)} id="hours">
                   <SelectTrigger>
-                    <SelectValue value={selectedHour} placeholder="Clinical Hours"/>
+                    <SelectValue placeholder="Clinical Hours"/>
                   </SelectTrigger>
                     <SelectContent>
                     <SelectItem value="1">Morning Shift</SelectItem>

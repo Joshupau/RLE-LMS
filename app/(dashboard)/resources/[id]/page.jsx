@@ -22,25 +22,44 @@ export default async function ResourceIdPage({ params, searchParams }) {
   const resourcePost = await getResourcePosts(id);
   const scheduledata = await getScheduleInResource(id);
 
+  function getShift(clinicalHours) {
+    switch (Number(clinicalHours)) {
+      case 1:
+        return "AM Shift";
+      case 2:
+        return "PM Shift";
+      case 3:
+        return "Graveyard Shift";
+      default:
+        return "";
+    }
+  }
   
   return (
     <div className="h-full">
         <div className="grid md:grid-cols-3 mt-20">
-          <div className="justify-end flex mt-8 my-5 mr-4">
-            <Card className="h-32 shadow-lg w-56">
-              <CardContent>
-                <h1 className="font-bold">Schedule Details</h1>
-                <p>week: {scheduledata.week}</p>
-                <p>Area: {scheduledata.area}</p>
-                <p>Shift:   
-                   {Number(scheduledata.clinicalHours) === 1 ? " AM Shift" :
-                   Number(scheduledata.clinicalHours) === 2 ? " PM Shift" :
-                   Number(scheduledata.clinicalHours) === 3 ? " Graveyard Shift" : null}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-         
+        <div className="flex justify-end mt-8 mr-4">
+          <Card className="w-64 shadow-lg">
+            <CardContent>
+              <h1 className="font-bold text-xl mb-4">Schedule Details</h1>
+              <div className="flex flex-col">
+                <div className="flex justify-start">
+                  <p className="font-semibold mr-1">Week:</p>
+                  <p>{scheduledata.week}</p>
+                </div>
+                <div className="flex justify-start">
+                  <p className="font-semibold mr-1">Area: </p>
+                  <p>{scheduledata.clinicalArea.name}</p>
+                </div>
+                <div className="flex justify-start">
+                  <p className="font-semibold mr-1">Shift: </p>
+                  <p>{getShift(scheduledata.clinicalHours)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
            <div className="items-center justify-center">
             <div className="mt-8 my-5 w-full bg-white">
             <div className="m-4 md:w-[40rem] bg-white border-2 shadow-xl p-2 mx-auto flex items-center">
@@ -73,7 +92,7 @@ export default async function ResourceIdPage({ params, searchParams }) {
                   )) 
                 ):(
                   <>
-                  <div>
+                  <div className="flex items-center justify-center">
                     No POSTS AVAILABLE
                   </div>
                   </>

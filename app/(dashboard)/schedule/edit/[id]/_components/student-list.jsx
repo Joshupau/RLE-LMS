@@ -22,11 +22,18 @@ export const StudentList = ({
     onSelectStudents(updatedStudents);
   };
 
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-    const allStudentIds = students.map((student) => student.id);
-    setSelectedStudents(isChecked ? allStudentIds : []);
-    onSelectStudents(isChecked ? allStudentIds : []);
+  const handleSelectAll = () => {
+    const allStudentIds = students
+      .filter(
+        (student) =>
+          (!selectedGroup || student.group === selectedGroup) &&
+          (!selectedYearLevel || student.yearLevel === selectedYearLevel)
+      )
+      .map((student) => student.id);
+    const newSelectedStudents =
+      selectedStudents.length === allStudentIds.length ? [] : allStudentIds;
+    setSelectedStudents(newSelectedStudents);
+    onSelectStudents(newSelectedStudents);
   };
 
   return (
@@ -43,10 +50,17 @@ export const StudentList = ({
               <th className="px-4 py-2 text-right">
                 <div className="flex items-center justify-end">
                   <span className="mr-2">Select All</span>
-                    <input
+                  <input
                     type="checkbox"
-                    className=""
-                    checked={selectedStudents.length === students.length}
+                    checked={
+                      selectedStudents.length ===
+                      students.filter(
+                        (student) =>
+                          (!selectedGroup || student.group === selectedGroup) &&
+                          (!selectedYearLevel ||
+                            student.yearLevel === selectedYearLevel)
+                      ).length
+                    }
                     onChange={handleSelectAll}
                   />
                 </div>

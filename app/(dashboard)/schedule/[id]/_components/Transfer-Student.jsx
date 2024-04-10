@@ -65,7 +65,7 @@ export const TransferStudent = ({data, schedules, onTransferStatusChange}) => {
                         <SelectGroup>
                         {schedules.map((schedule) => (
                             <SelectItem key={schedule.id} value={schedule.id}>
-                            {`Week ${schedule.week} - ${schedule.user.find((user) => user.role === 'ClinicalInstructor').firstName} ${schedule.user.find((user) => user.role === 'ClinicalInstructor').lastName} - ${schedule.area}`}
+                            {`Week ${schedule.week} - ${schedule.user.find((user) => user.role === 'ClinicalInstructor').firstName} ${schedule.user.find((user) => user.role === 'ClinicalInstructor').lastName} - ${schedule.clinicalArea.name}`}
                             {schedule.id === data.scheduleId && '(Current)'}
                             </SelectItem>
                         ))}

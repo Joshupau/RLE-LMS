@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { EditSchedule } from "./_components/edit-schedule";
 import { getStudent } from "@/actions/get-student";
 import { getClinicalInstructors } from "@/actions/get-clinicalinstructor";
+import { getClinicalAreas } from "@/actions/get-clinical-areas";
 
 export default async function EditSchedulePage({ params }){
     const session = await getServerSession(authOptions);
@@ -14,10 +15,11 @@ export default async function EditSchedulePage({ params }){
     const schedule = await getScheduleId(id);
     const students = await getStudent();
     const clinicalInstructor = await getClinicalInstructors();
+    const areas = await getClinicalAreas();
 
     return (
   <>
-    <EditSchedule clinicalInstructor={clinicalInstructor} userId={session?.token.id} schedule={schedule} student={students}/>
+    <EditSchedule areas={areas} clinicalInstructor={clinicalInstructor} userId={session?.token.id} schedule={schedule} student={students}/>
   </>
   
     )

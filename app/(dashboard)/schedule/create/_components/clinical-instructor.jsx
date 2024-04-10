@@ -39,6 +39,7 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, clinicalInstructo
         id="instructor"
         onValueChange={(e) => setSelectedInstructorId(e)}
         aria-label="Select Clinical Instructor"
+        value={selectedInstructorId}
       >
         <SelectTrigger className="w-[20rem]">
           <SelectValue placeholder="Clinical Instructor"/>

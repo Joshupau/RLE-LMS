@@ -46,7 +46,7 @@ export default async function ProgressPage(){
 
               <div className="my-16">
                     <h1 className="text-xl font-medium mb-2">RLE Progress Report</h1>
-                    {ProgressReportData && ProgressReportData.length > 0 ? (
+                    {ProgressReportData.length > 0 ? (
                       <ProgressReport data={ProgressReportData}/>
                     ) : null}
               </div>
@@ -54,7 +54,7 @@ export default async function ProgressPage(){
              )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-16">
                     <div className="overflow-x-auto gap-y-2">
-                        {data.token.role === 'Dean' && barChartData.length > 0 ? (
+                        {data.token.role === 'Dean' && barChartData && barChartData.length > 0 ? (
                           <div>
                           <h1 className="text-xl font-medium">Cases Submitted per level</h1>
                           <Suspense fallback={<SkeletonCard/>}>

@@ -43,7 +43,7 @@ import { useToast } from "@/components/ui/use-toast";
 
     const [pagination, setPagination] = useState({
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 30,
     });
     useEffect(() => {
       if (transferStatus === true) {
@@ -77,6 +77,8 @@ import { useToast } from "@/components/ui/use-toast";
       pagination.pageIndex * pagination.pageSize,
       (pagination.pageIndex + 1) * pagination.pageSize
     );
+
+    console.log(data);
   
     return (
       <div className="overflow-x-auto rounded-md border">

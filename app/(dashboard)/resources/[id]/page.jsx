@@ -39,7 +39,7 @@ export default async function ResourceIdPage({ params, searchParams }) {
     <div className="h-full">
         <div className="grid md:grid-cols-3 mt-20">
         <div className="flex justify-end mt-8 mr-4">
-          <Card className="w-64 shadow-lg">
+          <Card className="w-64 h-[10rem] shadow-lg">
             <CardContent>
               <h1 className="font-bold text-xl mb-4">Schedule Details</h1>
               <div className="flex flex-col">

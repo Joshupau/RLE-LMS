@@ -110,37 +110,68 @@ const CIDataTable = ({ data }) => {
       (pagination.pageIndex + 1) * pagination.pageSize
     );
   
-    const handleApproveCase = async (id, status) => {
+    const handleApproveCase = async (id) => {
         try {
-          const response = await fetch(`/api/progress/case/${id}`, {
+          const response = await fetch(`/api/progress/case/${id}/approve`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id, status: status }), 
+            body: JSON.stringify({ id }), 
         });
           if(response.ok) {
               toast({
                   title: "Success",
-                  description: status ? "Case Disapproved!" : "Case Approved!",
+                  description: "Case Approved",
                   status: "success",
                 });
           }else {
             toast({
                 title: "Uh oh...",
-                description: status ? "Failed to disapprove Case!" : "Failed to approve Case!",
+                description: "Failed to approve Case.",
                 status: "destructive",
               });
           }
       
         } catch (error) {
-            toast({
-                title: "Uh oh...",
-                description: status ? "Failed to disapprove Case!" : "Failed to approve Case!",
-                status: "destructive",
-              });
+          toast({
+            title: "Uh oh...",
+            description: "Failed to approve Case.",
+            status: "destructive",
+          });
         }
     };
+    const handleDisapproveCase = async (id) => {
+      try {
+        const response = await fetch(`/api/progress/case/${id}/disapprove`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id }), 
+      });
+        if(response.ok) {
+            toast({
+              title: "Success",
+              description: "Case Disapproved.",
+              status: "success",
+            });
+        }else {
+          toast({
+            title: "Uh oh...",
+            description: "Failed to disapprove case.",
+            status: "destructive",
+          });
+        }
+    
+      } catch (error) {
+        toast({
+          title: "Uh oh...",
+          description: "Failed to disapprove case.",
+          status: "destructive",
+        });
+      }
+  };
 
     return (
       <>
@@ -170,7 +201,19 @@ const CIDataTable = ({ data }) => {
                 <TableCell className="text-center">{Case.user.firstName} {Case.user.lastName}</TableCell>
                 <TableCell className="text-center">{Case.level}</TableCell>
                 <TableCell className="text-center">{new Date(Case.date).toLocaleDateString()}</TableCell>
-                <TableCell className="text-center">{Case.status ? <Badge variant="outline" className="bg-cyan-200 text-blue-500">Approved</Badge> : <Badge variant="outline" className="bg-red-200 text-red-500">Pending</Badge>}</TableCell>
+                <TableCell className="text-center">
+                <Badge
+                  variant="outline"
+                  className={
+                    Case.statusMigrate === 'PENDING' ? 'bg-blue-500 text-white' :
+                    Case.statusMigrate === 'APPROVED' ? 'bg-green-500 text-white' :
+                    Case.statusMigrate === 'DISAPPROVED' ? 'bg-red-600 text-white' :
+                    'bg-gray-200 text-gray-600'
+                  }
+                >
+                  {Case.statusMigrate}
+                </Badge>
+                </TableCell>
                 <TableCell className="items-center">
                 <Dialog className="min-w-max">
                     <DropdownMenu>
@@ -185,13 +228,13 @@ const CIDataTable = ({ data }) => {
                             <span >View Case Details</span>
                           </DialogTrigger>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleApproveCase(Case.id, Case.status)}>
+                        <DropdownMenuItem onClick={() => handleApproveCase(Case.id)}>
                             <Pencil className="mr-2 h-4 w-4" />
-                            <span>{Case.status ? "Disapprove" : "Approve"} Case</span>
+                            <span>Approve Case</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDisapproveCase(Case.id)}>
                             <Trash2 className="mr-2 h-4 w-4" />
-                            <span >Delete Case</span>
+                            <span >Disapprove Case</span>
                         </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>

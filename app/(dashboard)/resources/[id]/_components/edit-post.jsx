@@ -10,6 +10,7 @@ import MoonLoader from 'react-spinners/MoonLoader';
 import { DialogFooter } from '@/components/ui/dialog';
 
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 const EditPost = ({ 
   resourceGroupID, 
@@ -20,6 +21,7 @@ const EditPost = ({
   onClose
 }) => {
   const { edgestore } = useEdgeStore();
+  const { toast } = useToast();
   const router = useRouter();
 
   const [isTextareaEmpty, setIsTextAreaEmpty] = useState(false);
@@ -149,7 +151,13 @@ const removeFile = (fileType, content) => {
       });
  
       if (!response.ok) {
+        toast({
+          title: "Uh oh...",
+          description: "Failed to edit resource post.",
+          status: "destructive"
+        });
         throw new Error("Failed to submit data to MongoDB");
+        
       }
       if (response.ok) {
         if(urlToDelete){
@@ -159,12 +167,22 @@ const removeFile = (fileType, content) => {
                });
            });
         };
+        toast({
+          title: "Success",
+          description: "Successfully edited resource post.",
+          status: "destructive"
+        })
         onClose();
         router.refresh();
       }
       
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Uh oh...",
+        description: "Failed to edit resource post.",
+        status: "destructive"
+      });
     }
   };
   

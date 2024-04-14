@@ -33,9 +33,11 @@ export default async function ScheduleIdPage ({ params }) {
     const studentData = filteredUsers.map((user) => ({
       id: user.id,
       name: `${user.firstName} ${user.lastName}`,
-      contacts: user?.contacts,
+      contacts: user?.contact,
       scheduleId: schedules.id
     }));
+
+    console.log(schedules);
 
 
   return (

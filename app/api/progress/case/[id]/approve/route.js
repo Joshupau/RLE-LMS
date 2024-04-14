@@ -1,5 +1,6 @@
 
 import { db } from "@/lib/db";
+import { Status } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req,res) {
@@ -8,7 +9,6 @@ export async function POST(req,res) {
 
         const {
             id,
-            status
         } = body;
         
         if(!id){
@@ -21,13 +21,13 @@ export async function POST(req,res) {
                 id: id,
             },
             data: {
-                status: status ? false : true,
+                statusMigrate: Status.APPROVED,
             }
         });
         const notification = await db.notification.create({
             data: {
               title: "Case Notification",
-              message: `Your case ${approve.caseType} has been ${approve.status ? 'approved' : 'disapproved'}`,
+              message: `Your ${approve.caseType} case has been approved.`,
               recipientId: approve.userId, 
               type: "general", 
               link: `/progress/student`,

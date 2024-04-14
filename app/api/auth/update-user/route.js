@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function POST(req, ) {
+export async function POST(req) {
 
   const updatedData = await req.json();
 
@@ -12,7 +12,12 @@ export async function POST(req, ) {
     age,
     email,
     id,
-    contact
+    contact,
+    schoolId,
+    section,
+    group,
+    status,
+    role,
   } = updatedData
   try {
     const updatedUser = await db.user.update({

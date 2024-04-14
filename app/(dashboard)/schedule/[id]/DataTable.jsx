@@ -96,7 +96,7 @@ import { useToast } from "@/components/ui/use-toast";
           {paginatedData.map((student) => (
             <TableRow className="h-1" key={student.id}>
               <TableCell className="p-3 text-center">{student.name}</TableCell>
-              <TableCell className="p-3 text-center">{student?.contact}</TableCell>
+              <TableCell className="p-3 text-center">{student?.contacts}</TableCell>
               {user.role === "Dean" && (
 
                   <TableCell className="p-1 text-center">

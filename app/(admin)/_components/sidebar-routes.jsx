@@ -13,7 +13,7 @@ const guestRoutes = [
     {
         icon: List,
         label: "Activity Log",
-        href: "/logs",
+        href: "/alog",
     },
 
 

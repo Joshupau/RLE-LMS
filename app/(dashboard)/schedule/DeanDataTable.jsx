@@ -15,59 +15,42 @@ import {
   import ScheduleItem from "./_components/schedule-item";
 
 
-import generatePDF, { Resolution, Margin } from 'react-to-pdf';
-import { DeanPdfTemplate } from "./_components/dean-pdf-template";
-import { useRef } from "react";
+  import { DeanPdfTemplate } from "./_components/dean-pdf-template";
 
-const options = {
-   // default is `save`
-   method: 'open',
-   // default is Resolution.MEDIUM = 3, which should be enough, higher values
-   // increases the image quality but also the size of the PDF, so be careful
-   // using values higher than 10 when having multiple pages generated, it
-   // might cause the page to crash or hang.
-   resolution: Resolution.HIGH,
-   page: {
-      // margin is in MM, default is Margin.NONE = 0
+
+  import generatePDF, { Resolution, Margin } from "react-to-pdf";
+  const options = {
+    filename: "schedule.pdf",
+    method: "save",
+
+    resolution: Resolution.MEDIUM,
+    page: {
       margin: Margin.SMALL,
-      // default is 'A4'
-      format: 'letter',
-      // default is 'portrait'
-      orientation: 'landscape',
-   },
-   canvas: {
-      // default is 'image/jpeg' for better size performance
-      mimeType: 'image/png',
-      qualityRatio: 1
-   },
-   // Customize any value passed to the jsPDF instance and html2canvas
-   // function. You probably will not need this and things can break, 
-   // so use with caution.
-   overrides: {
-      // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+      format: "tabloid",
+      orientation: "landscape",
+    },
+    canvas: {
+      mimeType: "image/png",
+      qualityRatio: 1,
+    },
+
+    overrides: {
       pdf: {
-         compress: true
+        compress: true,
       },
-      // see https://html2canvas.hertzen.com/configuration for more options
       canvas: {
-         useCORS: true
-      }
-   },
-};
-
-// you can use a function to return the target element besides using React refs
-const getTargetElement = () => document.getElementById('content-id');
-
+        useCORS: true,
+      },
+    },
+  };
   
   const DeanDataTable = ({ data }) => {
 
-    const targetRef = useRef();
 
     const [pagination, setPagination] = useState({
       pageIndex: 0,
       pageSize: 10,
     });
-    const [exporting, setExporting] = useState(false);
 
     const table = useReactTable({
       data,
@@ -84,22 +67,25 @@ const getTargetElement = () => document.getElementById('content-id');
       (pagination.pageIndex + 1) * pagination.pageSize
     );
 
+    const openPDF = () => {
+      generatePDF(() => document.getElementById("content-id"), options);
+    };
   
     return (
       <>
          <div className="flex justify-end m-2">
-                <Button variant="secondary" onClick={()=>generatePDF(targetRef, options)}>
+                <Button variant="secondary" onClick={openPDF}>
                     Export Schedule
                 </Button>
             </div>
-                <div ref={targetRef}
-                className="w-full"         
+                <div
+                className="w-full h-full"         
                 style={{
                   position: 'absolute',
                   left: '-9999px',
                   top: '-9999px',
               }} id="content-id">
-                    <DeanPdfTemplate data={data} id="content-id"/>
+                    <DeanPdfTemplate data={data}/>
                 </div>
       <div className="overflow-x-auto rounded-md border">
         <Table>

@@ -12,6 +12,7 @@ export const EditUser = ({user}) => {
     const { toast } = useToast();
 
     const [userInfo, setUserInfo] = useState({
+        id: user.id,
         firstName: "",
         middleName: "",
         lastName: "",
@@ -28,6 +29,7 @@ export const EditUser = ({user}) => {
 
     useEffect(()=> {
         setUserInfo({
+            id: user.id,
             firstName: user.firstName,
             middleName: user.middleName,
             lastName: user.lastName,
@@ -45,7 +47,7 @@ export const EditUser = ({user}) => {
     
     const handleUpdateUser = async () => {
         try {
-            const response = await fetch('/api/auth/', {
+            const response = await fetch('/api/auth/update-user', {
                 method: "POST",
                 "Content-Type": "application/json",
                 body: JSON.stringify(userInfo)
@@ -54,34 +56,21 @@ export const EditUser = ({user}) => {
             if(response.ok){
                 toast({
                     title: "Success",
-                    description: "Successfully created a user.",
+                    description: "Successfully updated user.",
                     status: "Success"
                 });
             } else {
                 toast({
                     title: "Failed",
-                    description: "Failed to create a user.",
+                    description: "Failed to update user.",
                     status: "Destructive"
                 });
             }
-            setUserInfo({
-                firstName: "",
-                middleName: "",
-                lastName: "",
-                schoolId: "",
-                email: "",
-                password: "",
-                age: "",
-                role: "",
-                yearLevel: "",
-                section: "",
-                group: "",
-            });
             } catch (error) {
             console.error("Failed to create a user: ",error)
             toast({
                 title: "Failed",
-                description: "Failed to create a user.",
+                description: "Failed to updated user.",
                 status: "Destructive"
             });
         }

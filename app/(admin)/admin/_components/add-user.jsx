@@ -29,6 +29,13 @@ export const AddUser = () => {
 
     const handleAddUser = async () => {
         try {
+            if(userInfo.password.length > 8){
+                toast({
+                    title: "Uh oh...",
+                    description: "Password length should be 8 characters.",
+                    status: "Destructive"
+                })
+            }
             const response = await fetch('/api/register', {
                 method: "POST",
                 "Content-Type": "application/json",
@@ -137,7 +144,7 @@ export const AddUser = () => {
                             onChange={(e)=> setUserInfo({...userInfo, password: e.target.value})}
                             value={userInfo.password}                            
                             type="password" 
-                            placeholder="Password"
+                            placeholder="Password(8 Characters length)"
                             />
                         </div>                       
                         <div>
@@ -181,12 +188,12 @@ export const AddUser = () => {
                             </Select>                         
                             </div>    
                         <div>
-                            <Label>Section</Label>
+                            <Label>Section(Optional)</Label>
                             <Input 
                             onChange={(e)=> setUserInfo({...userInfo, section: e.target.value})}
                             value={userInfo.section}                            
                             placeholder="Section"
-                            type="number"
+                            type="text"
                             />
                         </div> 
                         </div>

@@ -12,6 +12,7 @@ import {
 import { Pencil, Trash2, ScanSearch, MoreVertical } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AddUser } from "./_components/add-user";
 
 import {
   DropdownMenu,
@@ -28,32 +29,77 @@ useReactTable,
 getPaginationRowModel,
 getCoreRowModel,
  } from "@tanstack/react-table";
-import { useState } from "react";
 import { EditUser } from "./_components/edit-user";
-  
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+
+const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300 }) => {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onChange(value);
+    }, debounceTime);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, onChange, debounceTime]);
+
+  return <Input value={value} onChange={e => setValue(e.target.value)} placeholder="Search..." />;
+};
+
+const fuzzyFilterFn = (rows, filterValue) => {
+  return rows.filter(row => {
+    const rowValues = Object.values(row).map(value =>
+      typeof value === 'string' || typeof value === 'number' ? value.toString().toLowerCase() : ''
+    );
+    return rowValues.some(value =>
+      value.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  });
+};
+
 const DataTable = ({ data }) => {
+
+  const [globalFilter, setGlobalFilter] = useState('');
+
     const [pagination, setPagination] = useState({
       pageIndex: 0, // Initial page index
       pageSize: 7, // Default page size
     });
   
-    const table = useReactTable({
-      data,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      onPaginationChange: setPagination,
-      state: {
-        pagination,
-      },
-    });
+  const table = useReactTable({
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    state: {
+      pagination,
+      globalFilter,
+    },
+    globalFilterFn: fuzzyFilterFn,
+  });
   
-    // Slice the data array based on pagination settings
-    const paginatedData = data.slice(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize
-    );
-  
+  const paginatedFilteredData = data
+  .filter(row => { 
+    return fuzzyFilterFn([row], globalFilter).length > 0;
+  })
+  .slice(
+    pagination.pageIndex * pagination.pageSize,
+    (pagination.pageIndex + 1) * pagination.pageSize
+  );
     return (
+      <>
+      <div className="flex justify-between">
+          <div className="w-1/4 max-w-xs m-2">
+            <DebouncedInput value={globalFilter} onChange={setGlobalFilter} />
+          </div>
+          <div>
+            <AddUser/>
+          </div>
+        </div>
       <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
@@ -68,7 +114,7 @@ const DataTable = ({ data }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((user) => (
+            {paginatedFilteredData.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="text-center">{user.schoolId}</TableCell>
                 <TableCell className="text-center">{user.firstName} {user?.middleName} {user.lastName}</TableCell>
@@ -89,18 +135,8 @@ const DataTable = ({ data }) => {
                               <DropdownMenuItem>
                                 <DialogTrigger className="flex w-full">
                                 <Pencil className="mr-2 h-4 w-4" />
-                                <span>View User Details</span>
+                                <span>Edit User</span>
                                 </DialogTrigger>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem >
-                                  <ScanSearch className="mr-2 h-4 w-4" />
-                                  <span >Deactivate User</span>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                              <AlertDialogTrigger className="flex w-full">
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  <span >Delete User</span>
-                              </AlertDialogTrigger>
                               </DropdownMenuItem>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>           
@@ -118,9 +154,7 @@ const DataTable = ({ data }) => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the schedule
-                            and remove the schedule data from our servers. <br /> <br />
-                            Note: Once data is present in the resource or cases have been submitted, the schedule cannot be deleted.
+                            This action cannot be undone. This will permanently delete the user data from our servers. <br /> <br />
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -141,7 +175,7 @@ const DataTable = ({ data }) => {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-          >
+            >
             Previous
           </Button>
           <Button
@@ -149,11 +183,12 @@ const DataTable = ({ data }) => {
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-          >
+            >
             Next
           </Button>
         </div>
       </div>
+      </>
     );
   };
   

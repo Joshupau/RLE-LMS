@@ -78,7 +78,7 @@ export const StudentPage = async () => {
                                         Type the information of your Case.
                                     </DialogDescription>
                                     </DialogHeader>
-                                    <PatientCaseSubmission schedules={schedules} />
+                                    <PatientCaseSubmission userId={data?.token.id} schedules={schedules} />
                                 </DialogContent>
                             </Popover>
                         </Dialog>

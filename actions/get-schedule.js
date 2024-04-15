@@ -22,8 +22,6 @@ export const getScheduleWithUsers = async () => {
         clinicalArea: true,
       }
     });
-
-    console.log(schedulingData);
     
 
     return schedulingData;

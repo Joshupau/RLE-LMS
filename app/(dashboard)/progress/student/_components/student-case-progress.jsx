@@ -2,13 +2,13 @@
 import { useEffect, useState } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { Card } from '@/components/ui/card';
+import { Status } from '@prisma/client';
 
 export const StudentCaseProgress = ({data}) => {
     const [chartData, setChartData] = useState([]);
     const [yMarkers, setYMarkers] = useState([]);
 
     useEffect(() => {
-        // Initialize an object to store the goal for each case type
         const goals = {
           "Medical": 15,
           "Pediatrics": 20,
@@ -39,7 +39,7 @@ export const StudentCaseProgress = ({data}) => {
             pendingCount[caseData.caseType] = 0;
           }
           casesCount[caseData.caseType]++;
-          if (caseData.status) {
+          if (caseData.statusMigrate === Status.APPROVED) {
             approvedCount[caseData.caseType]++;
           } else {
             pendingCount[caseData.caseType]++;

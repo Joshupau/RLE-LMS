@@ -147,7 +147,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
   
   const [commonInfo, setCommonInfo] = useState({
     caseNumber: "",
-    level: yearLevel.toString(),
+    level: "",
     scheduleId: "",
   })
   const [surgeonCount, setSurgeonCount] = useState(1); 
@@ -197,6 +197,18 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
     Staff: "",
     Agency: "",
   });
+
+  const handleWeekSelect = (selectedScheduleId) => {
+    const selectedSchedule = schedules.find(schedule => schedule.id === selectedScheduleId);
+    
+    if (selectedSchedule) {
+        setCommonInfo(prevState => ({
+            ...prevState,
+            level: selectedSchedule.yearLevel.toString() 
+        }));
+    }
+
+};
 
   const handleMaritalStatusChange = (status, index) => {
     const updatedMaritalStatuses = [...patientInfos.maritalStatuses];
@@ -448,23 +460,29 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
     
   <Popover>
     <div>
-        <div className="flex my-2 flex-col space-y-2 justify-end">
-        <Label>Week</Label>
-        <Select onValueChange={(e)=>setCommonInfo({...commonInfo, scheduleId: e})} required>
-        <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Week" />
-            </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-          {schedules.map((schedule, index) => (
-            <SelectItem key={index} value={schedule.id}>
-              {schedule.week}
-            </SelectItem>
-          ))}
-          </SelectGroup>
-          </SelectContent>
-        </Select>            
-          </div>
+    <div className="flex my-2 flex-col space-y-2 justify-end">
+            <Label>Week</Label>
+            <Select 
+                onValueChange={(e) => {
+                    setCommonInfo({ ...commonInfo, scheduleId: e });
+                    handleWeekSelect(e); // Call the handler function
+                }} 
+                required
+            >
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Week" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        {schedules.map((schedule, index) => (
+                            <SelectItem key={index} value={schedule.id}>
+                                {schedule.week}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>            
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col space-y-2 justify-end">
           <Label>Case Type</Label>
@@ -546,7 +564,7 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
           </div>
           <div className="flex flex-col space-y-2 justify-end">
           <Label>Year Level</Label>
-          <Select defaultValue={commonInfo.level} disabled >
+          <Select defaultValue={commonInfo.level} value={commonInfo.level} disabled >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Level" />
             </SelectTrigger>

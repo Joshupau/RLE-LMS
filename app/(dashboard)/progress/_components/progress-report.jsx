@@ -22,21 +22,17 @@ export const ProgressReport = ({ data }) => {
     const [filteredData, setFilteredData] = useState([]);
     useEffect(() => {
         if (data && typeof data === 'object') {
-            // Flatten the data object into a single array of students
             const allStudents = Object.values(data).flat();
 
-            // Filter data by year level
             let filteredByYearLevel = allStudents;
             if (yearLevelFilter) {
                 filteredByYearLevel = allStudents.filter(student => student.yearLevel === yearLevelFilter);
             }
 
-            // Apply group filter if set
             if (groupFilter) {
                 filteredByYearLevel = filteredByYearLevel.filter(student => student.group === groupFilter);
             }
 
-            // Update filteredData state
             setFilteredData(filteredByYearLevel);
         }
     }, [data, yearLevelFilter, groupFilter]);

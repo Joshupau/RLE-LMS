@@ -181,7 +181,19 @@ const DataTable = ({ data }) => {
                 <TableCell className="text-center">{Case.user.firstName} {Case.user.lastName}</TableCell>
                 <TableCell className="text-center">{Case.level}</TableCell>
                 <TableCell className="text-center">{new Date(Case.date).toLocaleDateString()}</TableCell>
-                <TableCell className="text-center">{Case.status ? <Badge variant="outline" className="bg-cyan-200 text-blue-500">Approved</Badge> : <Badge variant="outline" className="bg-red-200 text-red-500">Pending</Badge>}</TableCell>
+                <TableCell className="text-center">
+                <Badge
+                  variant="outline"
+                  className={
+                    Case.statusMigrate === 'PENDING' ? 'bg-blue-500 text-white' :
+                    Case.statusMigrate === 'APPROVED' ? 'bg-green-500 text-white' :
+                    Case.statusMigrate === 'DISAPPROVED' ? 'bg-red-600 text-white' :
+                    'bg-gray-200 text-gray-600'
+                  }
+                >
+                  {Case.statusMigrate}
+                </Badge>
+                  </TableCell>
                 <TableCell className="items-center">
                 <Dialog className="min-w-max">
                     <DropdownMenu>

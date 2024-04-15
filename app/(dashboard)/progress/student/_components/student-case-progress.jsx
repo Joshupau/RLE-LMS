@@ -66,7 +66,7 @@ export const StudentCaseProgress = ({data}) => {
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         layout="vertical"
-        colors={['#4682B4', '#008000', '#FF6347']}
+        colors={['#3B82F6', '#22C55E', '#FF6347']}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
         axisTop={null}
         axisRight={null}

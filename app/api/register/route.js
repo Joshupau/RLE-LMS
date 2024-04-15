@@ -1,11 +1,13 @@
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { AuditAction } from "@prisma/client";
 
 export async function POST(request){
     try {
         const body = await request.json();
-        const { firstName, middleName, lastName, schoolId, age, email, password } = body;
+        const { firstName, middleName, lastName, schoolId, age, email, password, role, yearLevel, section, group } = body;
     
         if(!firstName || !lastName || !schoolId || !age || !email || !password) {
             return new NextResponse({ error: "Missing fields" }, { status: 400 });
@@ -14,7 +16,7 @@ export async function POST(request){
         const exist = await db.user.findUnique({
             where: {
                 email: email,
-                schoolId: schoolId,
+                schoolId: Number(schoolId),
             }
         });
 
@@ -33,13 +35,23 @@ export async function POST(request){
                 firstName,
                 middleName,
                 lastName,
-                schoolId,
-                age,
+                schoolId: Number(schoolId),
+                age: Number(age),
                 email,
                 hashedPassword,
+                role,
+                yearLevel: Number(yearLevel),
+                group,
+                section,
                 status: true,
             }
         });
+
+        await createAuditLog({
+            entityId: user.id,
+            Action: AuditAction.CREATE,
+            Title: "New user created.",
+          });
     
         return NextResponse.json(user);
     } catch (error) {

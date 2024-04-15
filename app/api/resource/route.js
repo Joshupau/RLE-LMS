@@ -1,9 +1,10 @@
-import { UserRole } from "@prisma/client";
+import { AuditAction, UserRole } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 export async function POST(request) {
   try {
@@ -55,6 +56,11 @@ export async function POST(request) {
         },
       },
     });
+    await createAuditLog({
+      entityId: newResource.id,
+      Action: AuditAction.CREATE,
+      Title: "Resource Post.",
+    })
 
     const userIds = await db.resourceGroup.findUnique({
       where: { id: resourceGroupId },

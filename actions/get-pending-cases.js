@@ -1,10 +1,12 @@
 import { db } from "@/lib/db";
+import { Status } from "@prisma/client";
 
 export const pendingCase = async (userId) => {
     
     try {
         const pendingCase = await db.submissionOfPatientCases.findMany({
             where: {
+                statusMigrate: Status.PENDING,
                 scheduling: {
                     user:{
                         some:{
@@ -12,7 +14,6 @@ export const pendingCase = async (userId) => {
                         }
                     }
                 },
-                status: false,
             },
         })
         

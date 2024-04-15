@@ -17,7 +17,7 @@ export const BarChart = ({ data }) => {
             axisRight={null}
             axisBottom={{
                 tickSize: 0,
-                tickPadding: 16,
+                tickPadding: 4,
             }}
             axisLeft={{
                 tickSize: 0,
@@ -42,7 +42,7 @@ export const BarChart = ({ data }) => {
                     translateY: 40,
                     itemsSpacing: 40,
                     itemWidth: 100,
-                    itemHeight: 20,
+                    itemHeight: 30,
                     itemDirection: 'left-to-right',
                     itemOpacity: 0.85,
                     symbolSize: 20,

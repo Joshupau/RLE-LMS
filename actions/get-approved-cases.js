@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Status } from "@prisma/client";
 
 export const approvedCases = async (studentId) => {
     
@@ -8,7 +9,7 @@ export const approvedCases = async (studentId) => {
                 user: {
                     id: studentId,
                 },
-                status: true,
+                statusMigrate: Status.APPROVED,
             },
             include: {
                 drCordCase: true,

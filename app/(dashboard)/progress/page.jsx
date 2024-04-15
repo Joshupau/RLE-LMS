@@ -46,10 +46,8 @@ export default async function ProgressPage(){
 
               <div className="my-16">
                     <h1 className="text-xl font-medium mb-2">RLE Progress Report</h1>
-                    {ProgressReportData.length > 0 ? (
                       <ProgressReport data={ProgressReportData}/>
-                    ) : null}
-              </div>
+            </div>
                 </>
              )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-16">

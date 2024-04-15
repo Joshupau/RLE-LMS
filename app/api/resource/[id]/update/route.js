@@ -1,4 +1,6 @@
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 
@@ -28,6 +30,11 @@ export async function POST(request) {
         }
      });
      
+     await createAuditLog({
+      entityId: updateResource.id,
+      Action: AuditAction.UPDATE,
+      Title: "Resource Post Update.",
+    });
 
     return NextResponse.json({ status: 201 }, updateResource);
   } catch (error) {

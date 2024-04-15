@@ -24,7 +24,7 @@ export default async function SchedulePage() {
   if (!StudentSchedules) StudentSchedules = { schedules: [] };
 
   return (
-    <div className="p-6 mt-16">
+    <div className="p-6 mt-16 h-auto">
       {userRole === "Dean" && (
         <>
           <div className="flex items-center justify-between">
@@ -67,8 +67,8 @@ export default async function SchedulePage() {
               <h1 className="text-2xl font-medium">Schedule List</h1>
             </div>
           </div>
-          {StudentSchedules.schedules.length > 0 ? (
-            <StudentDataTable data={StudentSchedules.schedules} />
+          {StudentSchedules.length > 0 ? (
+            <StudentDataTable data={StudentSchedules} />
           ) : (
             <p>No schedules</p>
           )}

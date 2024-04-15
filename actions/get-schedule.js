@@ -1,8 +1,16 @@
 import { db } from "@/lib/db";
+import { getCurrentSchoolYear } from "./get-current-school-year";
 
 export const getScheduleWithUsers = async () => {
   try {
+
+    const currentSchoolYear = await getCurrentSchoolYear();
+
+
     const schedulingData = await db.scheduling.findMany({
+      where: {
+        schoolyearId: currentSchoolYear.id
+      },
       include: {
         user: {
           select: {
@@ -14,6 +22,8 @@ export const getScheduleWithUsers = async () => {
         clinicalArea: true,
       }
     });
+
+    console.log(schedulingData);
     
 
     return schedulingData;

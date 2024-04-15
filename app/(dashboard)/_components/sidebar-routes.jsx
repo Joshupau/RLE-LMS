@@ -65,6 +65,20 @@ const deanRoutes = [
         href: "/progress"
     }];
 
+    
+const adminRoute = [
+    {
+        icon: Layout,
+        label: "Dashboard",
+        href: "/admin",
+    },
+
+    {
+        icon: BarChart,
+        label: "Activity Log",
+        href: "/alog"
+    }];
+
 export const SidebarRoutes = ({ session }) => {
     const userRole = session?.token?.role;
     
@@ -80,6 +94,9 @@ export const SidebarRoutes = ({ session }) => {
         case 'Dean':
             routes = deanRoutes;
             break;
+        case 'SystemAdmin':
+            routes = adminRoute;
+            break;           
     }
 
     return (

@@ -148,31 +148,36 @@ model Resource {
   updatedAt DateTime @updatedAt
 }
 
+enum Status {
+  PENDING
+  APPROVED
+  DISAPPROVED
+}
 model SubmissionOfPatientCases {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  schedulingId  String @db.ObjectId
-  userId        String @db.ObjectId
-  caseNumber    Int
-  caseType      String
-  level         String
-  date          DateTime
-  status        Boolean @default(false)
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  schedulingId    String      @db.ObjectId
+  userId          String      @db.ObjectId
+  caseNumber      Int
+  caseType        String
+  level           String
+  date            DateTime
+  statusMigrate   Status      @default(PENDING) 
+  status          Boolean @default(false)
 
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  scheduling    Scheduling @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduling      Scheduling  @relation(fields: [schedulingId], references: [id], onDelete: Cascade)
   
-  schoolyearId String? @db.ObjectId
-  schoolyear SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
- 
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  schoolyearId    String?     @db.ObjectId
+  schoolyear      SchoolYear_Semester? @relation(fields: [schoolyearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   
-  drCordCase       DrCordCase[]
-  drMACase         DrMACase[]
-  medicalCase      MedicalCase[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  drCordCase      DrCordCase[]
+  drMACase        DrMACase[]
+  medicalCase     MedicalCase[]
   orMajorMinorCase ORMajorMinorCase[]
-  chnCase          CHNCase[]
+  chnCase         CHNCase[]
 }
 
 model DrCordCase {
@@ -256,7 +261,24 @@ model Notification {
   recipient      User    @relation(fields: [recipientId], references: [id])
   recipientId   String   @db.ObjectId
   isRead        Boolean   @default(false)
-  type          String?   // Optional: To specify the type of notification
-  link          String?   // Optional: To store a link associated with the notification
-  expiresAt     DateTime? // Optional: To specify an expiration time for the notification
+  type          String?   
+  link          String?   
+  expiresAt     DateTime? 
+}
+
+model AuditLog {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  entityId      String
+  Action        AuditAction
+  Title         String
+  userId        String
+  userName      String
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
 }

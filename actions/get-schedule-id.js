@@ -14,6 +14,7 @@ export const getScheduleId = async (scheduleId) => {
               lastName: true,
               role: true,
               id: true,
+              contact: true,
             }
           },
           clinicalArea: true,

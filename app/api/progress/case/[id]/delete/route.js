@@ -1,5 +1,7 @@
 
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req) {
@@ -13,7 +15,6 @@ export async function DELETE(req) {
             id,
         } = body;
         
-        console.log(body);
         
         if(!id){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 
@@ -24,7 +25,13 @@ export async function DELETE(req) {
             where: {
                 id: id,
             }
-        })
+        });
+
+        await createAuditLog({
+            entityId: deleted.id,
+            Action: AuditAction.DELETE,
+            Title: "Case Delete.",
+          });
 
         return NextResponse.json(deleted);
     } catch (error) {

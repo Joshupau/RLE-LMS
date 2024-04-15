@@ -1,5 +1,7 @@
 
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction, Status } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req,res) {
@@ -8,7 +10,6 @@ export async function POST(req,res) {
 
         const {
             id,
-            status
         } = body;
         
         if(!id){
@@ -21,18 +22,24 @@ export async function POST(req,res) {
                 id: id,
             },
             data: {
-                status: status ? false : true,
+                statusMigrate: Status.DISAPPROVED,
             }
         });
         const notification = await db.notification.create({
             data: {
               title: "Case Notification",
-              message: `Your case ${approve.caseType} has been ${approve.status ? 'approved' : 'disapproved'}`,
+              message: `Your ${approve.caseType} case has been disapproved.`,
               recipientId: approve.userId, 
               type: "general", 
               link: `/progress/student`,
               expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
             },
+          });
+
+          await createAuditLog({
+            entityId: approve.id,
+            Action: AuditAction.UPDATE,
+            Title: "Case Disapproved.",
           });
 
 

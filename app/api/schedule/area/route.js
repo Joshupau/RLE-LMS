@@ -1,4 +1,6 @@
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req, res) {
@@ -14,6 +16,12 @@ try {
             name: createArea,
         }
     });
+
+    await createAuditLog({
+        entityId: clinicalArea.id,
+        Action: AuditAction.CREATE,
+        Title: "Clinical Area Creation.",
+      })
 
 
     return NextResponse.json({ status: 200}, { message: "Success"});

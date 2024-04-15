@@ -1,7 +1,8 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
-import { UserRole } from "@prisma/client";
+import { AuditAction, UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 export async function POST(req, res){
     try {
@@ -106,6 +107,12 @@ export async function POST(req, res){
               link: `/progress/ci`,
               expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
             },
+          });
+
+          await createAuditLog({
+            entityId: CommonInfo.id,
+            Action: AuditAction.CREATE,
+            Title: "New DR Cord Case.",
           });
 
       

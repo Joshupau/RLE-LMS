@@ -1,4 +1,6 @@
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -105,6 +107,11 @@ export async function POST(request) {
         link: `/schedule`,
       },
     });
+    await createAuditLog({
+      entityId: add.id,
+      Action: AuditAction.UPDATE,
+      Title: "Student Schedule Transfer.",
+    })
 
     return NextResponse.json({ remove, add, notify, removeUserScheduling });
   } catch (error) {

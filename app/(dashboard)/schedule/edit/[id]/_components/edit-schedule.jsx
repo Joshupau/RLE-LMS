@@ -114,7 +114,25 @@ export const EditSchedule = ({
     const handleEnterSchedule = async () => {
       try {
         setIsSubmitting(true);
-    
+        if (
+          !selectedInstructor ||
+          !selectedHour ||
+          !selectedArea ||
+          !selectedDateRange ||
+          !userId ||
+          !selectedGroup ||
+          !selectedYearLevel ||
+          !selectedStudents ||
+          !week
+      ) {
+          toast({
+              title: "Incomplete Fields",
+              description: "Please complete all input fields.",
+              status: "Destructive"
+          });
+          return;
+      }
+      
         const formattedDates = selectedDateRange.map(({ from, to }) => ({
           from: new Date(from),
           to: new Date(to),

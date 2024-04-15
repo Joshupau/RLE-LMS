@@ -15,7 +15,6 @@ export async function DELETE(req) {
             id,
         } = body;
         
-        console.log(body);
         
         if(!id){
             return NextResponse.json({ error: "Missing Fields" }, { status: 400 }); 

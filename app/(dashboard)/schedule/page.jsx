@@ -24,7 +24,7 @@ export default async function SchedulePage() {
   if (!StudentSchedules) StudentSchedules = { schedules: [] };
 
   return (
-    <div className="p-6 mt-16">
+    <div className="p-6 mt-16 h-auto">
       {userRole === "Dean" && (
         <>
           <div className="flex items-center justify-between">

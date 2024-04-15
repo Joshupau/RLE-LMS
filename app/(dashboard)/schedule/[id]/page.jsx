@@ -37,7 +37,6 @@ export default async function ScheduleIdPage ({ params }) {
       scheduleId: schedules.id
     }));
 
-    console.log(schedules);
 
 
   return (

@@ -18,7 +18,6 @@ export const Dashboard = async () => {
   const schedules = await CISchedule(data.token.id);
   const ApprovedCases = await approvedCases(data.token.id);
   const PendingCases = await pendingCase(data.token.id);
-  console.log(schedules);
   
   return (
     <>

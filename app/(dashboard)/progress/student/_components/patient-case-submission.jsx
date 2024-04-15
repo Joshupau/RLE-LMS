@@ -208,7 +208,6 @@ export const PatientCaseSubmission = ({userId, schedules, yearLevel}) => {
         }));
     }
 
-    console.log(commonInfo.level);
 };
 
   const handleMaritalStatusChange = (status, index) => {

@@ -42,8 +42,6 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
 
   const onDelete = async (id, uploadLinks) => {
     try {
-
-      console.log(id)
       const response = await fetch(`/api/resource/${id}/delete`, {
         method: 'DELETE',
         headers: {

@@ -78,7 +78,6 @@ import { useToast } from "@/components/ui/use-toast";
       (pagination.pageIndex + 1) * pagination.pageSize
     );
 
-    console.log(data);
   
     return (
       <div className="overflow-x-auto rounded-md border">

@@ -17,7 +17,6 @@ export const pendingCase = async (userId) => {
             },
         })
         
-        console.log(pendingCase);
 
         return pendingCase
 

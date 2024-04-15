@@ -1,6 +1,7 @@
 
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
-import { Status } from "@prisma/client";
+import { AuditAction, Status } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req,res) {
@@ -33,6 +34,12 @@ export async function POST(req,res) {
               link: `/progress/student`,
               expiresAt: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), 
             },
+          });
+
+          await createAuditLog({
+            entityId: approve.id,
+            Action: AuditAction.UPDATE,
+            Title: "Case Disapproved.",
           });
 
 

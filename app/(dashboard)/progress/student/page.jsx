@@ -78,7 +78,7 @@ export const StudentPage = async () => {
                                         Type the information of your Case.
                                     </DialogDescription>
                                     </DialogHeader>
-                                    <PatientCaseSubmission userId={schedules.id} yearLevel={schedules.yearLevel} schedules={schedules.schedules} />
+                                    <PatientCaseSubmission schedules={schedules} />
                                 </DialogContent>
                             </Popover>
                         </Dialog>

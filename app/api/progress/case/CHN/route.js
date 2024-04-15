@@ -1,7 +1,8 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
-import {  UserRole } from "@prisma/client";
+import {  AuditAction, UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 export async function POST(req, res){
     try {
@@ -100,7 +101,12 @@ export async function POST(req, res){
             },
           });
 
-      
+          await createAuditLog({
+            entityId: CommonInfo.id,
+            Action: AuditAction.CREATE,
+            Title: "New CHN Case.",
+          });
+
           return NextResponse.json(responseData, notification);
     } catch (error) {
         console.error("[ORMajorMinor_Case]", error)

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/create-audit-log";
+import { AuditAction } from "@prisma/client";
 
 export async function POST(request){
     try {
@@ -46,7 +47,11 @@ export async function POST(request){
             }
         });
 
-
+        await createAuditLog({
+            entityId: user.id,
+            Action: AuditAction.CREATE,
+            Title: "New user created.",
+          });
     
         return NextResponse.json(user);
     } catch (error) {

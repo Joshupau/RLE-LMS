@@ -1,14 +1,22 @@
 import { UserRole } from "@prisma/client";
 import { db } from "@/lib/db";
+import { getCurrentSchoolYear } from "./get-current-school-year";
 
 export const getResourceGroup = async (userId) => {
     try {
+
+        const currentSchoolYear = await getCurrentSchoolYear();
+
+
         const resources = await db.user.findUnique({
             where: {
                 id: userId,
             },
             select: {
                 resourceGroup: {
+                    where: {
+                        schoolyearId: currentSchoolYear.id,
+                    },
                     select: {
                         name: true,
                         id: true,

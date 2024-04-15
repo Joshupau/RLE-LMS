@@ -1,4 +1,6 @@
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req, res){
@@ -17,6 +19,12 @@ export async function POST(req, res){
                 semester: semester,
             }
         });
+
+        await createAuditLog({
+            entityId: Newschoolyear.id,
+            Action: AuditAction.CREATE,
+            Title: "New School Year.",
+          });
 
 
         return NextResponse.json(Newschoolyear)

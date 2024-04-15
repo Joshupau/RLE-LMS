@@ -84,51 +84,82 @@ export const CreateSchedule = ({
   
     const handleEnterSchedule = async () => {
       try {
-        setIsSubmitting(true);
+          setIsSubmitting(true);
+
+          if (
+              !selectedInstructor ||
+              !selectedHour ||
+              !selectedArea ||
+              !selectedDateRange ||
+              !userId ||
+              !selectedGroup ||
+              !selectedYearLevel ||
+              !selectedStudents ||
+              !week
+          ) {
+              toast({
+                  title: "Incomplete Fields",
+                  description: "Please complete all input fields.",
+                  status: "Destructive"
+              });
+              return;
+          }
+
   
-        const formattedDates = selectedDateRange.map(({ from, to }) => ({
-          from: new Date(from),
-          to: new Date(to),
-        }));
+          const formattedDates = selectedDateRange.map(({ from, to }) => ({
+              from: new Date(from),
+              to: new Date(to),
+          }));
   
-        const DatesofDuty = getDatesInRanges(
-          formattedDates.map((date) => date.from),
-          formattedDates.map((date) => date.to)
-        );
-    
-    
-        const data = {
-          clinicalInstructor: selectedInstructor.id,
-          clinicalHours: selectedHour,
-          area: selectedArea,
-          dateFrom: formattedDates.map((date) => date.from),
-          dateTo: formattedDates.map((date) => date.to),
-          userId,
-          group: selectedGroup,
-          yearLevel: selectedYearLevel,
-          students: selectedStudents,
-          week: week,
-          dates: DatesofDuty,
-        };
-    
-    
-        const response = await fetch('/api/schedule', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-    
-        if (response.ok) {
-          router.push('/schedule');
-        } else {
-          console.error('Failed to create schedule');
-        }
+          const DatesofDuty = getDatesInRanges(
+              formattedDates.map((date) => date.from),
+              formattedDates.map((date) => date.to)
+          );
+  
+          const data = {
+              clinicalInstructor: selectedInstructor.id,
+              clinicalHours: selectedHour,
+              area: selectedArea,
+              dateFrom: formattedDates.map((date) => date.from),
+              dateTo: formattedDates.map((date) => date.to),
+              userId,
+              group: selectedGroup,
+              yearLevel: selectedYearLevel,
+              students: selectedStudents,
+              week,
+              dates: DatesofDuty,
+          };
+  
+          const response = await fetch('/api/schedule', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+          });
+  
+          if (response.ok) {
+              router.push('/schedule');
+          } else {
+              console.error('Failed to create schedule');
+              toast({
+                  title: "Failed",
+                  description: "Failed to create schedule.",
+                  status: "Destructive"
+              });
+          }
       } catch (error) {
-        console.error('Error creating schedule:', error);
-      } 
-    };
+          console.error('Error creating schedule:', error);
+          toast({
+              title: "Error",
+              description: "An error occurred while creating schedule.",
+              status: "Destructive"
+          });
+      } finally {
+          setIsSubmitting(false); 
+      }
+  };
+  
 
     const handleAddArea = async () => {
       try {
@@ -197,7 +228,11 @@ export const CreateSchedule = ({
             </div>
             <div className="flex flex-col w-[20rem]">
                 <Label className="mb-2 text-md" htmlFor="hours">Select Clinical Hour:</Label>
-                <Select value={selectedHour} onValueChange={(e) => setSelectedHour(e)} id="hours">
+                <Select value={selectedHour} 
+                onValueChange={(e) => setSelectedHour(e)} 
+                id="hours"
+                required
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Clinical Hours"/>
                   </SelectTrigger>
@@ -211,7 +246,12 @@ export const CreateSchedule = ({
                 <div className="flex flex-col w-[20rem]">
                   <Label className="mb-2 text-md" htmlFor="area">Select Area:</Label>
                   <div className="flex items-center gap-x-2">
-                    <Select onValueChange={(e) => setSelectedArea(e)} id="area" className="mr-2 focus-visible:ring-transparent">
+                    <Select 
+                    onValueChange={(e) => setSelectedArea(e)}
+                     id="area" 
+                     className="mr-2 focus-visible:ring-transparent"
+                     required
+                     >
                       <SelectTrigger>
                         <SelectValue value={selectedArea} placeholder="Clinical Area"/>
                       </SelectTrigger>
@@ -263,7 +303,11 @@ export const CreateSchedule = ({
                 </div>
                 <div className="flex flex-col w-[20rem]">
                 <Label className="mb-2 text-md" htmlFor="yearLevel">Select Year Level:</Label>
-                <Select id="yearLevel" onValueChange={(e) => handleYearLevelChange(e)}>
+                <Select 
+                id="yearLevel" 
+                onValueChange={(e) => handleYearLevelChange(e)}
+                required
+                >
                     <SelectTrigger>
                         <SelectValue value={selectedYearLevel} placeholder="Year Level"/>
                     </SelectTrigger>
@@ -283,6 +327,7 @@ export const CreateSchedule = ({
                 className="border border-slate-300 rounded-xl p-1" 
                 placeholder="e.g 1 or 1-3" 
                 onChange={handleWeekChange}
+                required
                 />
                 </div>
             </div>

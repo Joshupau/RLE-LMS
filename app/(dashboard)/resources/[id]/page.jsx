@@ -61,16 +61,18 @@ export default async function ResourceIdPage({ params, searchParams }) {
         </div>
 
            <div className="items-center justify-center">
-            <div className="mt-8 my-5 w-full bg-white">
-            <div className="m-4 md:w-[40rem] bg-white border-2 shadow-xl p-2 mx-auto flex items-center">
-              <div className="rounded-full  bg-white overflow-hidden mr-4">
-                 <Ghost className="h-10 w-10" alt="User Icon" />
-            </div>
-                <div className="flex-grow  bg-white">
-              <ExpandableTextarea id={id} />
+               {data?.token.role === 'ClinicalInstructor' && (
+                <div className="mt-8 my-5 w-full bg-white">
+                <div className="m-4 md:w-[40rem] bg-white border-2 shadow-xl p-2 mx-auto flex items-center">
+                  <div className="rounded-full  bg-white overflow-hidden mr-4">
+                    <Ghost className="h-10 w-10" alt="User Icon" />
+                </div>
+                    <div className="flex-grow  bg-white">
+                      <ExpandableTextarea id={id} />
+                    </div>
               </div>
-           </div>
-          </div>
+              </div>
+                )}
             <div className=" w-full my-5">
             <Suspense fallback={<SkeletonCard />}>
               {resourcePost ? (
@@ -92,7 +94,7 @@ export default async function ResourceIdPage({ params, searchParams }) {
                   )) 
                 ):(
                   <>
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center mt-16 justify-center">
                     No POSTS AVAILABLE
                   </div>
                   </>

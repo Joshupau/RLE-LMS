@@ -1,4 +1,6 @@
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req, res) {
@@ -17,7 +19,7 @@ export async function POST(req, res) {
             }
         });
 
-        await db.schoolYear_Semester.update({
+       const schoolYear = await db.schoolYear_Semester.update({
             where: {
                 id: schoolyearId
             },
@@ -25,6 +27,12 @@ export async function POST(req, res) {
                 current: true
             }
         });
+
+        await createAuditLog({
+            entityId: schoolYear.id,
+            Action: AuditAction.UPDATE,
+            Title: "School Year Update.",
+          });
 
         return NextResponse.json({ message: "School year updated successfully" });
     } catch (error) {

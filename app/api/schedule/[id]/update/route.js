@@ -1,5 +1,7 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
+import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -115,8 +117,13 @@ export async function POST(request) {
           week: week,
         },
       }).then(() => db.userScheduling.createMany({ data: userSchedulingData })),
-      // Add other promises here if needed
     ]);
+    
+    await createAuditLog({
+      entityId: schedules.id,
+      Action: AuditAction.UPDATE,
+      Title: "Schedule Update.",
+    })
 
     return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {

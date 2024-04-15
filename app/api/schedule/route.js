@@ -1,6 +1,7 @@
 import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
+import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
-import { PrismaClient } from "@prisma/client";
+import { AuditAction, PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -68,6 +69,7 @@ export async function POST(request) {
         schedule: {
           connect: { id: schedules.id },
         },
+        schoolyearId: schoolyear.id,
       },
     });
 
@@ -109,6 +111,11 @@ export async function POST(request) {
     await db.userScheduling.createMany({
       data: userSchedulingData,
     });
+    await createAuditLog({
+      entityId: schoolyear.id,
+      Action: AuditAction.CREATE,
+      Title: "Schedule Creation.",
+    })
 
     const sanitizedSchedules = {
       id: schedules.id,

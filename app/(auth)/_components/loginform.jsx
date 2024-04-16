@@ -11,6 +11,8 @@ import Image from "next/image"
 import { User2, LockKeyhole } from "lucide-react";
 import LoadingModal from "@/components/ui/loading-modal";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 export const Loginform = () => {
 
     const router = useRouter();
@@ -33,7 +35,7 @@ export const Loginform = () => {
             
 
             if (response?.error) {
-              setError("Input correct credentials");
+              setError("Invalid input. Please input your correct credentials.");
               setIsLoggingIn(false); 
             } else {
               if(data.schoolId === '200792' && data.password ==='123'){
@@ -57,22 +59,27 @@ export const Loginform = () => {
               <LoadingModal />
             ) : (
               <div className="grid place-items-center h-screen justify-center heroImage">
-                <div className="w-96 max-w-md mx-auto p-6 bg-white border rounded-md shadow-sm items-center">
+                <Card className="w-[60rem] h-1/2 grid grid-cols-2 mx-auto p-6 bg-white border rounded-md shadow-sm items-center">
+                 <div>
+
                   <Image
                     src="/logo.png"
-                    width={300}
-                    height={300}
+                    width={600}
+                    height={600}
                     alt="Picture of Logo"
                     className="w-full"
-                  />
-                  <p>Welcome back</p>
-                  <h3 className="text-2xl font-bold">Login to your account</h3>
+                    />
+                  </div>
+                  <div>
+
+                  <h3 className="text-3xl font-bold">Welcome back</h3>
+                  <p className="ml-1 mb-10">Login to your account</p>
                   <form onSubmit={loginUser}>
                     <label htmlFor="ID Number" className="mt-2 ml-4 block text-sm">ID Number</label>
                     <div className="relative">
                       <User2 
                         className="absolute left-3 top-1/2 transform -translate-y-1/2"
-                      />
+                        />
                       <Input
                         value={data.schoolId}
                         onChange={(e) => {
@@ -83,7 +90,7 @@ export const Loginform = () => {
                         placeholder="ID Number"
                         className="focus-visible:ring-transparent text-sm text-black w-full rounded-xl bg-cyan-200 pl-10 pr-3 py-2 "
                         autoComplete="off"
-                      />
+                        />
                     </div>
                     <label htmlFor="Password" className="mt-2 ml-4 block text-sm">Password</label>
                     <div className="relative">
@@ -97,7 +104,7 @@ export const Loginform = () => {
                         placeholder="Password"
                         className="focus-visible:ring-transparent text-sm text-black w-full h-10 rounded-xl bg-cyan-200 pl-10 pr-3 py-2"
                         required
-                      />
+                        />
                     </div>
                     <div className="text-right">
                       <Link href={'/forgotPassword'} className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
@@ -106,12 +113,13 @@ export const Loginform = () => {
                       <Button type="submit" className="w-full px-6 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-900">Login</Button>
                     </div>
                     {error && (
-                      <div className="mt-5 bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md">
+                      <div className="mt-5 flex items-center justify-center bg-red-500 text-white text-sm py-1 px-3 rounded-md">
                         <p>{error}</p>
                       </div>
                     )}
                   </form>
-                </div>
+                    </div>
+                </Card>
               </div>
             )}
           </>

@@ -122,7 +122,6 @@ export const EditSchedule = ({
           !userId ||
           !selectedGroup ||
           !selectedYearLevel ||
-          !selectedStudents ||
           !week
       ) {
           toast({
@@ -132,6 +131,14 @@ export const EditSchedule = ({
           });
           return;
       }
+      if (!selectedStudents.length > 0) {
+        toast({
+            title: "Incomplete Fields",
+            description: "Please select students from the list.",
+            status: "Destructive"
+        });
+        return;
+    }
       
         const formattedDates = selectedDateRange.map(({ from, to }) => ({
           from: new Date(from),

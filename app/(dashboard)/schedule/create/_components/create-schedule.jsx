@@ -78,9 +78,7 @@ export const CreateSchedule = ({
     
       return dates;
     }
-    
 
-  
   
     const handleEnterSchedule = async () => {
       try {
@@ -94,7 +92,6 @@ export const CreateSchedule = ({
               !userId ||
               !selectedGroup ||
               !selectedYearLevel ||
-              !selectedStudents ||
               !week
           ) {
               toast({
@@ -104,6 +101,14 @@ export const CreateSchedule = ({
               });
               return;
           }
+          if (!selectedStudents.length > 0) {
+            toast({
+                title: "Incomplete Fields",
+                description: "Please select students from the list.",
+                status: "Destructive"
+            });
+            return;
+        }
 
   
           const formattedDates = selectedDateRange.map(({ from, to }) => ({

@@ -144,19 +144,11 @@ const removeFile = (fileType, content) => {
         router.reload();
       }
  
-      if (!response.ok) {
-        toast({
-          title: "Uh oh...",
-          description: "Failed to upload resources.",
-          status: "destructive"
-        })
-        throw new Error("Failed to submit data to MongoDB");
-      }
       if(response.ok){
         toast({
           title: "Success",
           description: "Successfully uploaded resources.",
-          status: "destructive"
+          status: "Success"
         })
         router.refresh();
       }     

@@ -10,9 +10,13 @@ import { CISchedule } from "@/actions/get-ci-schedule";
 import { studentSchedule } from "@/actions/get-student-schedule";
 import { Suspense } from "react";
 import { SkeletonCard } from "@/components/skeleton-loader";
+import { redirect } from "next/navigation";
 
 export default async function SchedulePage() {
   const data = await getServerSession(authOptions);
+  if(!data){
+   redirect('/');
+  }
   const userRole = data?.token.role;
 
   let DeanSchedules = await getScheduleWithUsers();

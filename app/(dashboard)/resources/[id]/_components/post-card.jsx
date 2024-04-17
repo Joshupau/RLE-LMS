@@ -119,10 +119,6 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
                 <span>Edit Post</span>
                   </DialogTrigger>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Copy className="mr-2 h-4 w-4" />
-                <span>Copy Link</span>
-              </DropdownMenuItem>
               <DropdownMenuItem
               onClick={()=>onDelete(id, uploadLinks)}
               >

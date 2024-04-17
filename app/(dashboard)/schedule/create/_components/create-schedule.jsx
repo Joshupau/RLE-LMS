@@ -89,7 +89,6 @@ export const CreateSchedule = ({
               !selectedHour ||
               !selectedArea ||
               !selectedDateRange ||
-              !userId ||
               !selectedGroup ||
               !selectedYearLevel ||
               !week
@@ -101,6 +100,14 @@ export const CreateSchedule = ({
               });
               return;
           }
+          if (!selectedDateRange.length > 0) {
+            toast({
+                title: "Incomplete Fields",
+                description: "Please select schedule date.",
+                status: "Destructive"
+            });
+            return;
+        }
           if (!selectedStudents.length > 0) {
             toast({
                 title: "Incomplete Fields",

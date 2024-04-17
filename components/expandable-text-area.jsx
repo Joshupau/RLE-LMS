@@ -140,10 +140,6 @@ const removeFile = (fileType, content) => {
           resourceGroupId,
         }),
       });
-      if (response.status === 504) {
-        router.reload();
-      }
- 
       if(response.ok){
         toast({
           title: "Success",
@@ -151,7 +147,13 @@ const removeFile = (fileType, content) => {
           status: "Success"
         })
         router.refresh();
-      }     
+      } else {
+        toast({
+          title: "Uh oh...",
+          description: "Failed to upload resources.",
+          status: "destructive"
+        })
+      }   
     } catch (error) {
       console.error(error);
       toast({

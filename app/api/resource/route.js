@@ -8,6 +8,7 @@ import { createAuditLog } from "@/lib/create-audit-log";
 
 export async function POST(request) {
   try {
+    request.setTimeout(300000);
     const body = await request.json();
 
     const session = await getServerSession(authOptions);

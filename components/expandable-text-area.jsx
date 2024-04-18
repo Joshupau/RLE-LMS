@@ -127,8 +127,22 @@ const removeFile = (fileType, content) => {
   };
 
   const handleDataSubmission = async (fileUrls, description, resourceGroupId) => {
+    let requestCompleted = false; // Flag to track if the request has completed
+  
     try {
-
+      // Use setTimeout to add a timeout of 50 seconds
+      const timeoutId = setTimeout(() => {
+        if (!requestCompleted) { // Check if request hasn't completed
+          console.log("Request timed out");
+          toast({
+            title: "Uh oh...",
+            description: "Request timed out. Please try again.",
+            status: "error"
+          });
+        }
+      }, 50000); // 50 seconds timeout
+  
+      // Make the POST request
       const response = await fetch("/api/resource", {
         method: "POST",
         headers: {
@@ -140,29 +154,35 @@ const removeFile = (fileType, content) => {
           resourceGroupId,
         }),
       });
-      if(response.ok){
+  
+      requestCompleted = true;
+  
+      clearTimeout(timeoutId);
+  
+      if (response.ok) {
         toast({
           title: "Success",
           description: "Successfully uploaded resources.",
-          status: "Success"
-        })
+          status: "success"
+        });
         router.refresh();
       } else {
         toast({
           title: "Uh oh...",
           description: "Failed to upload resources.",
-          status: "destructive"
-        })
-      }   
+          status: "error"
+        });
+      }
     } catch (error) {
       console.error(error);
       toast({
         title: "Uh oh...",
         description: "Failed to upload resources. Try again later.",
-        status: "destructive"
-      })
+        status: "error"
+      });
     }
   };
+  
   
   
 

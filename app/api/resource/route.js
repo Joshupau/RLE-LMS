@@ -1,8 +1,7 @@
-import { AuditAction, UserRole } from "@prisma/client";
+import { AuditAction } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { db } from "@/lib/db";
 import { createAuditLog } from "@/lib/create-audit-log";
 
@@ -18,17 +17,7 @@ export async function POST(request) {
     }
     const userId = session.token.id;
 
-
-    const { description, resourceGroupId, fileUrls } = body;
-
-
-    const schedulingId = await db.resourceGroup.findUnique({
-      where: { id: resourceGroupId },
-      select: { scheduleId: true },
-    });
-
-    const schoolyear = await getCurrentSchoolYear();
-
+    const { description, resourceGroupId, fileUrls, userIds, schoolyear, schedulingId } = body;
 
     const newResource = await db.resource.create({
       data: {
@@ -62,20 +51,7 @@ export async function POST(request) {
       Title: "Resource Post.",
     })
 
-    const userIds = await db.resourceGroup.findUnique({
-      where: { id: resourceGroupId },
-      select: { 
-        users: {
-          where: {
-            role: { in: [UserRole.Student, UserRole.ClinicalInstructor] }
-          },
-          select: {
-            id: true,
-          }
-        }
-      }
-    });
-    
+        
 
     const author = await db.user.findUnique({
       where: { id: userId },
@@ -88,11 +64,6 @@ export async function POST(request) {
     for (const userRecord of userIds.users){
       try {
         const studentId = userRecord.id;
-
-        if (studentId === userId) {
-          console.warn(`Skipping author ${studentId}`);
-          continue; 
-        }
 
         await db.notification.create({
           data: {

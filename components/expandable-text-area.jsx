@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useToast } from './ui/use-toast';
 
-const ExpandableTextarea = ({ id }) => {
+const ExpandableTextarea = ({ id, userIds, schedulingId, schoolyear }) => {
   const { edgestore } = useEdgeStore();
   const { toast } = useToast();
   
@@ -126,7 +126,7 @@ const removeFile = (fileType, content) => {
     }
   };
 
-  const handleDataSubmission = async (fileUrls, description, resourceGroupId) => {
+  const handleDataSubmission = async (fileUrls, description, resourceGroupId, userIds, schoolyear, schedulingId) => {
     let requestCompleted = false; // Flag to track if the request has completed
   
     try {
@@ -152,6 +152,9 @@ const removeFile = (fileType, content) => {
           fileUrls,
           description,
           resourceGroupId,
+          userIds,
+          schoolyear,
+          schedulingId
         }),
       });
   
@@ -201,7 +204,7 @@ const removeFile = (fileType, content) => {
     try {
       const fileUrls = await Promise.all(uploadPromises);
     
-      await handleDataSubmission(fileUrls, description, resourceGroupId);
+      await handleDataSubmission(fileUrls, description, resourceGroupId, userIds, schoolyear, schedulingId);
     } catch (error) {
       console.error("Error during uploads or data submission:", error);
     } finally {

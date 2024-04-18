@@ -13,6 +13,9 @@ import { getResourceGroupIds } from "@/actions/get-resource-group-ids";
 import { SkeletonCard } from "@/components/skeleton-loader";
 import { Card, CardContent } from "@/components/ui/card";
 import { getScheduleInResource } from "@/actions/get-schedule-in-resource";
+import { UserRole } from "@prisma/client";
+import { db } from "@/lib/db";
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 
 export default async function ResourceIdPage({ params, searchParams }) {
 
@@ -21,6 +24,29 @@ export default async function ResourceIdPage({ params, searchParams }) {
   const data = await getServerSession(authOptions);
   const resourcePost = await getResourcePosts(id);
   const scheduledata = await getScheduleInResource(id);
+
+  const userIds = await db.resourceGroup.findUnique({
+    where: { id: id },
+    select: { 
+      users: {
+        where: {
+          role: { in: [UserRole.Student] }
+        },
+        select: {
+          id: true,
+        }
+      }
+    }
+  });
+
+  const schedulingId = await db.resourceGroup.findUnique({
+    where: { id: id },
+    select: { scheduleId: true },
+  });
+
+  const schoolyear = await getCurrentSchoolYear();
+
+
 
   function getShift(clinicalHours) {
     switch (Number(clinicalHours)) {
@@ -68,7 +94,7 @@ export default async function ResourceIdPage({ params, searchParams }) {
                     <Ghost className="h-10 w-10" alt="User Icon" />
                 </div>
                     <div className="flex-grow  bg-white">
-                      <ExpandableTextarea id={id} />
+                      <ExpandableTextarea schedulingId={schedulingId} schoolyear={schoolyear} userIds={userIds} id={id} />
                     </div>
               </div>
               </div>

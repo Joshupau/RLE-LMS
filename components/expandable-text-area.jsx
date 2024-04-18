@@ -178,11 +178,6 @@ const removeFile = (fileType, content) => {
       }
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Uh oh...",
-        description: "Failed to upload resources. Try again later.",
-        status: "error"
-      });
     }
   };
   

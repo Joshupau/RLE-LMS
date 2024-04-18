@@ -1,7 +1,10 @@
 import Image from "next/image";
+import Link from 'next/link'
 
 export const Logo = () => {
     return ( 
+        <>
+        <Link href='/dashboard'>
         <Image
         height={100}
         width={100}
@@ -10,6 +13,8 @@ export const Logo = () => {
         priority={true} 
         className="w-auto h-auto"
         />
+        </Link>
+        </>
      );
 }
  

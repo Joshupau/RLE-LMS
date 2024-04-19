@@ -69,7 +69,9 @@ export async function POST(request) {
         schedule: {
           connect: { id: schedules.id },
         },
-        schoolyearId: schoolyear.id,
+        schoolyear: {
+          connect: { id: schoolyear.id}
+        },
       },
     });
 

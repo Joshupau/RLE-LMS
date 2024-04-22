@@ -4,11 +4,10 @@ import { db } from '@/lib/db';
 import { createAuditLog } from '@/lib/create-audit-log';
 import { AuditAction } from '@prisma/client';
 
-export async function DELETE(req, res) {
+export async function DELETE(req,{ params}) {
   try {
-    const url = new URL(req.url);
-    const searchparams = new URLSearchParams(url.searchParams);
-    const id = searchparams.get('id');
+
+    const { id } = params
 
     const deletedSchedule = await db.scheduling.delete({
       where: { id },

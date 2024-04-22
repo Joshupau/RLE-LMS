@@ -152,7 +152,7 @@ const fuzzyFilterFn = (rows, filterValue) => {
               id={schedule.id}
               dateFrom={schedule.dateFrom}
               dateTo={schedule.dateTo}
-              user={schedule.user}
+              user={schedule?.user}
               area={schedule.area}
               clinicalArea={schedule.clinicalArea}
               clinicalHours={schedule.clinicalHours}

@@ -51,6 +51,7 @@ export const EditSchedule = ({
     id,
     dateFrom,
     dateTo,
+    schoolyear,
 }) => {
 
   const { toast } = useToast();
@@ -71,7 +72,6 @@ export const EditSchedule = ({
   const [createArea, SetCreateArea] = useState("");
 
   const previousUsers = user.map(user => user.id);
-
 
   const findCI =  user.find(user => user.role === 'ClinicalInstructor');
 
@@ -177,7 +177,8 @@ export const EditSchedule = ({
           week: selectedWeek,
           scheduleId,
           dates: DatesofDuty,
-          previousUsers
+          previousUsers,
+          schoolyear,
         };
         
 

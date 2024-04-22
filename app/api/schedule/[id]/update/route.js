@@ -1,8 +1,28 @@
-import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 import { createAuditLog } from "@/lib/create-audit-log";
 import { db } from "@/lib/db";
 import { AuditAction } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+
+async function disconnectUsersFromScheduleAndResourceGroup(scheduleId, userIds) {
+  for (const userId of userIds) {
+    await Promise.all([
+      db.scheduling.update({
+        where: { id: scheduleId },
+        data: {
+          user: { disconnect: { id: userId } }
+        }
+      }),
+      db.resourceGroup.update({
+        where: {
+          scheduleId: scheduleId,
+        },
+        data: { users: { disconnect: { id: userId }}},
+      })
+    ]);
+  }
+}
+
 
 export async function POST(request) {
   try {
@@ -20,7 +40,8 @@ export async function POST(request) {
       students,
       week,
       dates,
-      previousUsers
+      previousUsers,
+      schoolyear
     } = body;
 
     if (
@@ -45,22 +66,8 @@ export async function POST(request) {
 
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
-    const schoolyear = await getCurrentSchoolYear();
 
-
-    const disconnectSchedule = await db.scheduling.update({
-      where: { id: scheduleId },
-      data: {
-        user: { disconnect: { id: previousUsers} }
-      }
-    });
-
-    const disconnectResource = await db.resourceGroup.update({
-      where: {
-        scheduleId: scheduleId,
-      },
-      data: { users: { disconnect: { id: previousUsers }} },
-    });
+    await disconnectUsersFromScheduleAndResourceGroup(scheduleId, previousUsers);
 
     const schedules = await db.scheduling.update({
       where: { id: scheduleId },
@@ -72,71 +79,85 @@ export async function POST(request) {
         yearLevel: yearLevel,
         areaId: area,
         week: week,
-        userIds: userIdsArray,
         schoolyearId: schoolyear.id,
       },
       include: {
         user: true,
       },
     });
-
+    
     const resources = await db.resourceGroup.update({
       where: {
         scheduleId: scheduleId,
       },
       data: {
         name: schedules.week,
-        userIds: userIdsArray,
       },
     });
-
-    const notificationPromises = students.map((userId) =>
-      db.notification.create({
-        data: {
-          title: "Schedule Notification",
-          message: `RLE schedule for Week/s ${week}.`,
-          recipientId: userId,
-          type: "general",
-          link: `/schedule`,
-          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-        },
-      })
-    );
-
-    const cinotificationpromise = db.notification.create({
-      data: {
-        title: "Schedule Notification",
-        message: `RLE schedule for Week/s ${week}.`,
-        recipientId: clinicalInstructor.id,
-        type: "general",
-        link: `/schedule/${schedules.id}`,
-        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      },
-    });
-
-    const userSchedulingData = students.flatMap((studentId) =>
-      dates.map((date) => ({
-        userId: studentId,
-        schedulingId: schedules.id,
-        date: date,
-        week: week,
-      }))
-    );
-
-    await Promise.all([
-      ...notificationPromises,
-      resources,
-      disconnectResource,
-      disconnectSchedule,
-      cinotificationpromise,
-      db.userScheduling.deleteMany({
-        where: {
-          schedulingId: schedules.id,
-          week: week,
-        },
-      }).then(() => db.userScheduling.createMany({ data: userSchedulingData })),
-    ]);
     
+    for (const userId of userIdsArray) {
+      await Promise.all([
+        db.scheduling.update({
+          where: { id: scheduleId },
+          data: {
+            user: { connect: { id: userId } },
+          },
+        }),
+        db.resourceGroup.update({
+          where: { id: resources.id },
+          data: {
+            users: { connect: { id: userId } },
+          },
+        }),
+      ]);
+    }
+    
+      const createNotifications = async () => {
+        const studentNotifications = students.map((userId) =>
+          db.notification.create({
+            data: {
+              title: "Schedule Notification",
+              message: `RLE schedule for Week/s ${week}.`,
+              recipientId: userId,
+              type: "general",
+              link: `/schedule`,
+            },
+          })
+        );
+
+        const clinicalInstructorNotification = db.notification.create({
+          data: {
+            title: "Schedule Notification",
+            message: `RLE schedule for Week/s ${week}.`,
+            recipientId: clinicalInstructor.id,
+            type: "general",
+            link: `/schedule/${schedules.id}`,
+          },
+        });
+
+        return Promise.all([...studentNotifications, clinicalInstructorNotification]);
+      };
+
+      const userSchedulingData = students.flatMap((studentId) =>
+        dates.map((date) => ({
+          userId: studentId,
+          schedulingId: schedules.id,
+          date: date,
+          week: week,
+        }))
+      );
+
+      await Promise.all([
+        createNotifications(),
+        resources,
+        db.userScheduling.deleteMany({
+          where: {
+            schedulingId: schedules.id,
+            week: week,
+          },
+        }).then(() => db.userScheduling.createMany({ data: userSchedulingData })),
+      ]);
+
     await createAuditLog({
       entityId: schedules.id,
       Action: AuditAction.UPDATE,

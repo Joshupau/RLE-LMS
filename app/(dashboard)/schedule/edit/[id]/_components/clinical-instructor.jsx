@@ -18,7 +18,7 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalIn
 
   useEffect(() => {
     setClinicalInstructors(clinicalInstructor)
-    setSelectedInstructorId(value.id);
+    setSelectedInstructorId(value?.id);
   }, [value]); 
 
   

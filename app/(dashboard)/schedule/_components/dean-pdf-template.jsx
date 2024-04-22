@@ -52,7 +52,7 @@ export const DeanPdfTemplate = ({data}) => {
             </TableHeader>
             <TableBody>
                 {data.map((schedule) => {
-                    const clinicalInstructor = schedule.user.find(user => user.role === 'ClinicalInstructor');
+                    const clinicalInstructor = schedule.user?.find(user => user.role === 'ClinicalInstructor');
                     return (
                         <TableRow key={schedule.id}>
                             <TableCell className="py-2 px-4 text-center">
@@ -60,7 +60,7 @@ export const DeanPdfTemplate = ({data}) => {
                                     <span key={index}>{dateRange}<br /></span>
                                 ))}
                             </TableCell>
-                            <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor.firstName} ${clinicalInstructor.lastName}`}</TableCell>
+                            <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor?.firstName} ${clinicalInstructor?.lastName}`}</TableCell>
                             <TableCell className="py-2 px-4 text-center">{schedule?.clinicalArea?.name}</TableCell>
                             <TableCell className="py-2 px-4 text-center">{schedule.groupId}</TableCell>
                             <TableCell className="py-2 px-4 text-center">{schedule.yearLevel}</TableCell>

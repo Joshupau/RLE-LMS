@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { TableCell, TableRow } from "@/components/ui/table"; // Import TableCell and TableRow
+import { TableCell, TableRow } from "@/components/ui/table"; 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Pencil, Trash2, ScanSearch, MoreVertical } from "lucide-react";
@@ -97,7 +96,7 @@ const ScheduleItem = ({ id, dateFrom, dateTo, user, area,clinicalArea, clinicalH
           <span key={index}>{dateRange}<br /></span>
         ))}
       </TableCell>
-      <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor.firstName} ${clinicalInstructor.lastName}`}</TableCell>
+      <TableCell className="py-2 px-4 text-center">{`${clinicalInstructor?.firstName} ${clinicalInstructor?.lastName}`}</TableCell>
       <TableCell className="py-2 px-4 text-center">{area}{clinicalArea?.name}</TableCell>
       <TableCell className="py-2 px-4 text-center">{groupId}</TableCell>
       <TableCell className="py-2 px-4 text-center">{yearLevel}</TableCell>

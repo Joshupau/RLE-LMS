@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 
 export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, user, createdAt, updatedAt }) => {
@@ -105,40 +106,56 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
       </p>
         </div>   
         {author.id === user &&(
-
+          
+        <AlertDialog>
           <Dialog open={open} onOpenChange={setOpen}>
-          <DropdownMenu>
-          <DropdownMenuTrigger>
-            <MoreVertical className="hover:opacity-70 rounded-full w-10 p-2 h-10  hover:bg-slate-200"/>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                  <DialogTrigger className="flex w-full justify-start">
-                <Pencil className="mr-2 h-4 w-4" />
-                <span>Edit Post</span>
-                  </DialogTrigger>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-              onClick={()=>onDelete(id, uploadLinks)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                <span >Delete Post</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DialogContent className="overflow-scroll">
-          <DialogHeader>
-             <DialogTitle>Edit Post</DialogTitle>
-                <DialogDescription>
-                  Make changes to your post here. Click save when you're done.
-                </DialogDescription>
-           </DialogHeader>
-                <EditPost onClose={handleCloseDialog} resourceGroupID={resourceGroupId} uploadLinks={uploadLinks} descriptions={content} id={id} userId={user}/>              
-            </DialogContent>
-      </Dialog>
+            <DropdownMenu>
+            <DropdownMenuTrigger>
+              <MoreVertical className="hover:opacity-70 rounded-full w-10 p-2 h-10  hover:bg-slate-200"/>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                    <DialogTrigger className="flex w-full justify-start">
+                  <Pencil className="mr-2 h-4 w-4" />
+                  <span>Edit Post</span>
+                    </DialogTrigger>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>
+                <AlertDialogTrigger className="w-full flex">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  <span >Delete Post</span>
+                </AlertDialogTrigger>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent className="overflow-scroll">
+            <DialogHeader>
+              <DialogTitle>Edit Post</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your post here. Click save when you're done.
+                  </DialogDescription>
+            </DialogHeader>
+                  <EditPost onClose={handleCloseDialog} resourceGroupID={resourceGroupId} uploadLinks={uploadLinks} descriptions={content} id={id} userId={user}/>              
+              </DialogContent>
+        </Dialog>
+        <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the resource post
+                  and remove the resource data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={()=>onDelete(id, uploadLinks)}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
         
+          </AlertDialog>
               )}
               
       </div>

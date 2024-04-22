@@ -29,12 +29,22 @@ export const AddUser = () => {
 
     const handleAddUser = async () => {
         try {
-            if(userInfo.password.length > 8){
+
+            if(!userInfo.firstName || !userInfo.lastName || !userInfo.schoolId || !userInfo.email || !userInfo.role || !userInfo.age){
+                toast({
+                    title: "Uh oh...",
+                    description: "Please fill in all fields.",
+                    status: "Destructive"
+                })
+                return;
+            }
+            if(userInfo.password.length < 8){
                 toast({
                     title: "Uh oh...",
                     description: "Password length should be 8 characters.",
                     status: "Destructive"
                 })
+                return;
             }
             const response = await fetch('/api/register', {
                 method: "POST",
@@ -97,7 +107,7 @@ export const AddUser = () => {
                             />
                         </div>
                         <div>
-                            <Label>Middle Name</Label>
+                            <Label>Middle Name(Optional)</Label>
                             <Input
                             onChange={(e)=> setUserInfo({...userInfo, middleName: e.target.value})}
                             value={userInfo.middleName}                            

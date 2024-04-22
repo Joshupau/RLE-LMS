@@ -61,6 +61,20 @@ const StudentDataTable = ({ data, date }) => {
   const handleUpdateAttendance = async () =>{
    try {
 
+    const isEmptyTime = !studentData.some(student => student.timeIn.trim() || student.timeOut.trim());
+
+
+    if (isEmptyTime) {
+
+      toast({
+        title: "Empty Fields",
+        description: "Time in or time out inputs are empty.",
+        status: "warning",
+        isClosable: true
+      });
+      return; 
+    }
+
      const response = await fetch('/api/attendance', {
       method: 'POST',
       headers: {

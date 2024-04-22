@@ -6,6 +6,7 @@ import { EditSchedule } from "./_components/edit-schedule";
 import { getStudent } from "@/actions/get-student";
 import { getClinicalInstructors } from "@/actions/get-clinicalinstructor";
 import { getClinicalAreas } from "@/actions/get-clinical-areas";
+import { getCurrentSchoolYear } from "@/actions/get-current-school-year";
 
 export default async function EditSchedulePage({ params }){
     const session = await getServerSession(authOptions);
@@ -16,11 +17,12 @@ export default async function EditSchedulePage({ params }){
     const students = await getStudent();
     const clinicalInstructor = await getClinicalInstructors();
     const areas = await getClinicalAreas();
+    const schoolyear = await getCurrentSchoolYear();
 
     
     return (
   <>
-    <EditSchedule areas={areas} clinicalInstructor={clinicalInstructor} userId={session?.token.id} {...schedule} student={students}/>
+    <EditSchedule areas={areas} schoolyear={schoolyear} clinicalInstructor={clinicalInstructor} userId={session?.token.id} {...schedule} student={students}/>
   </>
   
     )

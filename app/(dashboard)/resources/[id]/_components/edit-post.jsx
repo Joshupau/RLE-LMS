@@ -150,15 +150,6 @@ const removeFile = (fileType, content) => {
         }),
       });
  
-      if (!response.ok) {
-        toast({
-          title: "Uh oh...",
-          description: "Failed to edit resource post.",
-          status: "destructive"
-        });
-        throw new Error("Failed to submit data to MongoDB");
-        
-      }
       if (response.ok) {
         if(urlToDelete){
           const deleteURL = await urlToDelete.map((links)=>{

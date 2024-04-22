@@ -152,14 +152,7 @@ export const CreateSchedule = ({
   
           if (response.ok) {
               router.push('/schedule');
-          } else {
-              console.error('Failed to create schedule');
-              toast({
-                  title: "Failed",
-                  description: "Failed to create schedule.",
-                  status: "Destructive"
-              });
-          }
+          } 
       } catch (error) {
           console.error('Error creating schedule:', error);
           toast({
@@ -169,6 +162,8 @@ export const CreateSchedule = ({
           });
       } finally {
           setIsSubmitting(false); 
+          router.push('/schedule');
+
       }
   };
   

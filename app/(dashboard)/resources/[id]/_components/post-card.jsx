@@ -50,10 +50,6 @@ export const PostCard = ({ resourceGroupId, uploadLinks, author, content, id, us
         },
         body: JSON.stringify({ id }),
       });
-      if(!response.ok){
-        router.refresh();
-        throw new Error('Failed to delete resource');
-      }
       if(response.ok){
         if(uploadLinks){
           await uploadLinks.map((links) =>{

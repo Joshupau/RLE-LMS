@@ -130,9 +130,8 @@ const removeFile = (fileType, content) => {
     let requestCompleted = false; // Flag to track if the request has completed
   
     try {
-      // Use setTimeout to add a timeout of 50 seconds
       const timeoutId = setTimeout(() => {
-        if (!requestCompleted) { // Check if request hasn't completed
+        if (!requestCompleted) { 
           console.log("Request timed out");
           toast({
             title: "Uh oh...",
@@ -140,9 +139,8 @@ const removeFile = (fileType, content) => {
             status: "error"
           });
         }
-      }, 50000); // 50 seconds timeout
+      }, 50000); 
   
-      // Make the POST request
       const response = await fetch("/api/resource", {
         method: "POST",
         headers: {
@@ -168,14 +166,8 @@ const removeFile = (fileType, content) => {
           description: "Successfully uploaded resources.",
           status: "success"
         });
-        router.refresh();
-      } else {
-        toast({
-          title: "Uh oh...",
-          description: "Failed to upload resources.",
-          status: "error"
-        });
       }
+      router.refresh();
     } catch (error) {
       console.error(error);
     }

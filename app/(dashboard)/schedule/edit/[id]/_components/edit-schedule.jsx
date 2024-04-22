@@ -197,13 +197,7 @@ export const EditSchedule = ({
             status: "success"
           })
           router.push('/schedule');
-        } else {
-          toast({
-            title: "Uh ohh...",
-            description: "Failed to update the schedule.",
-            status: "error"
-          })        
-        }
+        } 
       } catch (error) {
         console.error('Error updating schedule:', error);
         toast({
@@ -213,6 +207,7 @@ export const EditSchedule = ({
         }) 
         } finally {
         setIsSubmitting(false);
+        router.push('/schedule');
       }
     };
 

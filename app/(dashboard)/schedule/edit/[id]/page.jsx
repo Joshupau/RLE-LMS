@@ -17,9 +17,10 @@ export default async function EditSchedulePage({ params }){
     const clinicalInstructor = await getClinicalInstructors();
     const areas = await getClinicalAreas();
 
+    
     return (
   <>
-    <EditSchedule areas={areas} clinicalInstructor={clinicalInstructor} userId={session?.token.id} schedule={schedule} student={students}/>
+    <EditSchedule areas={areas} clinicalInstructor={clinicalInstructor} userId={session?.token.id} {...schedule} student={students}/>
   </>
   
     )

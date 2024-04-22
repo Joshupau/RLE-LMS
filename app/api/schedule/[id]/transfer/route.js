@@ -8,6 +8,8 @@ export async function POST(request) {
     const body = await request.json();
     const { userId, selectId, oldId } = body;
 
+    console.log(body);
+    
     if (selectId === oldId) {
       return NextResponse.json({ error: "Can't be transferred to the same schedule" }, { status: 400 });
     }

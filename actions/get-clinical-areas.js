@@ -2,7 +2,9 @@
 import { db } from "@/lib/db"
 export const getClinicalAreas = async () => {
     try {
-        const areas = await db.area.findMany({});
+        const areas = await db.area.findMany({
+            orderBy: { name: "asc" }
+        });
 
         return areas
     } catch (error) {

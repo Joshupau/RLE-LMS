@@ -20,7 +20,7 @@ export default async function ScheduleIdPage ({ params }) {
 
     const session = await getServerSession(authOptions);
     const selectSchedule = await getScheduleWithUsers();
-
+  
     const schedules  = await getScheduleId(scheduleId);
     if(session.token.role === 'Student'){
       return <p>Not allowed on this page!</p>;

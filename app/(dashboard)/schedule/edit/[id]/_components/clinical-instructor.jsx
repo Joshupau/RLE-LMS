@@ -18,13 +18,20 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalIn
 
   useEffect(() => {
     setClinicalInstructors(clinicalInstructor)
-    setSelectedInstructorId(value[0]);
+    setSelectedInstructorId(value.id);
   }, [value]); 
+
   
-  const selectedInstructor = useMemo(
-    () => clinicalInstructors.find((instructor) => instructor.id === selectedInstructorId),
-    [clinicalInstructors, selectedInstructorId]
-  );
+const selectedInstructor = useMemo(
+  () => {
+    if (selectedInstructorId !== undefined) {
+      return clinicalInstructors.find((instructor) => instructor.id === selectedInstructorId);
+    }
+    return null; // Return null if selectedInstructorId is undefined
+  },
+  [clinicalInstructors, selectedInstructorId]
+);
+
 
   
   useEffect(() => {
@@ -37,7 +44,7 @@ export const ClinicalInstructorSelect = ({ onSelectInstructor, value, clinicalIn
     return <p>Loading...</p>;
   }
 
- 
+
   return (
     <>
       <Label className="mb-2 text-md" htmlFor="instructor">Select Clinical Instructor:</Label>

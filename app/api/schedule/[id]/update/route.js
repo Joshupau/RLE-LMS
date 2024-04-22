@@ -20,6 +20,7 @@ export async function POST(request) {
       students,
       week,
       dates,
+      previousUsers
     } = body;
 
     if (
@@ -45,6 +46,21 @@ export async function POST(request) {
     const dateFromArray = dateFrom.map((date) => new Date(date));
     const dateToArray = dateTo.map((date) => new Date(date));
     const schoolyear = await getCurrentSchoolYear();
+
+
+    const disconnectSchedule = await db.scheduling.update({
+      where: { id: scheduleId },
+      data: {
+        user: { disconnect: { id: previousUsers} }
+      }
+    });
+
+    const disconnectResource = await db.resourceGroup.update({
+      where: {
+        scheduleId: scheduleId,
+      },
+      data: { users: { disconnect: { id: previousUsers }} },
+    });
 
     const schedules = await db.scheduling.update({
       where: { id: scheduleId },
@@ -110,6 +126,8 @@ export async function POST(request) {
     await Promise.all([
       ...notificationPromises,
       resources,
+      disconnectResource,
+      disconnectSchedule,
       cinotificationpromise,
       db.userScheduling.deleteMany({
         where: {

@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { getCurrentSchoolYear } from "./get-current-school-year";
+import { UserRole } from "@prisma/client";
 
 export const getScheduleWithUsers = async () => {
   try {
@@ -20,7 +21,8 @@ export const getScheduleWithUsers = async () => {
           }
         },
         clinicalArea: true,
-      }
+      },
+      orderBy: [{ yearLevel: "asc"}, {groupId: "asc"}]
     });
     
 

@@ -39,10 +39,18 @@ const yearLevels = [
 
 export const EditSchedule = ({
     userId,
-    schedule,
     student,
     clinicalInstructor,
     areas,
+    user,
+    groupId,
+    yearLevel,
+    clinicalArea,
+    clinicalHours,
+    week,
+    id,
+    dateFrom,
+    dateTo,
 }) => {
 
   const { toast } = useToast();
@@ -56,38 +64,44 @@ export const EditSchedule = ({
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedInstructor, setSelectedInstructor] = useState("");
   const [selectedArea, setSelectedArea] = useState();
-  const [week, setSelectedWeek] = useState("");
+  const [selectedWeek, setSelectedWeek] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sanitizedDates, setSanitizedDates] = useState([]);
   const [scheduleId, setScheduleId] = useState("");
   const [createArea, SetCreateArea] = useState("");
 
+  const previousUsers = user.map(user => user.id);
+
+
+  const findCI =  user.find(user => user.role === 'ClinicalInstructor');
+
+  
   const handleYearLevelChange = (event) => setSelectedYearLevel(Number(event));
   const handleWeekChange = (event) => setSelectedWeek(event.target.value);
   
   useEffect(() => {
-    if (!schedule) return;
-
-    setSelectedInstructor(schedule.user.filter(user => user.role === 'ClinicalInstructor').map(user => user.id));
-    setSelectedStudents(schedule.user.filter(user => user.role === 'Student').map(user => user.id));
-    setSelectedGroup(schedule.groupId);
-    setSelectedYearLevel(schedule.yearLevel);
-    setSelectedArea(schedule.clinicalArea.id);
-    setSelectedClinicalHours(schedule.clinicalHours);
-    setSelectedWeek(schedule.week);
-    setScheduleId(schedule.id);
+    setSelectedInstructor(findCI);
+    setSelectedStudents(user.filter(user => user.role === 'Student').map(user => user.id));
+    setSelectedGroup(groupId);
+    setSelectedYearLevel(yearLevel);
+    setSelectedArea(clinicalArea.id);
+    setSelectedClinicalHours(clinicalHours);
+    setSelectedWeek(week);
+    setScheduleId(id);
     setStudents(student);
-    handleSanitizeDate(schedule);
-  }, [schedule]);
-  const handleSanitizeDate = (schedule) => {
-    if (!schedule || !Array.isArray(schedule.dateFrom) || schedule.dateFrom.length === 0 ||
-    !Array.isArray(schedule.dateTo) || schedule.dateTo.length === 0) {
+    handleSanitizeDate(dateFrom, dateTo);
+  }, []);
+
+
+  const handleSanitizeDate = (dateFrom, dateTo) => {
+    if (!Array.isArray(dateFrom) || dateFrom.length === 0 ||
+    !Array.isArray(dateTo) || dateTo.length === 0) {
       return;
     }
     
-    const sanitizedDates = schedule.dateFrom.map((fromStr, index) => {
+    const sanitizedDates = dateFrom.map((fromStr, index) => {
       const fromDate = new Date(Date.parse(fromStr));
-      const toDate = new Date(Date.parse(schedule.dateTo[index]));
+      const toDate = new Date(Date.parse(dateTo[index]));
 
       return { from: fromDate, to: toDate };
     });
@@ -116,13 +130,13 @@ export const EditSchedule = ({
         setIsSubmitting(true);
         if (
           !selectedInstructor ||
-          !selectedHour ||
+          !selectedClinicalHours ||
           !selectedArea ||
           !selectedDateRange ||
           !userId ||
           !selectedGroup ||
           !selectedYearLevel ||
-          !week
+          !selectedWeek
       ) {
           toast({
               title: "Incomplete Fields",
@@ -160,12 +174,13 @@ export const EditSchedule = ({
           group: selectedGroup,
           yearLevel: selectedYearLevel,
           students: selectedStudents,
-          week: week,
+          week: selectedWeek,
           scheduleId,
           dates: DatesofDuty,
+          previousUsers
         };
-    
-    
+        
+
         const response = await fetch(`/api/schedule/${scheduleId}/update`, {
           method: 'POST',
           headers: {
@@ -357,7 +372,7 @@ export const EditSchedule = ({
                         className="border border-slate-300 rounded-xl p-1" 
                         placeholder="e.g 1 or 1-3" 
                         onChange={handleWeekChange}
-                        value={week}
+                        value={selectedWeek}
                         />
                         </div>
                 </div>

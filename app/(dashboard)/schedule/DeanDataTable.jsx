@@ -10,7 +10,7 @@ import {
   } from "@/components/ui/table";
   import { Button } from "@/components/ui/button";
   import { useReactTable, getPaginationRowModel, getCoreRowModel } from "@tanstack/react-table";
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
 
   import ScheduleItem from "./_components/schedule-item";
 
@@ -19,6 +19,7 @@ import {
 
 
   import generatePDF, { Resolution, Margin } from "react-to-pdf";
+import { Input } from "@/components/ui/input";
   const options = {
     filename: "schedule.pdf",
     method: "save",
@@ -43,15 +44,50 @@ import {
       },
     },
   };
+
+  
+const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300 }) => {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onChange(value);
+    }, debounceTime);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, onChange, debounceTime]);
+
+  return <Input value={value} onChange={e => setValue(e.target.value)} placeholder="Search..." />;
+};
+
+const fuzzyFilterFn = (rows, filterValue) => {
+  return rows.filter(row => {
+    const rowValues = Object.values(row).map(value =>
+      typeof value === 'string' || typeof value === 'number' ? value.toString().toLowerCase() : ''
+    );
+    return rowValues.some(value =>
+      value.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  });
+};
+
   
   const DeanDataTable = ({ data }) => {
 
-
+    const [globalFilter, setGlobalFilter] = useState('');
     const [pagination, setPagination] = useState({
       pageIndex: 0,
       pageSize: 10,
     });
-
+    
+    useEffect(() => {
+      if (globalFilter === null) {
+        setGlobalFilter('');
+      }
+    }, [globalFilter]);
+    
     const table = useReactTable({
       data,
       getCoreRowModel: getCoreRowModel(),
@@ -59,13 +95,21 @@ import {
       onPaginationChange: setPagination,
       state: {
         pagination,
+        globalFilter,
       },
+      globalFilterFn: fuzzyFilterFn,
     });
-  
-    const paginatedData = data.slice(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize
-    );
+    
+    
+        const paginatedFilteredData = data
+    
+        .filter(row => { 
+          return fuzzyFilterFn([row], globalFilter).length > 0;
+        })
+        .slice(
+          pagination.pageIndex * pagination.pageSize,
+          (pagination.pageIndex + 1) * pagination.pageSize
+        );
 
     const openPDF = () => {
       generatePDF(() => document.getElementById("content-id"), options);
@@ -87,6 +131,7 @@ import {
               }} id="content-id">
                     <DeanPdfTemplate data={data}/>
                 </div>
+          
       <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
@@ -101,7 +146,7 @@ import {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((schedule) => (
+            {paginatedFilteredData.map((schedule) => (
               <ScheduleItem
               key={schedule.id}
               id={schedule.id}

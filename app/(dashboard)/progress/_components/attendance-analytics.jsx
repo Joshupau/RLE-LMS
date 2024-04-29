@@ -37,9 +37,9 @@ export const AttendanceAnalytics = ({ data }) => {
                 margin={{ top: 10, right: 10, bottom: 60, left: 40 }}
                 xScale={{ type: "point" }}
                 yScale={{ type: "linear", min: 0, max: "auto" }}
-                axisBottom={{ tickSize: 0, tickPadding: 16 }}
-                axisLeft={{ tickSize: 0, tickValues: 5, tickPadding: 16 }}
-                colors={["#2563eb", "#e11d48", "#6fcf97"]} // Add a color for the TotalSchedules line
+                axisBottom={{ tickSize: 0, tickPadding: 16, legend: "Months"}}
+                axisLeft={{ tickSize: 0, tickValues: 5, tickPadding: 16, legend: "Students Scheduled", legendPosition: 'middle'}}
+                colors={["#2563eb", "#e11d48", "#6fcf97"]} 
                 pointSize={6}
                 useMesh={true}
                 curve="monotoneX"
@@ -51,10 +51,11 @@ export const AttendanceAnalytics = ({ data }) => {
                         direction: 'row',
                         translateY: 40,
                         itemWidth: 180,
-                        itemHeight: 0,
+                        itemHeight: 20,
                         symbolSize: 15,
                         symbolShape: 'circle',
                         textColor: '#333',
+                        fontWeight: 'bold',
                         symbolBorderColor: 'rgba(0, 0, 0, .5)',
                     },
                 ]}

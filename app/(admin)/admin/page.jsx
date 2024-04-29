@@ -12,7 +12,6 @@ export default async function AdminPage (){
 
     const user = await getServerSession(authOptions);
 
-    console.log(user);
     if(user?.token.role !== UserRole.SystemAdmin){
         return <p>Unauthorized Access!</p>
     }

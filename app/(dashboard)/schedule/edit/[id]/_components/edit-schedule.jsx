@@ -25,8 +25,9 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
   
-  import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -71,6 +72,116 @@ export const EditSchedule = ({
   const [scheduleId, setScheduleId] = useState("");
   const [createArea, SetCreateArea] = useState("");
 
+  const [selectedDeleteArea, setSelectedDeleteArea] = useState(null);
+  const [selectedEditArea, setSelectedEditArea] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedAreaName, setEditedAreaName] = useState('');
+
+  const handleSelectChange = (event) => {
+    const areaId = event;
+    setSelectedEditArea(areaId);
+    const selectedArea = areas.find(area => area.id === areaId);
+    setEditedAreaName(selectedArea.name);
+    setIsEditing(true);
+  };
+  
+  const handleNameChange = (event) => {
+    setEditedAreaName(event.target.value);
+  };
+  const handleAreaEdit = async () => {
+    try {
+
+      if(!editedAreaName){
+        toast({
+          title: "Uh oh...",
+          description: "Please Input a Clinical Area.",
+          status: "destructive",
+        });
+      }
+
+        const response = await fetch(`/api/schedule/area/${selectedEditArea}/update?id=${selectedEditArea}`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: selectedEditArea,
+            newName: editedAreaName,
+          })
+        });
+        if(!response.ok){
+          toast({
+            title: "Uh oh...",
+            description: "Failed to Edit Clinical Area.",
+            status: "destructive",
+            variant: "destructive",
+          });
+        }
+        if(response.ok){
+          toast({
+            title: "Success",
+            description: "Successfully Edited Clinical Area.",
+            status: "success",
+            variant: "success",
+          });
+          setEditedAreaName('');
+        }
+        setSelectedEditArea(null);
+      
+    } catch (error) {
+      console.error("Failed to Edit Clinical Area.", error)
+      toast({
+        title: "Uh oh...",
+        description: "Failed to Edit Clinical Area.",
+        status: "destructive",
+        variant: "destructive",
+      });
+    } finally {
+      setIsEditing(false);
+    }
+  };
+  const handleAreaDelete = async () => {
+    try {
+      if(!selectedDeleteArea){
+        toast({
+          title: "Uh oh...",
+          description: "No selected Clinical Area to Delete.",
+          status: "destructive"
+        });
+        return;
+      }
+
+      const response = await fetch(`/api/schedule/area/${selectedDeleteArea}/delete?id=${selectedDeleteArea}`,{
+        method: "DELETE",
+      });
+
+      if(!response.ok){
+        toast({
+          title: "Uh oh...",
+          description: "Failed to delete Clinical Area.",
+          status: "destructive",
+          variant: "destructive",
+        });
+      }
+      if(response.ok){
+        toast({
+          title: "Success",
+          description:  "Successfully deleted the Clinical Area.",
+          status: "Success",
+          variant: "success"
+        });   
+      }
+
+    } catch (error) {
+      console.error("Failed to delete Clinical Area", error);
+      toast({
+        title: "Uh oh...",
+        description: "Failed to delete Clinical Area.",
+        status: "destructive",
+        variant: "destructive",
+      });
+    }
+  };
   const previousUsers = user.map(user => user.id);
 
   const findCI =  user.find(user => user.role === 'ClinicalInstructor');
@@ -220,22 +331,20 @@ export const EditSchedule = ({
           },
           body: JSON.stringify({ createArea })
         });
-        toast({
-          title: "Success",
-          description: "Successfully added a new clinical area.",
-          status: "Success"
-        });
         if(response.ok){
           toast({
             title: "Success",
             description: "Successfully added a new clinical area.",
-            status: "Success"
+            status: "Success",
+            variant: "success"
           });
+          SetCreateArea('')
         } else {
           toast({
             title: "Uh oh...",
             description: "Failed to add new clinical area.",
-            status: "Failed"
+            status: "Failed",
+            variant: "destructive"
           });
         }
 
@@ -244,7 +353,8 @@ export const EditSchedule = ({
         toast({
           title: "Uh oh...",
           description: "Failed to add new clinical area.",
-          status: "Failed"
+          status: "Failed",
+          variant: "destructive"
         });
       }
     }
@@ -260,6 +370,89 @@ export const EditSchedule = ({
                     </div>
                     
                     <div>
+                    <Dialog>
+                            <DialogTrigger className="rounded-md">
+                              <Button className="bg-blue-500 hover:bg-blue-700">
+                                Clinical Area Actions
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Clinical Area Actions</DialogTitle>
+                              </DialogHeader>
+                            <Tabs defaultValue="add" className="w-full">
+                              <TabsList>
+                                <TabsTrigger value="add">Add</TabsTrigger>
+                                <TabsTrigger value="edit">Edit</TabsTrigger>
+                                <TabsTrigger value="delete">Delete</TabsTrigger>
+                              </TabsList>
+                              <TabsContent className="mt-2" value="add">
+                              <Label>Input Clinical Area & Specialty</Label>
+                              <Input value={createArea} onChange={(e) => SetCreateArea(e.target.value)} placeholder="Clinical Area"/>
+                              <DialogFooter>
+                                  <DialogClose>
+                                    <Button className="mt-2" onClick={handleAddArea}>
+                                      Submit
+                                    </Button>
+                                  </DialogClose>
+                              </DialogFooter>
+                              </TabsContent>
+                              <TabsContent value="edit">
+                              <Label>Select Clinical Area to Edit</Label>
+                              <Select value={selectedEditArea} onValueChange={handleSelectChange}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Clinical Area"/>
+                                </SelectTrigger>
+                                <SelectContent className="focus-visible:ring-transparent">
+                                  {areas.map((area) => (
+                                    <SelectItem key={area.id} value={area.id}>
+                                      {area?.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              {isEditing && (
+                                  <div className="mt-2">
+                                    <Label>Edit Clinical Area</Label>
+                                    <Input
+                                      type="text"
+                                      value={editedAreaName}
+                                      onChange={handleNameChange}
+                                    />
+                                    <div className="flex justify-end mt-2">
+                                      <DialogClose>
+                                    <Button onClick={handleAreaEdit}>Save</Button>
+                                      </DialogClose>
+                                    </div>
+                                  </div>
+                                )}
+                              
+                                </TabsContent>
+                              <TabsContent value="delete">
+                              <Label>Select Clinical Area to Delete</Label>
+                              <Select value={selectedDeleteArea || null} onValueChange={(e)=> setSelectedDeleteArea(e)}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Clinical Area"/>
+                                </SelectTrigger>
+                                <SelectContent className="focus-visible:ring-transparent">
+                                  {areas.map((area) => (
+                                    <SelectItem key={area.id} value={area.id}>
+                                      {area?.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                                  <div className="flex mt-2 justify-end">
+                                    <DialogClose>
+                                    <Button onClick={handleAreaDelete}>
+                                      Delete
+                                    </Button>
+                                    </DialogClose>
+                                  </div>
+                                </TabsContent>
+                            </Tabs>
+                            </DialogContent>
+                          </Dialog>
                     <Link className="mx-2" href={'/schedule'}><Button>
                     Return
                     </Button></Link>
@@ -268,6 +461,9 @@ export const EditSchedule = ({
                     </Button>
                     </div>
                 </div>
+                    <div className="mt-4">
+
+                    </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                 <div className="flex flex-col w-[20rem]">
                     <ClinicalInstructorSelect
@@ -306,24 +502,6 @@ export const EditSchedule = ({
                               ))}
                             </SelectContent>
                           </Select>
-                          <Dialog>
-                            <DialogTrigger className="border rounded-md hover:bg-slate-100 p-[7px]">
-                              <Plus/>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Add Clinical Area</DialogTitle>
-                              </DialogHeader>
-                              <Input value={createArea} onChange={(e) => SetCreateArea(e.target.value)} placeholder="Clinical Area"/>
-                              <DialogFooter>
-                                  <DialogClose>
-                                    <Button onClick={handleAddArea}>
-                                      Submit
-                                    </Button>
-                                  </DialogClose>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
                         </div>     
                       </div>
                     <div className="flex flex-col w-[20rem]">

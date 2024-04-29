@@ -1,6 +1,5 @@
 import { getScheduleId } from "@/actions/get-schedule-id";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+
 import DataTable from "./DataTable";
 import {
   Table,
@@ -12,7 +11,6 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getScheduleWithUsers } from "@/actions/get-schedule";
-import { redirect } from "next/navigation";
 
 export default async function ScheduleIdPage ({ params }) {
 
@@ -41,13 +39,11 @@ export default async function ScheduleIdPage ({ params }) {
 
   return (
     <div className="p-6">
-    <div className="flex items-center justify-between">
-      <div className="flex flex-col gap-y-2">
-        <h1 className="text-2xl font-medium">Schedule Details</h1>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 mt-16 gap-6">
             <div className="overflow-x-auto">
+            <div className="flex flex-col gap-y-2">
+              <h1 className="text-2xl font-medium">Schedule Details</h1>
+            </div>
             <Table className="rounded-md border" >
                 <TableHeader>
                 <TableRow className="bg-slate-200 hover:bg-slate-200">
@@ -96,6 +92,9 @@ export default async function ScheduleIdPage ({ params }) {
             </Table>
             </div>
             <div className="overflow-x-auto">
+            <div className="flex flex-col gap-y-2">
+              <h1 className="text-2xl font-medium">Student List</h1>
+            </div>
                     <DataTable schedules={selectSchedule} data={studentData} user={session.token}/>
             </div>
             </div>

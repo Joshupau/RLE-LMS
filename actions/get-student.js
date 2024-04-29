@@ -6,7 +6,7 @@ export const getStudent = async () => {
   try {
     const students = await db.user.findMany({
       where: { role: UserRole.Student },
-      orderBy: [{ yearLevel: "asc" }, { section: "asc" }]
+      orderBy: [{ yearLevel: "asc" },{ lastName: "asc"}, { section: "asc" }]
     });
 
     return students;

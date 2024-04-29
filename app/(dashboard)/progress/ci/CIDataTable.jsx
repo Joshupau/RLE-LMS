@@ -185,8 +185,8 @@ const CIDataTable = ({ data }) => {
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Case Number</TableHead>
-              <TableHead className="text-center">Case Type</TableHead>
               <TableHead className="text-center">Student Name</TableHead>
+              <TableHead className="text-center">Case Type</TableHead>
               <TableHead className="text-center">Level</TableHead>
               <TableHead className="text-center">Date</TableHead>
               <TableHead className="text-center">Status</TableHead>
@@ -197,8 +197,8 @@ const CIDataTable = ({ data }) => {
             {paginatedFilteredData.map((Case) => (
               <TableRow key={Case.id}>
                 <TableCell className="text-center">{Case.caseNumber}</TableCell>
+                <TableCell className="text-center">{Case.user.firstName.toString()} {Case.user.lastName.toString()}</TableCell>
                 <TableCell className="text-center">{Case.caseType}</TableCell>
-                <TableCell className="text-center">{Case.user.firstName} {Case.user.lastName}</TableCell>
                 <TableCell className="text-center">{Case.level}</TableCell>
                 <TableCell className="text-center">{new Date(Case.date).toLocaleDateString()}</TableCell>
                 <TableCell className="text-center">

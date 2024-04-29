@@ -18,11 +18,15 @@ export const BarChart = ({ data }) => {
             axisBottom={{
                 tickSize: 0,
                 tickPadding: 4,
+                legend: "Year Level",
+
             }}
             axisLeft={{
                 tickSize: 0,
                 tickValues: 5,
                 tickPadding: 16,
+                legend: "Number of Cases",
+                legendPosition: 'middle'
             }}
             enableGridX={false}
             enableGridY={true}

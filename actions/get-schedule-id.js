@@ -15,6 +15,9 @@ export const getScheduleId = async (scheduleId) => {
               role: true,
               id: true,
               contact: true,
+            },
+            orderBy: {
+              lastName: 'asc'
             }
           },
           clinicalArea: true,

@@ -242,6 +242,7 @@ const DataTable = ({ data }) => {
               <TableHead className="text-center text-white">Age</TableHead>
               <TableHead className="text-center text-white">status</TableHead>
               <TableHead className="text-center text-white">role</TableHead>
+              <TableHead className="text-center text-white">Year Level</TableHead>
               <TableHead className="text-center text-white">Actions</TableHead>
               <TableHead className="flex items-center gap-2 text-center text-white">Select All
               <input
@@ -266,6 +267,7 @@ const DataTable = ({ data }) => {
                 <TableCell className="text-center">{user.age}</TableCell>
                 <TableCell className="text-center">{user.status ? <Badge variant="outline" className="bg-cyan-200 text-blue-500">Active</Badge> : <Badge variant="outline" className="bg-red-200 text-red-500">Disabled</Badge>}</TableCell>
                 <TableCell className="text-center">{user.role}</TableCell>
+                <TableCell className="text-center">{user?.yearLevel}</TableCell>             
                 <TableCell className="text-center">
                 <AlertDialog>
                   <Dialog>

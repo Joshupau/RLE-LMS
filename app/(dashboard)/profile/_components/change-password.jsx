@@ -174,7 +174,7 @@ export const ChangePassword = ({data}) => {
             className="border border-black text-sm text-black rounded-xl bg-slate-200 p-2" 
             required
             />
-            <div>
+            <div className="text-sm">
               <span>Password must contain at least one number, one uppercase letter, one lowercase letter, and be at least 8 characters long.</span>
               {passwordValid ? <span className="text-green-500"> Valid </span> : <span className="text-red-500"> Invalid </span>}
             </div>
@@ -191,7 +191,9 @@ export const ChangePassword = ({data}) => {
             className="border border-black text-sm text-black rounded-xl bg-slate-200 p-2" 
             required
             />
+            <div className="text-xs">
             {passwordsMatch ? <span className="text-green-500"> Passwords match </span> : <span className="text-red-500"> Passwords do not match </span>}
+            </div>
             </div>
             </>
         )}

@@ -34,11 +34,11 @@ export const AttendanceAnalytics = ({ data }) => {
         <Card style={{ height: '400px' }}>
             <ResponsiveLine
                 data={formattedData}
-                margin={{ top: 10, right: 10, bottom: 60, left: 40 }}
+                margin={{ top: 10, right: 130, bottom: 60, left: 70 }}
                 xScale={{ type: "point" }}
                 yScale={{ type: "linear", min: 0, max: "auto" }}
-                axisBottom={{ tickSize: 0, tickPadding: 16, legend: "Months"}}
-                axisLeft={{ tickSize: 0, tickValues: 5, tickPadding: 16, legend: "Students Scheduled", legendPosition: 'middle'}}
+                axisBottom={{ tickSize: 0, tickPadding: 16, legend: "Months", legendPosition: 'middle', legendOffset: 40}}
+                axisLeft={{ tickSize: 0, tickValues: 5, tickPadding: 16, legend: "Students Scheduled", legendPosition: 'middle', legendOffset: -50}}
                 colors={["#2563eb", "#e11d48", "#6fcf97"]} 
                 pointSize={6}
                 useMesh={true}
@@ -47,9 +47,10 @@ export const AttendanceAnalytics = ({ data }) => {
                 gridYValues={6}
                 legends={[
                     {
-                        anchor: 'bottom',
-                        direction: 'row',
-                        translateY: 40,
+                        anchor: 'bottom-right',
+                        direction: 'column',
+                        translateX: 185,
+                        translateY: 0,
                         itemWidth: 180,
                         itemHeight: 20,
                         symbolSize: 15,

@@ -62,11 +62,12 @@ const fuzzyFilterFn = (rows, filterValue) => {
       typeof value === 'string' || typeof value === 'number' ? value.toString().toLowerCase() : ''
     );
     return rowValues.some(value =>
-      value.toLowerCase().includes(filterValue.toLowerCase())
+      value.toLowerCase().includes(filterValue.toLowerCase()) || 
+      row.user.firstName.toLowerCase().includes(filterValue.toLowerCase()) || 
+      row.user.lastName.toLowerCase().includes(filterValue.toLowerCase())
     );
   });
 };
-
 
 
 const CIDataTable = ({ data }) => {
@@ -197,7 +198,7 @@ const CIDataTable = ({ data }) => {
             {paginatedFilteredData.map((Case) => (
               <TableRow key={Case.id}>
                 <TableCell className="text-center">{Case.caseNumber}</TableCell>
-                <TableCell className="text-center">{Case.user.firstName.toString()} {Case.user.lastName.toString()}</TableCell>
+                <TableCell className="text-center">{`${Case.user.firstName} ${Case.user.lastName}`}</TableCell>
                 <TableCell className="text-center">{Case.caseType}</TableCell>
                 <TableCell className="text-center">{Case.level}</TableCell>
                 <TableCell className="text-center">{new Date(Case.date).toLocaleDateString()}</TableCell>

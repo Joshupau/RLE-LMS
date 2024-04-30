@@ -87,7 +87,12 @@ export const StudentPage = async () => {
                         )}
           {data.token.role === 'Student' &&(
              <div className="mt-16">
-            {cases && cases.length > 0 && <StudentCaseProgress data={cases} />}
+            {cases && cases.length > 0 && 
+            <>
+            <h1 className="text-xl font-medium mb-2">Overall Case Performance</h1>
+            <StudentCaseProgress data={cases} />
+            </>
+            }
              </div>
              )}
              </div>

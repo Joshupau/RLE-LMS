@@ -10,7 +10,7 @@ export const BarChart = ({ data }) => {
             data={data}
             keys={['Group A', 'Group B']}
             indexBy="level"
-            margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
+            margin={{ top: 10, right: 10, bottom: 40, left: 60 }}
             padding={0.3}
             colors={{ scheme: 'category10' }}
             axisTop={null}
@@ -19,6 +19,7 @@ export const BarChart = ({ data }) => {
                 tickSize: 0,
                 tickPadding: 4,
                 legend: "Year Level",
+                legendOffset: 15,
 
             }}
             axisLeft={{
@@ -26,7 +27,8 @@ export const BarChart = ({ data }) => {
                 tickValues: 5,
                 tickPadding: 16,
                 legend: "Number of Cases",
-                legendPosition: 'middle'
+                legendPosition: 'middle',
+                legendOffset: -40,
             }}
             enableGridX={false}
             enableGridY={true}

@@ -463,24 +463,6 @@ export const CreateSchedule = ({
                         ))}
                       </SelectContent>
                     </Select>
-                    <Dialog>
-                      <DialogTrigger className="border rounded-md hover:bg-slate-100 p-[7px]">
-                        <Plus/>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add Clinical Area</DialogTitle>
-                        </DialogHeader>
-                        <Input value={createArea} onChange={(e) => SetCreateArea(e.target.value)} placeholder="Clinical Area"/>
-                        <DialogFooter>
-                            <DialogClose>
-                              <Button onClick={handleAddArea}>
-                                Submit
-                              </Button>
-                            </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
                   </div>     
                 </div>
                 <div className="flex flex-col w-[20rem]">
